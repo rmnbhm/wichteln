@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Wichteln</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css}"/>
+    <script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Wichteln</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Create a Wichtel Event</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <form id="eventCreationForm" action="#" class="form-horizontal"
+                      th:action="@{/}"
+                      th:object="${form}"
+                      method="post">
+                    <fieldset>
+                        <p>
+                            <input type="submit" id="submitButton" class="btn btn-success" th:value="Submit"/>
+                            <input type="reset" id="resetButton" class="btn btn-danger" th:value="Reset"/>
+                        </p>
+                        <p>
+                            <input class="form-control" id="title" placeholder="Title" type="text" required
+                                   th:field="*{title}"/>
+                        </p>
+                        <p>
+                            <input class="form-control" id="description" placeholder="Description" type="text" required
+                                  th:field="*{description}"/>
+                        </p>
+                        <p>
+                            <input class="form-control" id="monetaryAmount" placeholder="Monetary Amount" type="number" required
+                                  th:field="*{monetaryAmount}"/>
+                        </p>
+                        <p>
+                            <input class="form-control" id="heldAt" placeholder="Held At" type="text" required
+                                  onfocus="(this.type='date')" onblur="(this.type='text')"
+                                   th:field="*{{heldAt}}"/>
+                        </p>
+                        <table id="participantsTable" class="table">
+                            <thead>
+                            <tr>
+                                <th id="participantsTableLabel" colspan="3" scope="colgroup">Participants</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="participant, itemStat : *{participants}">
+                                <td><input placeholder="First Name"
+                                           th:field="*{participants[__${itemStat.index}__].firstName}" required/></td>
+                                <td><input placeholder="Last Name"
+                                           th:field="*{participants[__${itemStat.index}__].lastName}" required/></td>
+                                <td><input placeholder="Email" th:field="*{participants[__${itemStat.index}__].email}"
+                                           required/></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <button id="addParticipantButton" name="add-participant" class="btn btn-primary">
+                            Add participant
+                        </button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> <!-- /container -->
+</body>
+</html>
