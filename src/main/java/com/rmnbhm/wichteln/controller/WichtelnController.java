@@ -3,7 +3,7 @@ package com.rmnbhm.wichteln.controller;
 import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.Participant;
 import com.rmnbhm.wichteln.service.WichtelnService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,14 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequiredArgsConstructor
 public class WichtelnController {
 
     private final WichtelnService wichtelnService;
-
-    @Autowired
-    public WichtelnController(WichtelnService wichtelnService) {
-        this.wichtelnService = wichtelnService;
-    }
 
     @GetMapping
     public String getEvent(Model model) {
