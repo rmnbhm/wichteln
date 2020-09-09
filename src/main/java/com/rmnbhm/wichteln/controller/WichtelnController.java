@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class WichtelnController {
@@ -26,7 +27,7 @@ public class WichtelnController {
         // at least two participants needed
         event.addParticipant(new Participant());
         event.addParticipant(new Participant());
-        model.addAttribute("form", event);
+        model.addAttribute("event", event);
         return "wichteln";
     }
 
@@ -40,7 +41,19 @@ public class WichtelnController {
     @PostMapping(params = {"add-participant"})
     public String addParticipant(@ModelAttribute Event event, Model model) {
         event.addParticipant(new Participant());
-        model.addAttribute("form", event);
+        model.addAttribute("event", event);
+
+        return "wichteln";
+    }
+
+    @PostMapping(params = {"remove-participant"})
+    public String removeParticipant(
+            @RequestParam(name = "remove-participant") Integer participantIndex,
+            @ModelAttribute Event event,
+            Model model
+    ) {
+        event.removeParticipantNumber(participantIndex);
+        model.addAttribute("event", event);
 
         return "wichteln";
     }

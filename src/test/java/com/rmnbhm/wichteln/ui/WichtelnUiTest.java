@@ -18,7 +18,9 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,13 +35,6 @@ public class WichtelnUiTest {
     private int port;
     private String wichtelnUrl;
     private RemoteWebDriver webDriver;
-
-    @BeforeEach
-    public void establishUrl() {
-        wichtelnUrl = "http://" + HOST_IP_ADDRESS + ":" + port + "/"; // port is dynamic
-        webDriver = container.getWebDriver();
-    }
-
     @Container
     private BrowserWebDriverContainer<?> container = new BrowserWebDriverContainer<>()
             .withSharedMemorySize(536_870_912L) // 512 MiB
@@ -47,6 +42,11 @@ public class WichtelnUiTest {
             // s. https://github.com/testcontainers/testcontainers-java/issues/2552
             .withCapabilities(new FirefoxOptions());
 
+    @BeforeEach
+    public void establishUrl() {
+        wichtelnUrl = "http://" + HOST_IP_ADDRESS + ":" + port + "/"; // port is dynamic
+        webDriver = container.getWebDriver();
+    }
 
     @Test
     public void shouldDisplayEventCreationForm() {
@@ -110,6 +110,49 @@ public class WichtelnUiTest {
 
         participantsTable = webDriver.findElement(By.id("participantsTable"));
         assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(5);
+        assertThat(tableData()).containsExactly(
+                List.of("Angus", "Young", "angusyoung@acdc.net"),
+                List.of("Malcolm", "Young", "malcolmyoung@acdc.net"),
+                List.of("Phil", "Rudd", "philrudd@acdc.net"),
+                List.of("Bon", "Scott", "bonscott@acdc.net"),
+                List.of("Cliff", "Williams", "cliffwilliams@acdc.net")
+        );
+    }
+
+    @Test
+    public void shouldRemoveParticipants() {
+        webDriver.get(wichtelnUrl);
+        preFillMetaData();
+
+        WebElement participantsTable = webDriver.findElement(By.id("participantsTable"));
+        assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(2);
+
+        assertThat(webDriver.findElement(By.id("addParticipantButton"))).isNotNull();
+
+        fillRow(0, "Angus", "Young", "angusyoung@acdc.net");
+        fillRow(1, "Malcolm", "Young", "malcolmyoung@acdc.net");
+
+        webDriver.findElement(By.id("addParticipantButton")).click();
+        fillRow(2, "Phil", "Rudd", "philrudd@acdc.net");
+
+        webDriver.findElement(By.id("addParticipantButton")).click();
+        fillRow(3, "Bon", "Scott", "bonscott@acdc.net");
+
+        webDriver.findElement(By.id("addParticipantButton")).click();
+        fillRow(4, "Cliff", "Williams", "cliffwilliams@acdc.net");
+
+        // Button id suffix (i.e. index) get recalculated after every removal, so in order to remove participants with
+        // actual indices 1 and 2, we need to click removeParticipantButton1 twice
+        webDriver.findElement(By.id("removeParticipantButton1")).click();
+        webDriver.findElement(By.id("removeParticipantButton1")).click();
+
+        participantsTable = webDriver.findElement(By.id("participantsTable"));
+        assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(3);
+        assertThat(tableData()).containsExactly(
+                List.of("Angus", "Young", "angusyoung@acdc.net"),
+                List.of("Bon", "Scott", "bonscott@acdc.net"),
+                List.of("Cliff", "Williams", "cliffwilliams@acdc.net")
+        );
     }
 
     private void preFillMetaData() {
@@ -136,5 +179,20 @@ public class WichtelnUiTest {
         lastNameInput.sendKeys(lastName);
         WebElement emailInput = inputFields.get(2);
         emailInput.sendKeys(email);
+    }
+
+    private List<List<String>> tableData() {
+        WebElement participantsTable = webDriver.findElement(By.id("participantsTable"));
+        List<List<String>> rows = new ArrayList<>();
+        participantsTable.findElements(By.cssSelector("tbody tr")).forEach(row -> {
+            List<WebElement> inputFields = row.findElements(By.cssSelector("input"));
+            rows.add(
+                    inputFields.stream()
+                            .map(webElement -> webElement.getAttribute("value"))
+                            .collect(Collectors.toList())
+            );
+        });
+        return rows;
+
     }
 }

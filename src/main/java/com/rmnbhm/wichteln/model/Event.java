@@ -22,7 +22,11 @@ public class Event {
         participants.add(participant);
     }
 
-    public void removeParticipant(Participant participant) {
+    private void removeParticipant(Participant participant) {
         participants.remove(participant);
+    }
+
+    public void removeParticipantNumber(int index) {
+        removeParticipant(participants.get(index));
     }
 }

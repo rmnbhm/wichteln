@@ -31,7 +31,7 @@
             <div class="col-md-6">
                 <form id="eventCreationForm" action="#" class="form-horizontal"
                       th:action="@{/}"
-                      th:object="${form}"
+                      th:object="${event}"
                       method="post">
                     <fieldset>
                         <p>
@@ -58,17 +58,29 @@
                         <table id="participantsTable" class="table">
                             <thead>
                             <tr>
-                                <th id="participantsTableLabel" colspan="3" scope="colgroup">Participants</th>
+                                <th id="participantsTableLabel" colspan="4" scope="colgroup">Participants</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="participant, itemStat : *{participants}">
-                                <td><input placeholder="First Name"
-                                           th:field="*{participants[__${itemStat.index}__].firstName}" required/></td>
-                                <td><input placeholder="Last Name"
-                                           th:field="*{participants[__${itemStat.index}__].lastName}" required/></td>
-                                <td><input placeholder="Email" th:field="*{participants[__${itemStat.index}__].email}"
-                                           required/></td>
+                                <td>
+                                    <input placeholder="First Name"
+                                           th:field="*{participants[__${itemStat.index}__].firstName}" required/>
+                                </td>
+                                <td>
+                                    <input placeholder="Last Name"
+                                           th:field="*{participants[__${itemStat.index}__].lastName}" required/>
+                                </td>
+                                <td>
+                                    <input placeholder="Email"
+                                           th:field="*{participants[__${itemStat.index}__].email}" required/>
+                                </td>
+                                <td>
+                                    <button th:id="removeParticipantButton__${itemStat.index}__" name="remove-participant" class="btn btn-warning"
+                                            th:value="${itemStat.index}">
+                                        x
+                                    </button>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
