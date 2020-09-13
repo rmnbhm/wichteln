@@ -1,5 +1,6 @@
 package com.rmnbhm.wichteln.controller;
 
+import com.rmnbhm.wichteln.exception.FailedMatchException;
 import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.Participant;
 import com.rmnbhm.wichteln.service.WichtelnService;
@@ -29,8 +30,12 @@ public class WichtelnController {
 
     @PostMapping
     public String saveEvent(@ModelAttribute Event event, Model model) {
-        wichtelnService.save(event);
-        
+        try {
+            wichtelnService.save(event);
+        } catch (FailedMatchException e) {
+            // TODO: handle
+        }
+
         return "redirect:/";
     }
 
