@@ -1,9 +1,9 @@
 package com.rmnbhm.wichteln.service;
 
-import com.rmnbhm.wichteln.exception.FailedMatchException;
 import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,12 +12,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WichtelnService {
 
-    ParticipantsMatcher participantsMatcher;
+    private final ParticipantsMatcher matcher;
+    private final WichtelnMailCreator mailCreator;
+    private final JavaMailSender mailSender;
 
     public void save(Event event) {
-            List<ParticipantsMatch> participantsMatches = participantsMatcher.match(event.getParticipants());
-            participantsMatches.forEach(participantsMatch -> {
-                // TODO: notify matched participants
-            });
+        List<ParticipantsMatch> matches = matcher.match(event.getParticipants());
+        matches.forEach(match -> mailSender.send(mailCreator.createMessage(event, match)));
     }
 }

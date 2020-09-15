@@ -19,7 +19,7 @@ class ParticipantsMatcherTest {
         Participant b = new Participant();
         b.setFirstName("b");
         Participant c = new Participant();
-        c.setFirstName("v");
+        c.setFirstName("c");
 
         List<ParticipantsMatch> participantsMatches = participantsMatcher.match(List.of(a, b, c));
 
