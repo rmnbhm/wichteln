@@ -14,7 +14,7 @@ public class WichtelnService {
 
     ParticipantsMatcher participantsMatcher;
 
-    public void save(Event event) throws FailedMatchException {
+    public void save(Event event) {
             List<ParticipantsMatch> participantsMatches = participantsMatcher.match(event.getParticipants());
             participantsMatches.forEach(participantsMatch -> {
                 // TODO: notify matched participants
