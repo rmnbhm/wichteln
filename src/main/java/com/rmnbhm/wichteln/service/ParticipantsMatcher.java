@@ -17,11 +17,11 @@ import static com.rmnbhm.wichteln.util.Predicates.notEquals;
 
 @Component
 @RequiredArgsConstructor
-public class ParticipantMatcher {
+public class ParticipantsMatcher {
 
     private final Function<List<Participant>, List<Participant>> listShuffler;
 
-    public ParticipantMatcher() {
+    public ParticipantsMatcher() {
         listShuffler = original -> {
             List<Participant> copy = new ArrayList<>(original);
             Collections.shuffle(copy);

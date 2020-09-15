@@ -12,10 +12,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WichtelnService {
 
-    ParticipantMatcher participantMatcher;
+    ParticipantsMatcher participantsMatcher;
 
     public void save(Event event) throws FailedMatchException {
-            List<ParticipantsMatch> participantsMatches = participantMatcher.match(event.getParticipants());
+            List<ParticipantsMatch> participantsMatches = participantsMatcher.match(event.getParticipants());
             participantsMatches.forEach(participantsMatch -> {
                 // TODO: notify matched participants
             });
