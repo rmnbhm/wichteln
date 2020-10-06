@@ -101,14 +101,12 @@ public class WichtelnUiIntegrationTest {
         preFillMetaData();
 
         WebElement participantsTable = webDriver.findElement(By.id("participantsTable"));
-        assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(2);
+        assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(3);
 
         assertThat(webDriver.findElement(By.id("addParticipantButton"))).isNotNull();
 
         fillRow(0, "Angus", "Young", "angusyoung@acdc.net");
         fillRow(1, "Malcolm", "Young", "malcolmyoung@acdc.net");
-
-        webDriver.findElement(By.id("addParticipantButton")).click();
         fillRow(2, "Phil", "Rudd", "philrudd@acdc.net");
 
         webDriver.findElement(By.id("addParticipantButton")).click();
@@ -134,14 +132,12 @@ public class WichtelnUiIntegrationTest {
         preFillMetaData();
 
         WebElement participantsTable = webDriver.findElement(By.id("participantsTable"));
-        assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(2);
+        assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(3);
 
         assertThat(webDriver.findElement(By.id("addParticipantButton"))).isNotNull();
 
         fillRow(0, "Angus", "Young", "angusyoung@acdc.net");
         fillRow(1, "Malcolm", "Young", "malcolmyoung@acdc.net");
-
-        webDriver.findElement(By.id("addParticipantButton")).click();
         fillRow(2, "Phil", "Rudd", "philrudd@acdc.net");
 
         webDriver.findElement(By.id("addParticipantButton")).click();
@@ -162,6 +158,9 @@ public class WichtelnUiIntegrationTest {
                 List.of("Bon", "Scott", "bonscott@acdc.net"),
                 List.of("Cliff", "Williams", "cliffwilliams@acdc.net")
         );
+        assertThat(webDriver.findElement(By.id("removeParticipantButton0")).isEnabled()).isFalse();
+        assertThat(webDriver.findElement(By.id("removeParticipantButton1")).isEnabled()).isFalse();
+        assertThat(webDriver.findElement(By.id("removeParticipantButton2")).isEnabled()).isFalse();
     }
 
     private void preFillMetaData() {

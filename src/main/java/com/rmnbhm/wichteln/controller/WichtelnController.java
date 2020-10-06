@@ -20,7 +20,8 @@ public class WichtelnController {
     @GetMapping
     public String getEvent(Model model) {
         Event event = new Event();
-        // at least two participants needed
+        // at least three participants needed
+        event.addParticipant(new Participant());
         event.addParticipant(new Participant());
         event.addParticipant(new Participant());
         model.addAttribute("event", event);
