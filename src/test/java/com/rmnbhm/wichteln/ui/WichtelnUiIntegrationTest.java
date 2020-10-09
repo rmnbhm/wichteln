@@ -96,7 +96,7 @@ public class WichtelnUiIntegrationTest {
     }
 
     @Test
-    public void shouldAddParticipants() {
+    public void shouldAddAndRemoveParticipants() {
         webDriver.get(wichtelnUrl);
         preFillMetaData();
 
@@ -104,15 +104,13 @@ public class WichtelnUiIntegrationTest {
         assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(3);
 
         assertThat(webDriver.findElement(By.id("addParticipantButton"))).isNotNull();
+        webDriver.findElement(By.id("addParticipantButton")).click();
+        webDriver.findElement(By.id("addParticipantButton")).click();
 
         fillRow(0, "Angus", "Young", "angusyoung@acdc.net");
         fillRow(1, "Malcolm", "Young", "malcolmyoung@acdc.net");
         fillRow(2, "Phil", "Rudd", "philrudd@acdc.net");
-
-        webDriver.findElement(By.id("addParticipantButton")).click();
         fillRow(3, "Bon", "Scott", "bonscott@acdc.net");
-
-        webDriver.findElement(By.id("addParticipantButton")).click();
         fillRow(4, "Cliff", "Williams", "cliffwilliams@acdc.net");
 
         participantsTable = webDriver.findElement(By.id("participantsTable"));
@@ -124,27 +122,6 @@ public class WichtelnUiIntegrationTest {
                 List.of("Bon", "Scott", "bonscott@acdc.net"),
                 List.of("Cliff", "Williams", "cliffwilliams@acdc.net")
         );
-    }
-
-    @Test
-    public void shouldRemoveParticipants() {
-        webDriver.get(wichtelnUrl);
-        preFillMetaData();
-
-        WebElement participantsTable = webDriver.findElement(By.id("participantsTable"));
-        assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(3);
-
-        assertThat(webDriver.findElement(By.id("addParticipantButton"))).isNotNull();
-
-        fillRow(0, "Angus", "Young", "angusyoung@acdc.net");
-        fillRow(1, "Malcolm", "Young", "malcolmyoung@acdc.net");
-        fillRow(2, "Phil", "Rudd", "philrudd@acdc.net");
-
-        webDriver.findElement(By.id("addParticipantButton")).click();
-        fillRow(3, "Bon", "Scott", "bonscott@acdc.net");
-
-        webDriver.findElement(By.id("addParticipantButton")).click();
-        fillRow(4, "Cliff", "Williams", "cliffwilliams@acdc.net");
 
         // Button id suffix (i.e. index) get recalculated after every removal, so in order to remove participants with
         // actual indices 1 and 2, we need to click removeParticipantButton1 twice
@@ -197,6 +174,7 @@ public class WichtelnUiIntegrationTest {
             rows.add(
                     inputFields.stream()
                             .map(webElement -> webElement.getAttribute("value"))
+                            .filter(value -> !(value.equalsIgnoreCase("x")))
                             .collect(Collectors.toList())
             );
         });

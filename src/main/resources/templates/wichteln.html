@@ -76,17 +76,23 @@
                                            th:field="*{participants[__${itemStat.index}__].email}" required/>
                                 </td>
                                 <td>
-                                    <button th:disabled="${#lists.size(event.participants)} lt 4" th:id="removeParticipantButton__${itemStat.index}__" th:formaction="'/remove/' + ${itemStat.index}" class="btn btn-warning"
-                                            th:value="${itemStat.index}">
-                                        x
-                                    </button>
+                                    <input formnovalidate
+                                           type="submit"
+                                           class="btn btn-warning"
+                                           th:disabled="${#lists.size(event.participants)} lt 4"
+                                           th:id="removeParticipantButton__${itemStat.index}__"
+                                           th:formaction="'/remove/' + ${itemStat.index}"
+                                           th:value="x"/>
                                 </td>
                             </tr>
                             </tbody>
                         </table>
-                        <button id="addParticipantButton" formaction="/add" class="btn btn-primary">
-                            Add participant
-                        </button>
+                        <input formnovalidate
+                               type="submit"
+                               class="btn btn-primary"
+                               id="addParticipantButton"
+                               formaction="/add"
+                               value="Add participant"/>
                     </fieldset>
                 </form>
             </div>
