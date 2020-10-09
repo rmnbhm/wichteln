@@ -64,15 +64,15 @@
                             <tbody>
                             <tr th:each="participant, itemStat : *{participants}">
                                 <td>
-                                    <input placeholder="First Name"
+                                    <input class="form-control" placeholder="First Name" type="text"
                                            th:field="*{participants[__${itemStat.index}__].firstName}" required/>
                                 </td>
                                 <td>
-                                    <input placeholder="Last Name"
+                                    <input class="form-control" placeholder="Last Name" type="text"
                                            th:field="*{participants[__${itemStat.index}__].lastName}" required/>
                                 </td>
                                 <td>
-                                    <input placeholder="Email"
+                                    <input class="form-control" placeholder="Email" type="email"
                                            th:field="*{participants[__${itemStat.index}__].email}" required/>
                                 </td>
                                 <td>
