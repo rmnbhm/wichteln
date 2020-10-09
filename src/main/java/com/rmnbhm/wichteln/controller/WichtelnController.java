@@ -6,10 +6,9 @@ import com.rmnbhm.wichteln.service.WichtelnService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @Controller
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public class WichtelnController {
         return "redirect:/";
     }
 
-    @PostMapping(params = {"add-participant"})
+    @PostMapping("/add")
     public String addParticipant(@ModelAttribute Event event, Model model) {
         event.addParticipant(new Participant());
         model.addAttribute("event", event);
@@ -43,9 +42,9 @@ public class WichtelnController {
         return "wichteln";
     }
 
-    @PostMapping(params = {"remove-participant"})
+    @PostMapping("/remove/{index}")
     public String removeParticipant(
-            @RequestParam(name = "remove-participant") Integer participantIndex,
+            @PathVariable(name = "index") Integer participantIndex,
             @ModelAttribute Event event,
             Model model
     ) {
