@@ -35,8 +35,8 @@
                       method="post">
                     <fieldset>
                         <p>
-                            <input type="submit" id="submitButton" class="btn btn-success" th:value="Submit"/>
-                            <input type="reset" id="resetButton" class="btn btn-danger" th:value="Reset"/>
+                            <button type="submit" id="submitButton" class="btn btn-success">Submit</button>
+                            <button type="reset" id="resetButton" class="btn btn-danger">Reset</button>
                         </p>
                         <p>
                             <input class="form-control" id="title" placeholder="Title" type="text" required
@@ -76,23 +76,25 @@
                                            th:field="*{participants[__${itemStat.index}__].email}" required/>
                                 </td>
                                 <td>
-                                    <input formnovalidate
+                                    <button formnovalidate
                                            type="submit"
                                            class="btn btn-warning"
                                            th:disabled="${#lists.size(event.participants)} lt 4"
                                            th:id="removeParticipantButton__${itemStat.index}__"
-                                           th:formaction="'/remove/' + ${itemStat.index}"
-                                           th:value="x"/>
+                                           th:formaction="'/remove/' + ${itemStat.index}">
+                                        x
+                                    </button>
                                 </td>
                             </tr>
                             </tbody>
                         </table>
-                        <input formnovalidate
+                        <button formnovalidate
                                type="submit"
                                class="btn btn-primary"
                                id="addParticipantButton"
-                               formaction="/add"
-                               value="Add participant"/>
+                               formaction="/add">
+                            Add participant
+                        </button>
                     </fieldset>
                 </form>
             </div>

@@ -90,9 +90,9 @@ public class WichtelnUiIntegrationTest {
         webDriver.get(wichtelnUrl);
 
         WebElement submitButton = webDriver.findElement(By.id("submitButton"));
-        assertThat(submitButton.getAttribute("value")).isEqualTo("Submit");
+        assertThat(submitButton.getText()).isEqualTo("Submit");
         WebElement resetButton = webDriver.findElement(By.id("resetButton"));
-        assertThat(resetButton.getAttribute("value")).isEqualTo("Reset");
+        assertThat(resetButton.getText()).isEqualTo("Reset");
     }
 
     @Test
