@@ -14,8 +14,6 @@ import java.text.SimpleDateFormat;
 @RequiredArgsConstructor
 public class WichtelnMailCreator {
 
-    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
     public SimpleMailMessage createMessage(Event event, ParticipantsMatch match) {
         return createMessage(event, match.getDonor(), match.getRecipient());
     }
@@ -39,7 +37,7 @@ public class WichtelnMailCreator {
                 recipient.getFirstName(),
                 recipient.getLastName(),
                 event.getMonetaryAmount(),
-                FORMAT.format(event.getHeldAt())
+                event.getHeldAt()
         );
     }
 }

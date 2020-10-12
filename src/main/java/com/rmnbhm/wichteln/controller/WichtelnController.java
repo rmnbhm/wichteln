@@ -4,11 +4,17 @@ import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.Participant;
 import com.rmnbhm.wichteln.service.WichtelnService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Date;
+import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,10 +34,13 @@ public class WichtelnController {
     }
 
     @PostMapping
-    public String saveEvent(@ModelAttribute Event event, Model model) {
-        wichtelnService.save(event);
+    public ModelAndView saveEvent(@ModelAttribute @Valid Event event, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView("wichteln", HttpStatus.BAD_REQUEST);
+        }
 
-        return "redirect:/";
+        wichtelnService.save(event);
+        return new ModelAndView("redirect:/");
     }
 
     @PostMapping("/add")

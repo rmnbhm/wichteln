@@ -52,7 +52,7 @@ public class WichtelnUiIntegrationTest {
             .withCapabilities(new FirefoxOptions());
 
     @BeforeEach
-    public void establishUrl() {
+    public void establishWebDriver() {
         wichtelnUrl = "http://" + HOST_IP_ADDRESS + ":" + port + "/"; // port is dynamic
         webDriver = container.getWebDriver();
     }
@@ -61,7 +61,7 @@ public class WichtelnUiIntegrationTest {
     public void shouldDisplayEventCreationForm() {
         webDriver.get(wichtelnUrl);
 
-        WebElement eventCreationForm = webDriver.findElement(By.id("eventCreationForm"));
+        WebElement eventCreationForm = webDriver.findElement(By.id("event-creation-form"));
         assertThat(eventCreationForm).isNotNull();
         WebElement title = eventCreationForm.findElement(By.id("title"));
         assertThat(title).isNotNull();
@@ -69,10 +69,10 @@ public class WichtelnUiIntegrationTest {
         WebElement description = eventCreationForm.findElement(By.id("description"));
         assertThat(description).isNotNull();
         assertThat(description.getAttribute("placeholder")).isEqualTo("Description");
-        WebElement monetaryAmount = eventCreationForm.findElement(By.id("monetaryAmount"));
+        WebElement monetaryAmount = eventCreationForm.findElement(By.id("monetary-amount"));
         assertThat(monetaryAmount).isNotNull();
         assertThat(monetaryAmount.getAttribute("placeholder")).isEqualTo("Monetary Amount");
-        WebElement heldAt = eventCreationForm.findElement(By.id("heldAt"));
+        WebElement heldAt = eventCreationForm.findElement(By.id("held-at"));
         assertThat(heldAt).isNotNull();
         assertThat(heldAt.getAttribute("placeholder")).isEqualTo("Held At");
     }
@@ -81,7 +81,7 @@ public class WichtelnUiIntegrationTest {
     public void shouldDisplayTableHeaders() {
         webDriver.get(wichtelnUrl);
 
-        WebElement participantsTableHeader = webDriver.findElement(By.id("participantsTableLabel"));
+        WebElement participantsTableHeader = webDriver.findElement(By.id("participants-table-label"));
         assertThat(participantsTableHeader.getText()).isEqualTo("Participants");
     }
 
@@ -89,23 +89,35 @@ public class WichtelnUiIntegrationTest {
     public void shouldDisplaySubmitAndResetButtons() {
         webDriver.get(wichtelnUrl);
 
-        WebElement submitButton = webDriver.findElement(By.id("submitButton"));
+        WebElement submitButton = webDriver.findElement(By.id("submit-button"));
         assertThat(submitButton.getText()).isEqualTo("Submit");
-        WebElement resetButton = webDriver.findElement(By.id("resetButton"));
+        WebElement resetButton = webDriver.findElement(By.id("reset-button"));
         assertThat(resetButton.getText()).isEqualTo("Reset");
     }
 
     @Test
-    public void shouldAddAndRemoveParticipants() {
+    public void shouldAddAndRemoveParticipants() throws InterruptedException {
         webDriver.get(wichtelnUrl);
-        preFillMetaData();
 
-        WebElement participantsTable = webDriver.findElement(By.id("participantsTable"));
+        // Fill with data
+        WebElement title = webDriver.findElement(By.id("title"));
+        title.sendKeys("AC/DC Secret Santa");
+        WebElement description = webDriver.findElement(By.id("description"));
+        description.sendKeys("There's gonna be some santa'ing");
+        WebElement monetaryAmount = webDriver.findElement(By.id("monetary-amount"));
+        monetaryAmount.sendKeys("78");
+        WebElement heldAt = webDriver.findElement(By.id("held-at"));
+        String dateTime = Instant.now().plus(1, ChronoUnit.DAYS)
+                .atZone(ZoneId.of("Europe/Berlin"))
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+        heldAt.sendKeys(dateTime);
+
+        WebElement participantsTable = webDriver.findElement(By.id("participants-table"));
         assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(3);
 
-        assertThat(webDriver.findElement(By.id("addParticipantButton"))).isNotNull();
-        webDriver.findElement(By.id("addParticipantButton")).click();
-        webDriver.findElement(By.id("addParticipantButton")).click();
+        assertThat(webDriver.findElement(By.id("add-participant-button"))).isNotNull();
+        webDriver.findElement(By.id("add-participant-button")).click();
+        webDriver.findElement(By.id("add-participant-button")).click();
 
         fillRow(0, "Angus", "Young", "angusyoung@acdc.net");
         fillRow(1, "Malcolm", "Young", "malcolmyoung@acdc.net");
@@ -113,7 +125,7 @@ public class WichtelnUiIntegrationTest {
         fillRow(3, "Bon", "Scott", "bonscott@acdc.net");
         fillRow(4, "Cliff", "Williams", "cliffwilliams@acdc.net");
 
-        participantsTable = webDriver.findElement(By.id("participantsTable"));
+        participantsTable = webDriver.findElement(By.id("participants-table"));
         assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(5);
         assertThat(tableData()).containsExactly(
                 List.of("Angus", "Young", "angusyoung@acdc.net"),
@@ -125,37 +137,63 @@ public class WichtelnUiIntegrationTest {
 
         // Button id suffix (i.e. index) get recalculated after every removal, so in order to remove participants with
         // actual indices 1 and 2, we need to click removeParticipantButton1 twice
-        webDriver.findElement(By.id("removeParticipantButton1")).click();
-        webDriver.findElement(By.id("removeParticipantButton1")).click();
+        webDriver.findElement(By.id("remove-participants1-button")).click();
+        webDriver.findElement(By.id("remove-participants1-button")).click();
 
-        participantsTable = webDriver.findElement(By.id("participantsTable"));
+        participantsTable = webDriver.findElement(By.id("participants-table"));
         assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(3);
         assertThat(tableData()).containsExactly(
                 List.of("Angus", "Young", "angusyoung@acdc.net"),
                 List.of("Bon", "Scott", "bonscott@acdc.net"),
                 List.of("Cliff", "Williams", "cliffwilliams@acdc.net")
         );
-        assertThat(webDriver.findElement(By.id("removeParticipantButton0")).isEnabled()).isFalse();
-        assertThat(webDriver.findElement(By.id("removeParticipantButton1")).isEnabled()).isFalse();
-        assertThat(webDriver.findElement(By.id("removeParticipantButton2")).isEnabled()).isFalse();
+        assertThat(webDriver.findElement(By.id("remove-participants0-button")).isEnabled()).isFalse();
+        assertThat(webDriver.findElement(By.id("remove-participants1-button")).isEnabled()).isFalse();
+        assertThat(webDriver.findElement(By.id("remove-participants2-button")).isEnabled()).isFalse();
     }
 
-    private void preFillMetaData() {
+    @Test
+    public void shouldValidateFormInput() {
+        webDriver.get(wichtelnUrl);
+
+        // Fill with invalid data
         WebElement title = webDriver.findElement(By.id("title"));
-        title.sendKeys("AC/DC Secret Santa");
-        WebElement description = webDriver.findElement(By.id("description"));
-        description.sendKeys("There's gonna be some santa'ing");
-        WebElement monetaryAmount = webDriver.findElement(By.id("monetaryAmount"));
-        monetaryAmount.sendKeys("78");
-        WebElement heldAt = webDriver.findElement(By.id("heldAt"));
-        String date = Instant.now().plus(1, ChronoUnit.DAYS)
+        title.sendKeys("AC/DC Secret Santa".repeat(20)); // too long
+        WebElement description = webDriver.findElement(By.id("description")); // too long
+        description.sendKeys("There's gonna be some santa'ing".repeat(100));
+        WebElement monetaryAmount = webDriver.findElement(By.id("monetary-amount"));
+        monetaryAmount.sendKeys("-1");
+        WebElement heldAt = webDriver.findElement(By.id("held-at"));
+        String dateTime = Instant.now().minus(1, ChronoUnit.DAYS)
                 .atZone(ZoneId.of("Europe/Berlin"))
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        heldAt.sendKeys(date);
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+        heldAt.sendKeys(dateTime);
+
+        fillRow(0, "Angus".repeat(20), "Young", "angusyoung@acdc.net");
+        fillRow(1, "Malcolm", "Young", "malcolmyoung@acdc.net");
+        fillRow(2, "Phil", "Rudd".repeat(20), "philrudd@acdc.net");
+
+        WebElement submitButton = webDriver.findElement(By.id("submit-button"));
+        submitButton.click();
+
+        WebElement titleError = webDriver.findElement(By.id("title-error"));
+        assertThat(titleError.isDisplayed()).isTrue();
+        WebElement descriptionError = webDriver.findElement(By.id("description-error"));
+        assertThat(descriptionError.isDisplayed()).isTrue();
+        WebElement monetaryAmountError = webDriver.findElement(By.id("monetary-amount-error"));
+        assertThat(monetaryAmountError.isDisplayed()).isTrue();
+        WebElement heldAtError = webDriver.findElement(By.id("held-at-error"));
+        assertThat(heldAtError.isDisplayed()).isTrue();
+
+        WebElement angusFirstNameError = webDriver.findElement(By.id("participants0-first-name-error"));
+        assertThat(angusFirstNameError.isDisplayed()).isTrue();
+        WebElement malcolmLastNameError = webDriver.findElement(By.id("participants2-last-name-error"));
+        assertThat(malcolmLastNameError.isDisplayed()).isTrue();
+
     }
 
     private void fillRow(int rowIndex, String firstName, String lastName, String email) {
-        WebElement participantsTable = webDriver.findElement(By.id("participantsTable"));
+        WebElement participantsTable = webDriver.findElement(By.id("participants-table"));
         WebElement row = participantsTable.findElements(By.cssSelector("tbody tr")).get(rowIndex);
         List<WebElement> inputFields = row.findElements(By.cssSelector("input"));
         WebElement firstNameInput = inputFields.get(0);
@@ -167,7 +205,7 @@ public class WichtelnUiIntegrationTest {
     }
 
     private List<List<String>> tableData() {
-        WebElement participantsTable = webDriver.findElement(By.id("participantsTable"));
+        WebElement participantsTable = webDriver.findElement(By.id("participants-table"));
         List<List<String>> rows = new ArrayList<>();
         participantsTable.findElements(By.cssSelector("tbody tr")).forEach(row -> {
             List<WebElement> inputFields = row.findElements(By.cssSelector("input"));
@@ -180,5 +218,20 @@ public class WichtelnUiIntegrationTest {
         });
         return rows;
 
+    }
+
+    private List<List<String>> tableErrors() {
+        WebElement participantsTable = webDriver.findElement(By.id("participants-table"));
+        List<List<String>> rows = new ArrayList<>();
+        participantsTable.findElements(By.cssSelector("tbody tr")).forEach(row -> {
+            List<WebElement> inputFields = row.findElements(By.cssSelector("input"));
+            rows.add(
+                    inputFields.stream()
+                            .map(webElement -> webElement.getAttribute("value"))
+                            .filter(value -> !(value.equalsIgnoreCase("x")))
+                            .collect(Collectors.toList())
+            );
+        });
+        return rows;
     }
 }

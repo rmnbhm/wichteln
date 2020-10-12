@@ -10,9 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 
-import java.sql.Date;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +38,11 @@ public class WichtelnMailCreatorTest {
         malcolmYoung.setFirstName("Malcolm");
         malcolmYoung.setLastName("Young");
         malcolmYoung.setEmail("malcolmyoung@acdc.net");
-        event.setParticipants(List.of(angusYoung, malcolmYoung));
+        Participant philRudd = new Participant();
+        philRudd.setFirstName("Phil");
+        philRudd.setLastName("Rudd");
+        philRudd.setEmail("philrudd@acdc.net");
+        event.setParticipants(List.of(angusYoung, malcolmYoung, philRudd));
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
                 new Donor(event.getParticipants().get(0)), new Recipient(event.getParticipants().get(1))
         );
@@ -53,10 +58,12 @@ public class WichtelnMailCreatorTest {
 
     @Test
     public void shouldHandleEventDataCorrectly() {
+        Date heldAt = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
+
         Event event = new Event();
         event.setTitle("AC/DC Secret Santa");
         event.setDescription("There's gonna be some santa'ing");
-        event.setHeldAt(Date.valueOf("3030-01-01"));
+        event.setHeldAt(heldAt);
         event.setMonetaryAmount(78);
         Participant angusYoung = new Participant();
         angusYoung.setFirstName("Angus");
@@ -66,7 +73,11 @@ public class WichtelnMailCreatorTest {
         malcolmYoung.setFirstName("Malcolm");
         malcolmYoung.setLastName("Young");
         malcolmYoung.setEmail("malcolmyoung@acdc.net");
-        event.setParticipants(List.of(angusYoung, malcolmYoung));
+        Participant philRudd = new Participant();
+        philRudd.setFirstName("Phil");
+        philRudd.setLastName("Rudd");
+        philRudd.setEmail("philrudd@acdc.net");
+        event.setParticipants(List.of(angusYoung, malcolmYoung, philRudd));
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
                 new Donor(event.getParticipants().get(0)), new Recipient(event.getParticipants().get(1))
         );
@@ -76,7 +87,7 @@ public class WichtelnMailCreatorTest {
         assertThat(mail).isNotNull();
         assertThat(mail.getText())
                 .contains("78")
-                .contains("3030-01-01")
+                .contains(heldAt.toString())
                 .contains("There's gonna be some santa'ing");
         assertThat(mail.getSubject()).isEqualTo("You have been invited to wichtel at AC/DC Secret Santa");
     }

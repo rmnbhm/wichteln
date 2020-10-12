@@ -15,8 +15,15 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.mail.Address;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(properties = {
@@ -27,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "spring.mail.protocol=smtp"
 })
 @AutoConfigureMockMvc
-class WichtelnControllerTest {
+public class WichtelnControllerTest {
 
     private static GreenMail greenMail;
 
@@ -55,13 +62,17 @@ class WichtelnControllerTest {
 
     @Test
     public void shouldInform() throws Exception {
+        String dateTime = Instant.now().plus(1, ChronoUnit.DAYS)
+                .atZone(ZoneId.of("Europe/Berlin"))
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+
         mockMvc.perform(
                 post("/")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("title", "My+Title")
-                        .param("description", "My+Description")
+                        .param("title", "AC/DC Secret Santa")
+                        .param("description", "There's gonna be some santa'ing")
                         .param("monetaryAmount", "78")
-                        .param("heldAt", "2020-09-17")
+                        .param("heldAt", dateTime)
                         .param("participants[0].firstName", "Angus")
                         .param("participants[0].lastName", "Young")
                         .param("participants[0].email", "angusyoung@acdc.net")
@@ -72,7 +83,8 @@ class WichtelnControllerTest {
                         .param("participants[2].lastName", "Rudd")
                         .param("participants[2].email", "philrudd@acdc.net")
 
-        ).andExpect(status().is3xxRedirection());
+        )
+                .andExpect(status().is3xxRedirection());
 
 
         assertThat(greenMail.waitForIncomingEmail(1500, 3)).isTrue();
@@ -85,5 +97,35 @@ class WichtelnControllerTest {
                         "philrudd@acdc.net"
                 );
 
+    }
+
+    @Test
+    public void shouldValidate() throws Exception {
+        String invalidDateTime = Instant.now().minus(1, ChronoUnit.DAYS)
+                .atZone(ZoneId.of("Europe/Berlin"))
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+
+        mockMvc.perform(
+                post("/")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("title", "AC/DC Secret Santa")
+                        .param("description", "There's gonna be some santa'ing")
+                        .param("monetaryAmount", "78")
+                        .param("heldAt", invalidDateTime)
+                        .param("participants[0].firstName", "Angus")
+                        .param("participants[0].lastName", "Young")
+                        .param("participants[0].email", "angusyoung@acdc.net")
+                        .param("participants[1].firstName", "Malcolm")
+                        .param("participants[1].lastName", "Young")
+                        .param("participants[1].email", "malcolmyoung@acdc.net")
+                        .param("participants[2].firstName", "Phil")
+                        .param("participants[2].lastName", "Rudd")
+                        .param("participants[2].email", "philrudd@acdc.net")
+
+        )
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().string(containsString("must be a date in the present or in the future")));
+
+        assertThat(greenMail.waitForIncomingEmail(1500, 3)).isFalse();
     }
 }

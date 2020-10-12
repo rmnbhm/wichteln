@@ -14,7 +14,7 @@
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="collapse navbar-collapse">
             <div class="navbar-nav">
                 <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
             </div>
@@ -29,36 +29,40 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <form id="eventCreationForm" action="#" class="form-horizontal"
+                <form id="event-creation-form" action="#" class="form-horizontal"
                       th:action="@{/}"
                       th:object="${event}"
                       method="post">
                     <fieldset>
                         <p>
-                            <button type="submit" id="submitButton" class="btn btn-success">Submit</button>
-                            <button type="reset" id="resetButton" class="btn btn-danger">Reset</button>
+                            <button type="submit" id="submit-button" class="btn btn-success">Submit</button>
+                            <button type="reset" id="reset-button" class="btn btn-danger">Reset</button>
                         </p>
                         <p>
                             <input class="form-control" id="title" placeholder="Title" type="text" required
                                    th:field="*{title}"/>
                         </p>
+                        <p id="title-error" class="alert alert-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title error</p>
                         <p>
                             <input class="form-control" id="description" placeholder="Description" type="text" required
                                   th:field="*{description}"/>
                         </p>
+                        <p id="description-error" class="alert alert-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Description error</p>
                         <p>
-                            <input class="form-control" id="monetaryAmount" placeholder="Monetary Amount" type="number" required
+                            <input class="form-control" id="monetary-amount" placeholder="Monetary Amount" type="number" required
                                   th:field="*{monetaryAmount}"/>
                         </p>
+                        <p id="monetary-amount-error" class="alert alert-danger" th:if="${#fields.hasErrors('monetaryAmount')}" th:errors="*{monetaryAmount}">Monetary amount error</p>
                         <p>
-                            <input class="form-control" id="heldAt" placeholder="Held At" type="text" required
-                                  onfocus="(this.type='date')" onblur="(this.type='text')"
+                            <input class="form-control" id="held-at" placeholder="Held At" type="text" required
+                                  onfocus="(this.type='datetime-local')" onblur="(this.type='text')"
                                    th:field="*{{heldAt}}"/>
                         </p>
-                        <table id="participantsTable" class="table">
+                        <p id="held-at-error" class="alert alert-danger" th:if="${#fields.hasErrors('heldAt')}" th:errors="*{heldAt}">Held at error</p>
+                        <table id="participants-table" class="table">
                             <thead>
                             <tr>
-                                <th id="participantsTableLabel" colspan="4" scope="colgroup">Participants</th>
+                                <th id="participants-table-label" colspan="4" scope="colgroup">Participants</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -66,21 +70,39 @@
                                 <td>
                                     <input class="form-control" placeholder="First Name" type="text"
                                            th:field="*{participants[__${itemStat.index}__].firstName}" required/>
+                                    <p th:id="participants__${itemStat.index}__-first-name-error"
+                                       class="alert alert-danger"
+                                       th:if="${#fields.hasErrors('*{participants[__${itemStat.index}__].firstName}')}"
+                                       th:errors="*{participants[__${itemStat.index}__].firstName}">
+                                       First name Error
+                                    </p>
                                 </td>
                                 <td>
                                     <input class="form-control" placeholder="Last Name" type="text"
                                            th:field="*{participants[__${itemStat.index}__].lastName}" required/>
+                                    <p th:id="participants__${itemStat.index}__-last-name-error"
+                                       class="alert alert-danger"
+                                       th:if="${#fields.hasErrors('{participants[__${itemStat.index}__].lastName}')}"
+                                       th:errors="*{participants[__${itemStat.index}__].lastName}">
+                                       Last name Error
+                                    </p>
                                 </td>
                                 <td>
                                     <input class="form-control" placeholder="Email" type="email"
                                            th:field="*{participants[__${itemStat.index}__].email}" required/>
+                                    <p th:id="participants__${itemStat.index}__-email-error"
+                                       class="alert alert-danger"
+                                       th:if="${#fields.hasErrors('*{participants[__${itemStat.index}__].email}')}"
+                                       th:errors="*{participants[__${itemStat.index}__].email}">
+                                       Email Error
+                                    </p>
                                 </td>
                                 <td>
                                     <button formnovalidate
                                            type="submit"
                                            class="btn btn-warning"
                                            th:disabled="${#lists.size(event.participants)} lt 4"
-                                           th:id="removeParticipantButton__${itemStat.index}__"
+                                           th:id="remove-participants__${itemStat.index}__-button"
                                            th:formaction="'/remove/' + ${itemStat.index}">
                                         x
                                     </button>
@@ -91,7 +113,7 @@
                         <button formnovalidate
                                type="submit"
                                class="btn btn-primary"
-                               id="addParticipantButton"
+                               id="add-participant-button"
                                formaction="/add">
                             Add participant
                         </button>

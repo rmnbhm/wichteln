@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 public class ScreenshotOnFailureExtension implements AfterEachCallback {
