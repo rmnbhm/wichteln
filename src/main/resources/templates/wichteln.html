@@ -78,7 +78,11 @@
                         <table id="participants-table" class="table">
                             <thead>
                             <tr>
-                                <th id="participants-table-label" colspan="4" scope="colgroup">Participants</th>
+                                <th id="participants-table-label"
+                                    th:colspan="${#lists.size(event.participants)} lt 4 ? 3 : 4"
+                                    scope="colgroup">
+                                    Participants
+                                </th>
                             </tr>
                             </thead>
                             <tbody>
@@ -122,12 +126,11 @@
                                        Email Error
                                     </p>
                                 </td>
-                                <td>
+                                <td th:hidden="${#lists.size(event.participants)} lt 4">
                                     <button formnovalidate
                                             th:id="remove-participants__${itemStat.index}__-button"
                                             class="btn btn-warning"
                                             type="submit"
-                                            th:disabled="${#lists.size(event.participants)} lt 4"
                                             th:formaction="'/remove/' + ${itemStat.index}">
                                         x
                                     </button>

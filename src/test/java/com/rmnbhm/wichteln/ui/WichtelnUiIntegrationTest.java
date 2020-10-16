@@ -96,7 +96,7 @@ public class WichtelnUiIntegrationTest {
     }
 
     @Test
-    public void shouldAddAndRemoveParticipants() throws InterruptedException {
+    public void shouldAddAndRemoveParticipants() {
         webDriver.get(wichtelnUrl);
 
         // Fill with data
@@ -114,6 +114,11 @@ public class WichtelnUiIntegrationTest {
 
         WebElement participantsTable = webDriver.findElement(By.id("participants-table"));
         assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(3);
+
+        // Remove buttons should be hidden initially since we do _not_ have more than three participants
+        assertThat(webDriver.findElement(By.id("remove-participants0-button")).isDisplayed()).isFalse();
+        assertThat(webDriver.findElement(By.id("remove-participants1-button")).isDisplayed()).isFalse();
+        assertThat(webDriver.findElement(By.id("remove-participants2-button")).isDisplayed()).isFalse();
 
         assertThat(webDriver.findElement(By.id("add-participant-button"))).isNotNull();
         webDriver.findElement(By.id("add-participant-button")).click();
@@ -135,6 +140,11 @@ public class WichtelnUiIntegrationTest {
                 List.of("Cliff", "Williams", "cliffwilliams@acdc.net")
         );
 
+        // Remove buttons should now be displayed since we have more than three participants
+        assertThat(webDriver.findElement(By.id("remove-participants0-button")).isDisplayed()).isTrue();
+        assertThat(webDriver.findElement(By.id("remove-participants1-button")).isDisplayed()).isTrue();
+        assertThat(webDriver.findElement(By.id("remove-participants2-button")).isDisplayed()).isTrue();
+
         // Button id suffix (i.e. index) get recalculated after every removal, so in order to remove participants with
         // actual indices 1 and 2, we need to click removeParticipantButton1 twice
         webDriver.findElement(By.id("remove-participants1-button")).click();
@@ -147,9 +157,11 @@ public class WichtelnUiIntegrationTest {
                 List.of("Bon", "Scott", "bonscott@acdc.net"),
                 List.of("Cliff", "Williams", "cliffwilliams@acdc.net")
         );
-        assertThat(webDriver.findElement(By.id("remove-participants0-button")).isEnabled()).isFalse();
-        assertThat(webDriver.findElement(By.id("remove-participants1-button")).isEnabled()).isFalse();
-        assertThat(webDriver.findElement(By.id("remove-participants2-button")).isEnabled()).isFalse();
+
+        // Remove buttons should be hidden again
+        assertThat(webDriver.findElement(By.id("remove-participants0-button")).isDisplayed()).isFalse();
+        assertThat(webDriver.findElement(By.id("remove-participants1-button")).isDisplayed()).isFalse();
+        assertThat(webDriver.findElement(By.id("remove-participants2-button")).isDisplayed()).isFalse();
     }
 
     @Test
