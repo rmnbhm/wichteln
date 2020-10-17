@@ -1,7 +1,9 @@
 package com.rmnbhm.wichteln.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Singular;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
@@ -15,7 +17,8 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Event {
 
     @NotBlank
@@ -35,15 +38,18 @@ public class Event {
     @FutureOrPresent
     private Date heldAt;
 
+    @Singular
     @NotNull
     @Size(min = 3, max = 100)
-    private List<@Valid Participant> participants = new ArrayList<>();
+    private List<@Valid Participant> participants;
 
     public void addParticipant(Participant participant) {
+        participants = new ArrayList<>(participants); // Needed since Lombok's `@Builder` creates an unmodifiable list
         participants.add(participant);
     }
 
     private void removeParticipant(Participant participant) {
+        participants = new ArrayList<>(participants); // Needed since Lombok's `@Builder` creates an unmodifiable list
         participants.remove(participant);
     }
 

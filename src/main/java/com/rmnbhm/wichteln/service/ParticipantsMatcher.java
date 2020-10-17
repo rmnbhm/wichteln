@@ -27,7 +27,10 @@ public class ParticipantsMatcher {
 
         return IntStream.range(0, participants.size())
                 .mapToObj(i ->
-                        new ParticipantsMatch(new Donor(participants.get(i)), new Recipient(copy.get(i)))
+                        ParticipantsMatch.builder()
+                                .donor(new Donor(participants.get(i)))
+                                .recipient(new Recipient(copy.get(i)))
+                                .build()
                 ).collect(Collectors.toList());
     }
 

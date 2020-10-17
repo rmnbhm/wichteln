@@ -1,5 +1,7 @@
 package com.rmnbhm.wichteln.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +10,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Data
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor // Needed for usage of Lombok's `@Builder` in tests where an event is POSTed without initial GET
 public class Participant {
 
     @NotBlank

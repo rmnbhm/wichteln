@@ -11,10 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,24 +23,30 @@ public class WichtelnMailCreatorTest {
 
     @Test
     public void shouldHandleToAndFromCorrectly() {
-        Event event = new Event();
-        event.setTitle("AC/DC Secret Santa");
-        event.setDescription("There's gonna be some santa'ing");
-        event.setHeldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
-        event.setMonetaryAmount(78);
-        Participant angusYoung = new Participant();
-        angusYoung.setFirstName("Angus");
-        angusYoung.setLastName("Young");
-        angusYoung.setEmail("angusyoung@acdc.net");
-        Participant malcolmYoung = new Participant();
-        malcolmYoung.setFirstName("Malcolm");
-        malcolmYoung.setLastName("Young");
-        malcolmYoung.setEmail("malcolmyoung@acdc.net");
-        Participant philRudd = new Participant();
-        philRudd.setFirstName("Phil");
-        philRudd.setLastName("Rudd");
-        philRudd.setEmail("philrudd@acdc.net");
-        event.setParticipants(List.of(angusYoung, malcolmYoung, philRudd));
+        Event event = Event.builder()
+                .title("AC/DC Secret Santa")
+                .description("There's gonna be some santa'ing")
+                .heldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)))
+                .monetaryAmount(78)
+                .participant(Participant.builder()
+                        .firstName("Angus")
+                        .lastName("Young")
+                        .email("angusyoung@acdc.net")
+                        .build()
+                )
+                .participant(Participant.builder()
+                        .firstName("Malcolm")
+                        .lastName("Young")
+                        .email("angusyoung@acdc.net")
+                        .build()
+                )
+                .participant(Participant.builder()
+                        .firstName("Phil")
+                        .lastName("Rudd")
+                        .email("philrudd@acdc.net")
+                        .build()
+                )
+                .build();
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
                 new Donor(event.getParticipants().get(0)), new Recipient(event.getParticipants().get(1))
         );
@@ -59,25 +63,30 @@ public class WichtelnMailCreatorTest {
     @Test
     public void shouldHandleEventDataCorrectly() {
         Date heldAt = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
-
-        Event event = new Event();
-        event.setTitle("AC/DC Secret Santa");
-        event.setDescription("There's gonna be some santa'ing");
-        event.setHeldAt(heldAt);
-        event.setMonetaryAmount(78);
-        Participant angusYoung = new Participant();
-        angusYoung.setFirstName("Angus");
-        angusYoung.setLastName("Young");
-        angusYoung.setEmail("angusyoung@acdc.net");
-        Participant malcolmYoung = new Participant();
-        malcolmYoung.setFirstName("Malcolm");
-        malcolmYoung.setLastName("Young");
-        malcolmYoung.setEmail("malcolmyoung@acdc.net");
-        Participant philRudd = new Participant();
-        philRudd.setFirstName("Phil");
-        philRudd.setLastName("Rudd");
-        philRudd.setEmail("philrudd@acdc.net");
-        event.setParticipants(List.of(angusYoung, malcolmYoung, philRudd));
+        Event event = Event.builder()
+                .title("AC/DC Secret Santa")
+                .description("There's gonna be some santa'ing")
+                .heldAt(heldAt)
+                .monetaryAmount(78)
+                .participant(Participant.builder()
+                        .firstName("Angus")
+                        .lastName("Young")
+                        .email("angusyoung@acdc.net")
+                        .build()
+                )
+                .participant(Participant.builder()
+                        .firstName("Malcolm")
+                        .lastName("Young")
+                        .email("angusyoung@acdc.net")
+                        .build()
+                )
+                .participant(Participant.builder()
+                        .firstName("Phil")
+                        .lastName("Rudd")
+                        .email("philrudd@acdc.net")
+                        .build()
+                )
+                .build();
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
                 new Donor(event.getParticipants().get(0)), new Recipient(event.getParticipants().get(1))
         );

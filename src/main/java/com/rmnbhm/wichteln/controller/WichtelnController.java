@@ -24,11 +24,12 @@ public class WichtelnController {
 
     @GetMapping
     public String getEvent(Model model) {
-        Event event = new Event();
-        // at least three participants needed
-        event.addParticipant(new Participant());
-        event.addParticipant(new Participant());
-        event.addParticipant(new Participant());
+        Event event = Event.builder()
+                // at least three participants needed
+                .participant(Participant.builder().build())
+                .participant(Participant.builder().build())
+                .participant(Participant.builder().build())
+                .build();
         model.addAttribute("event", event);
         return "wichteln";
     }
@@ -38,16 +39,14 @@ public class WichtelnController {
         if (bindingResult.hasErrors()) {
             return new ModelAndView("wichteln", HttpStatus.BAD_REQUEST);
         }
-
         wichtelnService.save(event);
         return new ModelAndView("redirect:/");
     }
 
     @PostMapping("/add")
     public String addParticipant(@ModelAttribute Event event, Model model) {
-        event.addParticipant(new Participant());
+        event.addParticipant(Participant.builder().build());
         model.addAttribute("event", event);
-
         return "wichteln";
     }
 
@@ -59,7 +58,6 @@ public class WichtelnController {
     ) {
         event.removeParticipantNumber(participantIndex);
         model.addAttribute("event", event);
-
         return "wichteln";
     }
 }

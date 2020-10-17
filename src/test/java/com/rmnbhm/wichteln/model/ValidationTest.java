@@ -10,7 +10,6 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -36,33 +35,38 @@ public class ValidationTest {
     }
 
     private Event validEvent() {
-        Event acdcSanta = new Event();
-        acdcSanta.setTitle("AC/DC Secret Santa");
-        acdcSanta.setDescription("There's gonna be some santa'ing");
-        acdcSanta.setHeldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
-        acdcSanta.setMonetaryAmount(78);
-        Participant angusYoung = new Participant();
-        angusYoung.setFirstName("Angus");
-        angusYoung.setLastName("Young");
-        angusYoung.setEmail("angusyoung@acdc.net");
-        Participant malcolmYoung = new Participant();
-        malcolmYoung.setFirstName("Malcolm");
-        malcolmYoung.setLastName("Young");
-        malcolmYoung.setEmail("malcolmyoung@acdc.net");
-        Participant philRudd = new Participant();
-        philRudd.setFirstName("Phil");
-        philRudd.setLastName("Rudd");
-        philRudd.setEmail("philrudd@acdc.net");
-        acdcSanta.setParticipants(List.of(angusYoung, malcolmYoung, philRudd));
-        return acdcSanta;
+        return Event.builder()
+                .title("AC/DC Secret Santa")
+                .description("There's gonna be some santa'ing")
+                .heldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)))
+                .monetaryAmount(78)
+                .participant(Participant.builder()
+                        .firstName("Angus")
+                        .lastName("Young")
+                        .email("angusyoung@acdc.net")
+                        .build()
+                )
+                .participant(Participant.builder()
+                        .firstName("Malcolm")
+                        .lastName("Young")
+                        .email("angusyoung@acdc.net")
+                        .build()
+                )
+                .participant(Participant.builder()
+                        .firstName("Phil")
+                        .lastName("Rudd")
+                        .email("philrudd@acdc.net")
+                        .build()
+                )
+                .build();
     }
 
     private Participant validParticipant() {
-        Participant angusYoung = new Participant();
-        angusYoung.setFirstName("Angus");
-        angusYoung.setLastName("Young");
-        angusYoung.setEmail("angusyoung@acdc.net");
-        return angusYoung;
+        return Participant.builder()
+                .firstName("Angus")
+                .lastName("Young")
+                .email("angusyoung@acdc.net")
+                .build();
     }
 
 
@@ -184,13 +188,13 @@ public class ValidationTest {
     public void shouldFailEventWithLessThanThreeParticipants() {
         Event event = validEvent();
         List<Participant> oneParticipantTooFew = IntStream.rangeClosed(1, 2)
-                .mapToObj(value -> {
-                    Participant participant = new Participant();
-                    participant.setFirstName("First Name" + value);
-                    participant.setLastName("Last Name" + value);
-                    participant.setEmail("Email@" + value);
-                    return participant;
-                }).collect(Collectors.toList());
+                .mapToObj(value ->
+                        Participant.builder()
+                                .firstName("First Name" + value)
+                                .lastName("Last Name" + value)
+                                .email("Email@" + value)
+                                .build()
+                ).collect(Collectors.toList());
         event.setParticipants(oneParticipantTooFew);
 
         assertThat(validator.validate(event)).isNotEmpty();
@@ -200,13 +204,13 @@ public class ValidationTest {
     public void shouldFailEventWithMoreThanOneHundredParticipants() {
         Event event = validEvent();
         List<Participant> oneParticipantTooMany = IntStream.rangeClosed(1, 101)
-                .mapToObj(value -> {
-                    Participant participant = new Participant();
-                    participant.setFirstName("First Name" + value);
-                    participant.setLastName("Last Name" + value);
-                    participant.setEmail("Email@" + value);
-                    return participant;
-                }).collect(Collectors.toList());
+                .mapToObj(value ->
+                        Participant.builder()
+                                .firstName("First Name" + value)
+                                .lastName("Last Name" + value)
+                                .email("Email@" + value)
+                                .build()
+                ).collect(Collectors.toList());
         event.setParticipants(oneParticipantTooMany);
 
         assertThat(validator.validate(event)).isNotEmpty();
@@ -215,14 +219,7 @@ public class ValidationTest {
     @Test
     public void shouldFailEventWithInvalidParticipant() {
         Event event = validEvent();
-        Participant participant = new Participant();
-        participant.setFirstName(null);
-        participant.setLastName(null);
-        participant.setEmail(null);
-        List<Participant> participants = new ArrayList<>();
-        participants.add(participant);
-        participants.addAll(event.getParticipants().subList(1, event.getParticipants().size() - 1));
-        event.setParticipants(participants);
+        event.addParticipant(Participant.builder().build());
 
         assertThat(validator.validate(event)).isNotEmpty();
     }

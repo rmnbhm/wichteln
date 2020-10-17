@@ -14,12 +14,9 @@ class ParticipantsMatcherTest {
     @Test
     public void shouldShuffle() {
         ParticipantsMatcher participantsMatcher = new ParticipantsMatcher();
-        Participant a = new Participant();
-        a.setFirstName("a");
-        Participant b = new Participant();
-        b.setFirstName("b");
-        Participant c = new Participant();
-        c.setFirstName("c");
+        Participant a = Participant.builder().firstName("a").build();
+        Participant b = Participant.builder().firstName("b").build();
+        Participant c = Participant.builder().firstName("c").build();
 
         List<ParticipantsMatch> participantsMatches = participantsMatcher.match(List.of(a, b, c));
 
