@@ -3,7 +3,9 @@ package com.rmnbhm.wichteln.model;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.experimental.Delegate;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Value
 public class ParticipantsMatch {
     Donor donor;
@@ -11,6 +13,7 @@ public class ParticipantsMatch {
 
     public ParticipantsMatch(@NonNull Donor donor, @NonNull Recipient recipient) {
         if (donor.getParticipant().equals(recipient.getParticipant())) {
+            log.error("Tried to match donor {} with recipient {}", donor, recipient);
             throw new IllegalArgumentException("Donor and recipient must not match");
         }
         this.donor = donor;

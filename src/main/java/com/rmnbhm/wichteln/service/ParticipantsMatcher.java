@@ -32,8 +32,12 @@ public class ParticipantsMatcher {
     }
 
     private boolean areNotMatchedCorrectly(List<Participant> participants, List<Participant> copy) {
-        return IntStream.range(0, participants.size())
+        boolean areNotMatchedCorrectly = IntStream.range(0, participants.size())
                 .anyMatch(i -> participants.get(i).equals(copy.get(i)));
+        if (areNotMatchedCorrectly) {
+            log.debug("Failed to provide valid matches by rotating collection");
+        }
+        return areNotMatchedCorrectly;
     }
 
 }

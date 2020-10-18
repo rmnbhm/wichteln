@@ -8,6 +8,7 @@ COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
 
+# Skip long running UI tests
 RUN ./mvnw verify '-Dtest=!com.rmnbhm.wichteln.ui.**'
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 

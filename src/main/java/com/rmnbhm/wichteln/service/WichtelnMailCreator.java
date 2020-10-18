@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
-
 @Component
 @RequiredArgsConstructor
 public class WichtelnMailCreator {
@@ -23,21 +21,19 @@ public class WichtelnMailCreator {
         message.setFrom("wichteln@romanboehm.com");
         message.setTo(donor.getEmail());
         message.setSubject(String.format("You have been invited to wichtel at %s", event.getTitle()));
-        message.setText(String.join(System.lineSeparator(),
-                predefinedDescription(event, recipient),
-                "Here's what the event's host says about it:",
-                event.getDescription()
-        ));
+        message.setText(
+                String.format(
+                        "Give a gift to %s %s. " +
+                                "The gift's monetary value should not exceed %d. The event will be held on %s. " +
+                                "Here's what the event's host says about it: %s",
+                        recipient.getFirstName(),
+                        recipient.getLastName(),
+                        event.getMonetaryAmount(),
+                        event.getHeldAt(),
+                        event.getDescription()
+                )
+        );
         return message;
     }
 
-    private String predefinedDescription(Event event, Recipient recipient) {
-        return String.format(
-                "Give a gift to %s %s. The gift's monetary value should not exceed %d. The event will be held on %s",
-                recipient.getFirstName(),
-                recipient.getLastName(),
-                event.getMonetaryAmount(),
-                event.getHeldAt()
-        );
-    }
 }

@@ -4,6 +4,7 @@ import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.Participant;
 import com.rmnbhm.wichteln.service.WichtelnService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class WichtelnController {
@@ -38,8 +40,8 @@ public class WichtelnController {
         if (bindingResult.hasErrors()) {
             return new ModelAndView("wichteln", HttpStatus.BAD_REQUEST);
         }
-
         wichtelnService.save(event);
+        log.debug("Saved {}", event);
         return new ModelAndView("redirect:/");
     }
 
@@ -47,6 +49,7 @@ public class WichtelnController {
     public String addParticipant(@ModelAttribute Event event, Model model) {
         event.addParticipant(new Participant());
         model.addAttribute("event", event);
+        log.debug("Added participant to {}", event);
 
         return "wichteln";
     }
@@ -59,6 +62,7 @@ public class WichtelnController {
     ) {
         event.removeParticipantNumber(participantIndex);
         model.addAttribute("event", event);
+        log.debug("Removed participant {} from {}", participantIndex, event);
 
         return "wichteln";
     }
