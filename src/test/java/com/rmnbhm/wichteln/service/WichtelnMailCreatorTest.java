@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
@@ -31,16 +30,13 @@ public class WichtelnMailCreatorTest {
         event.setHeldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
         event.setMonetaryAmount(78);
         Participant angusYoung = new Participant();
-        angusYoung.setFirstName("Angus");
-        angusYoung.setLastName("Young");
+        angusYoung.setName("Angus Young");
         angusYoung.setEmail("angusyoung@acdc.net");
         Participant malcolmYoung = new Participant();
-        malcolmYoung.setFirstName("Malcolm");
-        malcolmYoung.setLastName("Young");
+        malcolmYoung.setName("Malcolm Young");
         malcolmYoung.setEmail("malcolmyoung@acdc.net");
         Participant philRudd = new Participant();
-        philRudd.setFirstName("Phil");
-        philRudd.setLastName("Rudd");
+        philRudd.setName("Phil Rudd");
         philRudd.setEmail("philrudd@acdc.net");
         event.setParticipants(List.of(angusYoung, malcolmYoung, philRudd));
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
@@ -66,16 +62,13 @@ public class WichtelnMailCreatorTest {
         event.setHeldAt(heldAt);
         event.setMonetaryAmount(78);
         Participant angusYoung = new Participant();
-        angusYoung.setFirstName("Angus");
-        angusYoung.setLastName("Young");
+        angusYoung.setName("Angus Young");
         angusYoung.setEmail("angusyoung@acdc.net");
         Participant malcolmYoung = new Participant();
-        malcolmYoung.setFirstName("Malcolm");
-        malcolmYoung.setLastName("Young");
+        malcolmYoung.setName("Malcolm Young");
         malcolmYoung.setEmail("malcolmyoung@acdc.net");
         Participant philRudd = new Participant();
-        philRudd.setFirstName("Phil");
-        philRudd.setLastName("Rudd");
+        philRudd.setName("Phil Rudd");
         philRudd.setEmail("philrudd@acdc.net");
         event.setParticipants(List.of(angusYoung, malcolmYoung, philRudd));
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(

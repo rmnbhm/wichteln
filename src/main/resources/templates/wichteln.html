@@ -79,7 +79,7 @@
                             <thead>
                             <tr>
                                 <th id="participants-table-label"
-                                    th:colspan="${#lists.size(event.participants)} lt 4 ? 3 : 4"
+                                    th:colspan="${#lists.size(event.participants)} lt 4 ? 2 : 3"
                                     scope="colgroup">
                                     Participants
                                 </th>
@@ -88,29 +88,16 @@
                             <tbody>
                             <tr th:each="participant, itemStat : *{participants}">
                                 <td>
-                                    <input th:field="*{participants[__${itemStat.index}__].firstName}"
+                                    <input th:field="*{participants[__${itemStat.index}__].name}"
                                            class="form-control"
                                            type="text"
-                                           placeholder="First Name"
+                                           placeholder="Name"
                                            required/>
-                                    <p th:id="participants__${itemStat.index}__-first-name-error"
+                                    <p th:id="participants__${itemStat.index}__-name-error"
                                        class="alert alert-danger"
-                                       th:if="${#fields.hasErrors('*{participants[__${itemStat.index}__].firstName}')}"
-                                       th:errors="*{participants[__${itemStat.index}__].firstName}">
-                                       First name Error
-                                    </p>
-                                </td>
-                                <td>
-                                    <input th:field="*{participants[__${itemStat.index}__].lastName}"
-                                           class="form-control"
-                                           type="text"
-                                           placeholder="Last Name"
-                                           required/>
-                                    <p th:id="participants__${itemStat.index}__-last-name-error"
-                                       class="alert alert-danger"
-                                       th:if="${#fields.hasErrors('{participants[__${itemStat.index}__].lastName}')}"
-                                       th:errors="*{participants[__${itemStat.index}__].lastName}">
-                                       Last name Error
+                                       th:if="${#fields.hasErrors('*{participants[__${itemStat.index}__].name}')}"
+                                       th:errors="*{participants[__${itemStat.index}__].name}">
+                                       Name Error
                                     </p>
                                 </td>
                                 <td>

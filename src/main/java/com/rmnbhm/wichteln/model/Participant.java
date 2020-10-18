@@ -12,12 +12,8 @@ import javax.validation.constraints.Size;
 public class Participant {
 
     @NotBlank
-    @Size(max = 50)
-    private String firstName;
-
-    @NotBlank
-    @Size(max = 50)
-    private String lastName;
+    @Size(max = 100)
+    private String name;
 
     @NotBlank
     @Email

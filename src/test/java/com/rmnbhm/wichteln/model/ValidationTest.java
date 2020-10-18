@@ -42,16 +42,13 @@ public class ValidationTest {
         acdcSanta.setHeldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
         acdcSanta.setMonetaryAmount(78);
         Participant angusYoung = new Participant();
-        angusYoung.setFirstName("Angus");
-        angusYoung.setLastName("Young");
+        angusYoung.setName("Angus Young");
         angusYoung.setEmail("angusyoung@acdc.net");
         Participant malcolmYoung = new Participant();
-        malcolmYoung.setFirstName("Malcolm");
-        malcolmYoung.setLastName("Young");
+        malcolmYoung.setName("Malcolm Young");
         malcolmYoung.setEmail("malcolmyoung@acdc.net");
         Participant philRudd = new Participant();
-        philRudd.setFirstName("Phil");
-        philRudd.setLastName("Rudd");
+        philRudd.setName("Phil Rudd");
         philRudd.setEmail("philrudd@acdc.net");
         acdcSanta.setParticipants(List.of(angusYoung, malcolmYoung, philRudd));
         return acdcSanta;
@@ -59,8 +56,7 @@ public class ValidationTest {
 
     private Participant validParticipant() {
         Participant angusYoung = new Participant();
-        angusYoung.setFirstName("Angus");
-        angusYoung.setLastName("Young");
+        angusYoung.setName("Angus Young");
         angusYoung.setEmail("angusyoung@acdc.net");
         return angusYoung;
     }
@@ -186,8 +182,7 @@ public class ValidationTest {
         List<Participant> oneParticipantTooFew = IntStream.rangeClosed(1, 2)
                 .mapToObj(value -> {
                     Participant participant = new Participant();
-                    participant.setFirstName("First Name" + value);
-                    participant.setLastName("Last Name" + value);
+                    participant.setName("Name" + value);
                     participant.setEmail("Email@" + value);
                     return participant;
                 }).collect(Collectors.toList());
@@ -202,8 +197,7 @@ public class ValidationTest {
         List<Participant> oneParticipantTooMany = IntStream.rangeClosed(1, 101)
                 .mapToObj(value -> {
                     Participant participant = new Participant();
-                    participant.setFirstName("First Name" + value);
-                    participant.setLastName("Last Name" + value);
+                    participant.setName("Name" + value);
                     participant.setEmail("Email@" + value);
                     return participant;
                 }).collect(Collectors.toList());
@@ -216,8 +210,7 @@ public class ValidationTest {
     public void shouldFailEventWithInvalidParticipant() {
         Event event = validEvent();
         Participant participant = new Participant();
-        participant.setFirstName(null);
-        participant.setLastName(null);
+        participant.setName(null);
         participant.setEmail(null);
         List<Participant> participants = new ArrayList<>();
         participants.add(participant);
@@ -235,69 +228,37 @@ public class ValidationTest {
     }
 
     @Test
-    public void shouldFailParticipantWithTooLongFirstName() {
+    public void shouldFailParticipantWithTooLongName() {
         Participant participant = validParticipant();
-        participant.setFirstName(participant.getFirstName().repeat(20));
+        participant.setName(participant.getName().repeat(20));
 
         assertThat(validator.validate(participant)).isNotEmpty();
     }
 
     @Test
-    public void shouldFailParticipantWithEmptyFirstName() {
+    public void shouldFailParticipantWithEmptyName() {
         Participant participant = validParticipant();
-        participant.setFirstName("");
+        participant.setName("");
 
         assertThat(validator.validate(participant)).isNotEmpty();
     }
 
     @Test
-    public void shouldFailParticipantWithWhitespaceFirstName() {
+    public void shouldFailParticipantWithWhitespaceName() {
         Participant participant = validParticipant();
-        participant.setFirstName(" ");
+        participant.setName(" ");
 
         assertThat(validator.validate(participant)).isNotEmpty();
     }
 
     @Test
-    public void shouldFailParticipantWithNullFirstName() {
+    public void shouldFailParticipantWithNullName() {
         Participant participant = validParticipant();
-        participant.setFirstName(null);
+        participant.setName(null);
 
         assertThat(validator.validate(participant)).isNotEmpty();
     }
-
-    @Test
-    public void shouldFailParticipantWithTooLongLastName() {
-        Participant participant = validParticipant();
-        participant.setLastName(participant.getLastName().repeat(20));
-
-        assertThat(validator.validate(participant)).isNotEmpty();
-    }
-
-    @Test
-    public void shouldFailParticipantWithEmptyLastName() {
-        Participant participant = validParticipant();
-        participant.setLastName("");
-
-        assertThat(validator.validate(participant)).isNotEmpty();
-    }
-
-    @Test
-    public void shouldFailParticipantWithWhitespaceLastName() {
-        Participant participant = validParticipant();
-        participant.setFirstName(" ");
-
-        assertThat(validator.validate(participant)).isNotEmpty();
-    }
-
-    @Test
-    public void shouldFailParticipantWithNullLastName() {
-        Participant participant = validParticipant();
-        participant.setFirstName(null);
-
-        assertThat(validator.validate(participant)).isNotEmpty();
-    }
-
+    
     @Test
     public void shouldFailParticipantWithInvalidEmail() {
         Participant participant = validParticipant();

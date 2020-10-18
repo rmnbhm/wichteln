@@ -23,11 +23,10 @@ public class WichtelnMailCreator {
         message.setSubject(String.format("You have been invited to wichtel at %s", event.getTitle()));
         message.setText(
                 String.format(
-                        "Give a gift to %s %s. " +
+                        "Give a gift to %s. " +
                                 "The gift's monetary value should not exceed %d. The event will be held on %s. " +
                                 "Here's what the event's host says about it: %s",
-                        recipient.getFirstName(),
-                        recipient.getLastName(),
+                        recipient.getName(),
                         event.getMonetaryAmount(),
                         event.getHeldAt(),
                         event.getDescription()

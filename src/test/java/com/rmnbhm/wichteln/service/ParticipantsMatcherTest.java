@@ -14,14 +14,16 @@ class ParticipantsMatcherTest {
     @Test
     public void shouldShuffle() {
         ParticipantsMatcher participantsMatcher = new ParticipantsMatcher();
-        Participant a = new Participant();
-        a.setFirstName("a");
-        Participant b = new Participant();
-        b.setFirstName("b");
-        Participant c = new Participant();
-        c.setFirstName("c");
+        Participant angusYoung = new Participant();
+        angusYoung.setName("Angus Young");
+        Participant malcolmYoung = new Participant();
+        malcolmYoung.setName("Malcolm Young");
+        Participant philRudd = new Participant();
+        philRudd.setName("Phil Rudd");
 
-        List<ParticipantsMatch> participantsMatches = participantsMatcher.match(List.of(a, b, c));
+        List<ParticipantsMatch> participantsMatches = participantsMatcher.match(
+                List.of(angusYoung, malcolmYoung, philRudd)
+        );
 
         assertThat(participantsMatches).allSatisfy(match ->
                 assertThat(match.getDonor().getParticipant()).isNotEqualTo(match.getRecipient().getParticipant())

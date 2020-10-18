@@ -124,20 +124,20 @@ public class WichtelnUiIntegrationTest {
         webDriver.findElement(By.id("add-participant-button")).click();
         webDriver.findElement(By.id("add-participant-button")).click();
 
-        fillRow(0, "Angus", "Young", "angusyoung@acdc.net");
-        fillRow(1, "Malcolm", "Young", "malcolmyoung@acdc.net");
-        fillRow(2, "Phil", "Rudd", "philrudd@acdc.net");
-        fillRow(3, "Bon", "Scott", "bonscott@acdc.net");
-        fillRow(4, "Cliff", "Williams", "cliffwilliams@acdc.net");
+        fillRow(0, "Angus Young", "angusyoung@acdc.net");
+        fillRow(1, "Malcolm Young", "malcolmyoung@acdc.net");
+        fillRow(2, "Phil Rudd", "philrudd@acdc.net");
+        fillRow(3, "Bon Scott", "bonscott@acdc.net");
+        fillRow(4, "Cliff Williams", "cliffwilliams@acdc.net");
 
         participantsTable = webDriver.findElement(By.id("participants-table"));
         assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(5);
         assertThat(tableData()).containsExactly(
-                List.of("Angus", "Young", "angusyoung@acdc.net"),
-                List.of("Malcolm", "Young", "malcolmyoung@acdc.net"),
-                List.of("Phil", "Rudd", "philrudd@acdc.net"),
-                List.of("Bon", "Scott", "bonscott@acdc.net"),
-                List.of("Cliff", "Williams", "cliffwilliams@acdc.net")
+                List.of("Angus Young", "angusyoung@acdc.net"),
+                List.of("Malcolm Young", "malcolmyoung@acdc.net"),
+                List.of("Phil Rudd", "philrudd@acdc.net"),
+                List.of("Bon Scott", "bonscott@acdc.net"),
+                List.of("Cliff Williams", "cliffwilliams@acdc.net")
         );
 
         // Remove buttons should now be displayed since we have more than three participants
@@ -153,9 +153,9 @@ public class WichtelnUiIntegrationTest {
         participantsTable = webDriver.findElement(By.id("participants-table"));
         assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(3);
         assertThat(tableData()).containsExactly(
-                List.of("Angus", "Young", "angusyoung@acdc.net"),
-                List.of("Bon", "Scott", "bonscott@acdc.net"),
-                List.of("Cliff", "Williams", "cliffwilliams@acdc.net")
+                List.of("Angus Young", "angusyoung@acdc.net"),
+                List.of("Bon Scott", "bonscott@acdc.net"),
+                List.of("Cliff Williams", "cliffwilliams@acdc.net")
         );
 
         // Remove buttons should be hidden again
@@ -181,9 +181,9 @@ public class WichtelnUiIntegrationTest {
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
         heldAt.sendKeys(dateTime);
 
-        fillRow(0, "Angus".repeat(20), "Young", "angusyoung@acdc.net");
-        fillRow(1, "Malcolm", "Young", "malcolmyoung@acdc.net");
-        fillRow(2, "Phil", "Rudd".repeat(20), "philrudd@acdc.net");
+        fillRow(0, "Angus Young".repeat(20), "angusyoung@acdc.net");
+        fillRow(1, "Malcolm Young", "malcolmyoung@acdc.net");
+        fillRow(2, "Phil Rudd".repeat(20), "philrudd@acdc.net");
 
         WebElement submitButton = webDriver.findElement(By.id("submit-button"));
         submitButton.click();
@@ -197,22 +197,20 @@ public class WichtelnUiIntegrationTest {
         WebElement heldAtError = webDriver.findElement(By.id("held-at-error"));
         assertThat(heldAtError.isDisplayed()).isTrue();
 
-        WebElement angusFirstNameError = webDriver.findElement(By.id("participants0-first-name-error"));
+        WebElement angusFirstNameError = webDriver.findElement(By.id("participants0-name-error"));
         assertThat(angusFirstNameError.isDisplayed()).isTrue();
-        WebElement malcolmLastNameError = webDriver.findElement(By.id("participants2-last-name-error"));
+        WebElement malcolmLastNameError = webDriver.findElement(By.id("participants2-name-error"));
         assertThat(malcolmLastNameError.isDisplayed()).isTrue();
 
     }
 
-    private void fillRow(int rowIndex, String firstName, String lastName, String email) {
+    private void fillRow(int rowIndex, String name, String email) {
         WebElement participantsTable = webDriver.findElement(By.id("participants-table"));
         WebElement row = participantsTable.findElements(By.cssSelector("tbody tr")).get(rowIndex);
         List<WebElement> inputFields = row.findElements(By.cssSelector("input"));
         WebElement firstNameInput = inputFields.get(0);
-        firstNameInput.sendKeys(firstName);
-        WebElement lastNameInput = inputFields.get(1);
-        lastNameInput.sendKeys(lastName);
-        WebElement emailInput = inputFields.get(2);
+        firstNameInput.sendKeys(name);
+        WebElement emailInput = inputFields.get(1);
         emailInput.sendKeys(email);
     }
 
@@ -230,20 +228,5 @@ public class WichtelnUiIntegrationTest {
         });
         return rows;
 
-    }
-
-    private List<List<String>> tableErrors() {
-        WebElement participantsTable = webDriver.findElement(By.id("participants-table"));
-        List<List<String>> rows = new ArrayList<>();
-        participantsTable.findElements(By.cssSelector("tbody tr")).forEach(row -> {
-            List<WebElement> inputFields = row.findElements(By.cssSelector("input"));
-            rows.add(
-                    inputFields.stream()
-                            .map(webElement -> webElement.getAttribute("value"))
-                            .filter(value -> !(value.equalsIgnoreCase("x")))
-                            .collect(Collectors.toList())
-            );
-        });
-        return rows;
     }
 }
