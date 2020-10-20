@@ -20,15 +20,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(MockitoExtension.class)
 public class WichtelnMailCreatorTest {
 
-    private WichtelnMailCreator wichtelnMailCreator = new WichtelnMailCreator();
+    private final WichtelnMailCreator wichtelnMailCreator = new WichtelnMailCreator();
 
     @Test
     public void shouldHandleToAndFromCorrectly() {
-        Event event = new Event();
-        event.setTitle("AC/DC Secret Santa");
-        event.setDescription("There's gonna be some santa'ing");
-        event.setHeldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
-        event.setMonetaryAmount(78);
+        Event acdcSanta = new Event();
+        acdcSanta.setTitle("AC/DC Secret Santa");
+        acdcSanta.setDescription("There's gonna be some santa'ing");
+        acdcSanta.setHeldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
+        acdcSanta.setMonetaryAmount(78);
+        Event.Host georgeYoung = new Event.Host();
+        georgeYoung.setName("George Young");
+        georgeYoung.setEmail("georgeyoung@acdc.net");
+        acdcSanta.setHost(georgeYoung);
         Participant angusYoung = new Participant();
         angusYoung.setName("Angus Young");
         angusYoung.setEmail("angusyoung@acdc.net");
@@ -38,12 +42,12 @@ public class WichtelnMailCreatorTest {
         Participant philRudd = new Participant();
         philRudd.setName("Phil Rudd");
         philRudd.setEmail("philrudd@acdc.net");
-        event.setParticipants(List.of(angusYoung, malcolmYoung, philRudd));
+        acdcSanta.setParticipants(List.of(angusYoung, malcolmYoung, philRudd));
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
-                new Donor(event.getParticipants().get(0)), new Recipient(event.getParticipants().get(1))
+                new Donor(acdcSanta.getParticipants().get(0)), new Recipient(acdcSanta.getParticipants().get(1))
         );
 
-        SimpleMailMessage mail = wichtelnMailCreator.createMessage(event, angusGiftsToMalcolm);
+        SimpleMailMessage mail = wichtelnMailCreator.createMessage(acdcSanta, angusGiftsToMalcolm);
 
         assertThat(mail).isNotNull();
         assertThat(mail.getTo()).containsExactly("angusyoung@acdc.net");
@@ -56,11 +60,15 @@ public class WichtelnMailCreatorTest {
     public void shouldHandleEventDataCorrectly() {
         Date heldAt = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
 
-        Event event = new Event();
-        event.setTitle("AC/DC Secret Santa");
-        event.setDescription("There's gonna be some santa'ing");
-        event.setHeldAt(heldAt);
-        event.setMonetaryAmount(78);
+        Event acdcSanta = new Event();
+        acdcSanta.setTitle("AC/DC Secret Santa");
+        acdcSanta.setDescription("There's gonna be some santa'ing");
+        acdcSanta.setHeldAt(heldAt);
+        acdcSanta.setMonetaryAmount(78);
+        Event.Host georgeYoung = new Event.Host();
+        georgeYoung.setName("George Young");
+        georgeYoung.setEmail("georgeyoung@acdc.net");
+        acdcSanta.setHost(georgeYoung);
         Participant angusYoung = new Participant();
         angusYoung.setName("Angus Young");
         angusYoung.setEmail("angusyoung@acdc.net");
@@ -70,17 +78,20 @@ public class WichtelnMailCreatorTest {
         Participant philRudd = new Participant();
         philRudd.setName("Phil Rudd");
         philRudd.setEmail("philrudd@acdc.net");
-        event.setParticipants(List.of(angusYoung, malcolmYoung, philRudd));
+        acdcSanta.setParticipants(List.of(angusYoung, malcolmYoung, philRudd));
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
-                new Donor(event.getParticipants().get(0)), new Recipient(event.getParticipants().get(1))
+                new Donor(acdcSanta.getParticipants().get(0)), new Recipient(acdcSanta.getParticipants().get(1))
         );
 
-        SimpleMailMessage mail = wichtelnMailCreator.createMessage(event, angusGiftsToMalcolm);
+        SimpleMailMessage mail = wichtelnMailCreator.createMessage(acdcSanta, angusGiftsToMalcolm);
 
         assertThat(mail).isNotNull();
         assertThat(mail.getText())
                 .contains("78")
                 .contains(heldAt.toString())
+                .contains("George Young")
+                .contains("georgeyoung@acdc.net")
+                .contains(georgeYoung.getEmail())
                 .contains("There's gonna be some santa'ing");
         assertThat(mail.getSubject()).isEqualTo("You have been invited to wichtel at AC/DC Secret Santa");
     }

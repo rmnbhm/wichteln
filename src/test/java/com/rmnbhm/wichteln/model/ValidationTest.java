@@ -39,8 +39,9 @@ public class ValidationTest {
         Event acdcSanta = new Event();
         acdcSanta.setTitle("AC/DC Secret Santa");
         acdcSanta.setDescription("There's gonna be some santa'ing");
-        acdcSanta.setHeldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
         acdcSanta.setMonetaryAmount(78);
+        acdcSanta.setHeldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
+        acdcSanta.setHost(validHost());
         Participant angusYoung = new Participant();
         angusYoung.setName("Angus Young");
         angusYoung.setEmail("angusyoung@acdc.net");
@@ -59,6 +60,13 @@ public class ValidationTest {
         angusYoung.setName("Angus Young");
         angusYoung.setEmail("angusyoung@acdc.net");
         return angusYoung;
+    }
+
+    private Event.Host validHost() {
+        Event.Host georgeYoung = new Event.Host();
+        georgeYoung.setName("George Young");
+        georgeYoung.setEmail("angusyoung@acdc.net");
+        return georgeYoung;
     }
 
 
@@ -166,6 +174,93 @@ public class ValidationTest {
         event.setHeldAt(null);
 
         assertThat(validator.validate(event)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailEventWithNullHost() {
+        Event event = validEvent();
+        event.setHost(null);
+
+        assertThat(validator.validate(event)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailEventWithInvalidHost() {
+        Event event = validEvent();
+        event.setHost(new Event.Host());
+
+        assertThat(validator.validate(event)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldAcceptValidHost() {
+        Event.Host host = validHost();
+
+        assertThat(validator.validate(host)).isEmpty();
+    }
+
+    @Test
+    public void shouldFailHostWithTooLongName() {
+        Event.Host host = validHost();
+        host.setName(host.getName().repeat(20));
+
+        assertThat(validator.validate(host)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailHostWithEmptyName() {
+        Event.Host host = validHost();
+        host.setName("");
+
+        assertThat(validator.validate(host)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailHostWithWhitespaceName() {
+        Event.Host host = validHost();
+        host.setName(" ");
+
+        assertThat(validator.validate(host)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailHostWithNullName() {
+        Event.Host host = validHost();
+        host.setName(null);
+
+        assertThat(validator.validate(host)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailHostWithInvalidEmail() {
+        Event.Host host = validHost();
+        host.setEmail("not an email address");
+
+        assertThat(validator.validate(host)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailHostWithEmptyEmail() {
+        Event.Host host = validHost();
+        host.setEmail("");
+
+        assertThat(validator.validate(host)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailHostWithWhitespaceEmail() {
+        Event.Host host = validHost();
+        host.setEmail(" ");
+
+        assertThat(validator.validate(host)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailHostWithNullEmail() {
+        Event.Host host = validHost();
+        host.setEmail(null);
+
+        assertThat(validator.validate(host)).isNotEmpty();
     }
 
     @Test

@@ -2,9 +2,13 @@ package com.rmnbhm.wichteln.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import lombok.experimental.Delegate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -36,6 +40,10 @@ public class Event {
     private Date heldAt;
 
     @NotNull
+    @Valid
+    private Host host;
+
+    @NotNull
     @Size(min = 3, max = 100)
     private List<@Valid Participant> participants = new ArrayList<>();
 
@@ -49,5 +57,18 @@ public class Event {
 
     public void removeParticipantNumber(int index) {
         removeParticipant(participants.get(index));
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class Host {
+
+        @NotBlank
+        @Size(max = 100)
+        private String name;
+
+        @NotBlank
+        @Email
+        private String email;
     }
 }

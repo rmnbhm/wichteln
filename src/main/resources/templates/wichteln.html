@@ -75,6 +75,24 @@
                                    onfocus="(this.type='datetime-local')" onblur="(this.type='text')"/>
                         </p>
                         <p id="held-at-error" class="alert alert-danger" th:if="${#fields.hasErrors('heldAt')}" th:errors="*{heldAt}">Held at error</p>
+                        <p>
+                            <input th:field="*{host.name}"
+                                   id="host-name"
+                                   class="form-control"
+                                   type="text"
+                                   placeholder="Host Name"
+                                   required/>
+                        </p>
+                        <p id="host-name-error" class="alert alert-danger" th:if="${#fields.hasErrors('host.name')}" th:errors="*{host.name}">Host name error</p>
+                        <p>
+                            <input th:field="*{host.email}"
+                                   id="host-email"
+                                   class="form-control"
+                                   type="text"
+                                   placeholder="Host Email"
+                                   required/>
+                        </p>
+                        <p id="host-email-error" class="alert alert-danger" th:if="${#fields.hasErrors('host.email')}" th:errors="*{host.email}">Host email error</p>
                         <table id="participants-table" class="table">
                             <thead>
                             <tr>

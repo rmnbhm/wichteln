@@ -63,18 +63,20 @@ public class WichtelnUiIntegrationTest {
 
         WebElement eventCreationForm = webDriver.findElement(By.id("event-creation-form"));
         assertThat(eventCreationForm).isNotNull();
-        WebElement title = eventCreationForm.findElement(By.id("title"));
+        WebElement title = webDriver.findElement(By.id("title"));
         assertThat(title).isNotNull();
-        assertThat(title.getAttribute("placeholder")).isEqualTo("Title");
-        WebElement description = eventCreationForm.findElement(By.id("description"));
+        WebElement description = webDriver.findElement(By.id("description"));
         assertThat(description).isNotNull();
         assertThat(description.getAttribute("placeholder")).isEqualTo("Description");
-        WebElement monetaryAmount = eventCreationForm.findElement(By.id("monetary-amount"));
+        WebElement monetaryAmount = webDriver.findElement(By.id("monetary-amount"));
         assertThat(monetaryAmount).isNotNull();
         assertThat(monetaryAmount.getAttribute("placeholder")).isEqualTo("Monetary Amount");
         WebElement heldAt = eventCreationForm.findElement(By.id("held-at"));
         assertThat(heldAt).isNotNull();
-        assertThat(heldAt.getAttribute("placeholder")).isEqualTo("Held At");
+        WebElement hostName = webDriver.findElement(By.id("host-name"));
+        assertThat(hostName).isNotNull();
+        WebElement hostEmail = webDriver.findElement(By.id("host-email"));
+        assertThat(hostEmail).isNotNull();
     }
 
     @Test
@@ -111,6 +113,10 @@ public class WichtelnUiIntegrationTest {
                 .atZone(ZoneId.of("Europe/Berlin"))
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
         heldAt.sendKeys(dateTime);
+        WebElement hostName = webDriver.findElement(By.id("host-name"));
+        hostName.sendKeys("George Young");
+        WebElement hostEmail = webDriver.findElement(By.id("host-email"));
+        hostEmail.sendKeys("georgeyoung@acdc.net");
 
         WebElement participantsTable = webDriver.findElement(By.id("participants-table"));
         assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(3);
@@ -176,14 +182,18 @@ public class WichtelnUiIntegrationTest {
         WebElement monetaryAmount = webDriver.findElement(By.id("monetary-amount"));
         monetaryAmount.sendKeys("-1");
         WebElement heldAt = webDriver.findElement(By.id("held-at"));
-        String dateTime = Instant.now().minus(1, ChronoUnit.DAYS)
+        String dateTime = Instant.now().minus(1, ChronoUnit.DAYS) // before present
                 .atZone(ZoneId.of("Europe/Berlin"))
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
         heldAt.sendKeys(dateTime);
+        WebElement hostName = webDriver.findElement(By.id("host-name"));
+        hostName.sendKeys("George Young".repeat(20)); // too long
+        WebElement hostEmail = webDriver.findElement(By.id("host-email"));
+        hostEmail.sendKeys("georgeyoungacdc.net"); // no '@'
 
-        fillRow(0, "Angus Young".repeat(20), "angusyoung@acdc.net");
+        fillRow(0, "Angus Young".repeat(20), "angusyoung@acdc.net"); // too long
         fillRow(1, "Malcolm Young", "malcolmyoung@acdc.net");
-        fillRow(2, "Phil Rudd".repeat(20), "philrudd@acdc.net");
+        fillRow(2, "Phil Rudd".repeat(20), "philrudd@acdc.net"); // too long
 
         WebElement submitButton = webDriver.findElement(By.id("submit-button"));
         submitButton.click();
@@ -196,6 +206,10 @@ public class WichtelnUiIntegrationTest {
         assertThat(monetaryAmountError.isDisplayed()).isTrue();
         WebElement heldAtError = webDriver.findElement(By.id("held-at-error"));
         assertThat(heldAtError.isDisplayed()).isTrue();
+        WebElement hostNameError = webDriver.findElement(By.id("host-name-error"));
+        assertThat(hostNameError.isDisplayed()).isTrue();
+        WebElement hostEmailError = webDriver.findElement(By.id("host-email-error"));
+        assertThat(hostEmailError.isDisplayed()).isTrue();
 
         WebElement angusFirstNameError = webDriver.findElement(By.id("participants0-name-error"));
         assertThat(angusFirstNameError.isDisplayed()).isTrue();
