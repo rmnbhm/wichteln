@@ -5,8 +5,11 @@ import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Donor;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Recipient;
 import lombok.RequiredArgsConstructor;
+import org.javamoney.moneta.Money;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
+
+import javax.money.MonetaryAmount;
 
 @Component
 @RequiredArgsConstructor
@@ -24,11 +27,11 @@ public class WichtelnMailCreator {
         message.setText(
                 String.format(
                         "Give a gift to %s. " +
-                                "The gift's monetary value should not exceed %d. The event will be held on %s. " +
+                                "The gift's monetary value should not exceed %s. The event will be held on %s. " +
                                 "Here's what the event's host says about it: %s. " +
                                 "If you have any questions, contact %s at %s",
                         recipient.getName(),
-                        event.getMonetaryAmount(),
+                        Money.of(event.getMonetaryAmount().getNumber(), event.getMonetaryAmount().getCurrency()),
                         event.getHeldAt(),
                         event.getDescription(),
                         event.getHost().getName(),

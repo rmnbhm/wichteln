@@ -1,12 +1,21 @@
 package com.rmnbhm.wichteln.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.Delegate;
+import org.javamoney.moneta.Money;
+import org.javamoney.moneta.spi.DefaultMonetaryCurrenciesSingletonSpi;
+import org.javamoney.moneta.spi.DefaultNumberValue;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.money.CurrencyUnit;
+import javax.money.NumberValue;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.FutureOrPresent;
@@ -14,6 +23,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,8 +41,8 @@ public class Event {
     private String description;
 
     @NotNull
-    @Min(0)
-    private Integer monetaryAmount;
+    @Valid
+    private MonetaryAmount monetaryAmount;
 
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
@@ -70,5 +80,17 @@ public class Event {
         @NotBlank
         @Email
         private String email;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class MonetaryAmount {
+
+        @NotNull
+        @Min(0)
+        private BigDecimal number;
+
+        @NotNull
+        private CurrencyUnit currency;
     }
 }

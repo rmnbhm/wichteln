@@ -5,11 +5,15 @@ import com.rmnbhm.wichteln.model.Participant;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Donor;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Recipient;
+import org.javamoney.moneta.Money;
+import org.javamoney.moneta.spi.MoneyUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 
+import javax.money.Monetary;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -28,7 +32,10 @@ public class WichtelnMailCreatorTest {
         acdcSanta.setTitle("AC/DC Secret Santa");
         acdcSanta.setDescription("There's gonna be some santa'ing");
         acdcSanta.setHeldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
-        acdcSanta.setMonetaryAmount(78);
+        Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
+        monetaryAmount.setCurrency(Monetary.getCurrency("AUD"));
+        monetaryAmount.setNumber(BigDecimal.valueOf(78.50));
+        acdcSanta.setMonetaryAmount(monetaryAmount);
         Event.Host georgeYoung = new Event.Host();
         georgeYoung.setName("George Young");
         georgeYoung.setEmail("georgeyoung@acdc.net");
@@ -64,7 +71,10 @@ public class WichtelnMailCreatorTest {
         acdcSanta.setTitle("AC/DC Secret Santa");
         acdcSanta.setDescription("There's gonna be some santa'ing");
         acdcSanta.setHeldAt(heldAt);
-        acdcSanta.setMonetaryAmount(78);
+        Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
+        monetaryAmount.setCurrency(Monetary.getCurrency("AUD"));
+        monetaryAmount.setNumber(BigDecimal.valueOf(78.50));
+        acdcSanta.setMonetaryAmount(monetaryAmount);
         Event.Host georgeYoung = new Event.Host();
         georgeYoung.setName("George Young");
         georgeYoung.setEmail("georgeyoung@acdc.net");
@@ -87,11 +97,10 @@ public class WichtelnMailCreatorTest {
 
         assertThat(mail).isNotNull();
         assertThat(mail.getText())
-                .contains("78")
+                .contains("AUD 78.50")
                 .contains(heldAt.toString())
                 .contains("George Young")
                 .contains("georgeyoung@acdc.net")
-                .contains(georgeYoung.getEmail())
                 .contains("There's gonna be some santa'ing");
         assertThat(mail.getSubject()).isEqualTo("You have been invited to wichtel at AC/DC Secret Santa");
     }

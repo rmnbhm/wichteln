@@ -57,14 +57,21 @@
                         </p>
                         <p id="description-error" class="alert alert-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Description error</p>
                         <p>
-                            <input th:field="*{monetaryAmount}"
-                                   id="monetary-amount"
+                            <input th:field="*{monetaryAmount.number}"
+                                   id="monetary-amount-number"
                                    class="form-control"
                                    type="number"
-                                   placeholder="Monetary Amount"
+                                   step="0.01"
+                                   placeholder="Monetary Amount Number"
                                    required/>
                         </p>
-                        <p id="monetary-amount-error" class="alert alert-danger" th:if="${#fields.hasErrors('monetaryAmount')}" th:errors="*{monetaryAmount}">Monetary amount error</p>
+                        <p id="monetary-amount-number-error" class="alert alert-danger" th:if="${#fields.hasErrors('monetaryAmount.number')}" th:errors="*{monetaryAmount.number}">Monetary amount number error</p>
+                        <p>
+                            <select th:field="*{monetaryAmount.currency}" id="monetary-amount-currency">
+                                <option th:each="currency : ${currencies}" th:value="${currency}" th:text="${currency}"
+                                        th:selected="*{monetaryAmount.currency}"></option>
+                            </select>
+                        </p>
                         <p>
                             <input th:field="*{{heldAt}}"
                                    id="held-at"

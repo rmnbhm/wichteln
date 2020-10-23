@@ -4,10 +4,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.money.Monetary;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ public class ValidationTest {
         Event acdcSanta = new Event();
         acdcSanta.setTitle("AC/DC Secret Santa");
         acdcSanta.setDescription("There's gonna be some santa'ing");
-        acdcSanta.setMonetaryAmount(78);
+        acdcSanta.setMonetaryAmount(validMonetaryAmount());
         acdcSanta.setHeldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
         acdcSanta.setHost(validHost());
         Participant angusYoung = new Participant();
@@ -67,6 +69,13 @@ public class ValidationTest {
         georgeYoung.setName("George Young");
         georgeYoung.setEmail("angusyoung@acdc.net");
         return georgeYoung;
+    }
+
+    private Event.MonetaryAmount validMonetaryAmount() {
+        Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
+        monetaryAmount.setCurrency(Monetary.getCurrency("AUD"));
+        monetaryAmount.setNumber(BigDecimal.valueOf(78.50));
+        return monetaryAmount;
     }
 
 
@@ -144,19 +153,36 @@ public class ValidationTest {
     }
 
     @Test
-    public void shouldFailEventWithNegativeMonetaryAmount() {
+    public void shouldFailEventWithInvalidMonetaryAmount() {
         Event event = validEvent();
-        event.setMonetaryAmount(-1);
+        Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
+        event.setMonetaryAmount(monetaryAmount);
 
         assertThat(validator.validate(event)).isNotEmpty();
     }
 
     @Test
-    public void shouldFailEventWithNullMonetaryAmount() {
-        Event event = validEvent();
-        event.setMonetaryAmount(null);
+    public void shouldMonetaryAmountWithNegativeNumber() {
+        Event.MonetaryAmount monetaryAmount = validMonetaryAmount();
+        monetaryAmount.setNumber(BigDecimal.valueOf(-1));
 
-        assertThat(validator.validate(event)).isNotEmpty();
+        assertThat(validator.validate(monetaryAmount)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailMonetaryAmountWithNullNumber() {
+        Event.MonetaryAmount monetaryAmount = validMonetaryAmount();
+        monetaryAmount.setNumber(null);
+
+        assertThat(validator.validate(monetaryAmount)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailMonetaryAmountWithNullCurrency() {
+        Event.MonetaryAmount monetaryAmount = validMonetaryAmount();
+        monetaryAmount.setCurrency(null);
+
+        assertThat(validator.validate(monetaryAmount)).isNotEmpty();
     }
 
     @Test

@@ -43,6 +43,14 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
+		<!-- For money handling -->
+		<dependency>
+			<groupId>org.javamoney</groupId>
+			<artifactId>moneta</artifactId>
+			<version>1.4.2</version>
+			<type>pom</type>
+		</dependency>
+
 		<!-- Basic mvc functionality -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

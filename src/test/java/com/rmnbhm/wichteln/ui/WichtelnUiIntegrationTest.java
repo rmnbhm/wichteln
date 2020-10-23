@@ -67,11 +67,11 @@ public class WichtelnUiIntegrationTest {
         assertThat(title).isNotNull();
         WebElement description = webDriver.findElement(By.id("description"));
         assertThat(description).isNotNull();
-        assertThat(description.getAttribute("placeholder")).isEqualTo("Description");
-        WebElement monetaryAmount = webDriver.findElement(By.id("monetary-amount"));
-        assertThat(monetaryAmount).isNotNull();
-        assertThat(monetaryAmount.getAttribute("placeholder")).isEqualTo("Monetary Amount");
-        WebElement heldAt = eventCreationForm.findElement(By.id("held-at"));
+        WebElement monetaryAmountNumber = webDriver.findElement(By.id("monetary-amount-number"));
+        assertThat(monetaryAmountNumber).isNotNull();
+        WebElement monetaryAmountCurrency = webDriver.findElement(By.id("monetary-amount-currency"));
+        assertThat(monetaryAmountCurrency).isNotNull();
+        WebElement heldAt = webDriver.findElement(By.id("held-at"));
         assertThat(heldAt).isNotNull();
         WebElement hostName = webDriver.findElement(By.id("host-name"));
         assertThat(hostName).isNotNull();
@@ -106,8 +106,10 @@ public class WichtelnUiIntegrationTest {
         title.sendKeys("AC/DC Secret Santa");
         WebElement description = webDriver.findElement(By.id("description"));
         description.sendKeys("There's gonna be some santa'ing");
-        WebElement monetaryAmount = webDriver.findElement(By.id("monetary-amount"));
-        monetaryAmount.sendKeys("78");
+        WebElement monetaryAmountNumber = webDriver.findElement(By.id("monetary-amount-number"));
+        monetaryAmountNumber.sendKeys("78.50");
+        WebElement monetaryAmountUnit = webDriver.findElement(By.id("monetary-amount-currency"));
+        monetaryAmountUnit.sendKeys("AUD");
         WebElement heldAt = webDriver.findElement(By.id("held-at"));
         String dateTime = Instant.now().plus(1, ChronoUnit.DAYS)
                 .atZone(ZoneId.of("Europe/Berlin"))
@@ -179,8 +181,10 @@ public class WichtelnUiIntegrationTest {
         title.sendKeys("AC/DC Secret Santa".repeat(20)); // too long
         WebElement description = webDriver.findElement(By.id("description")); // too long
         description.sendKeys("There's gonna be some santa'ing".repeat(100));
-        WebElement monetaryAmount = webDriver.findElement(By.id("monetary-amount"));
-        monetaryAmount.sendKeys("-1");
+        WebElement monetaryAmountNumber = webDriver.findElement(By.id("monetary-amount-number"));
+        monetaryAmountNumber.sendKeys("-1"); // negative
+        WebElement monetaryAmountCurrency = webDriver.findElement(By.id("monetary-amount-currency"));
+        monetaryAmountCurrency.sendKeys("XXXX"); // not a valid currency
         WebElement heldAt = webDriver.findElement(By.id("held-at"));
         String dateTime = Instant.now().minus(1, ChronoUnit.DAYS) // before present
                 .atZone(ZoneId.of("Europe/Berlin"))
@@ -202,8 +206,8 @@ public class WichtelnUiIntegrationTest {
         assertThat(titleError.isDisplayed()).isTrue();
         WebElement descriptionError = webDriver.findElement(By.id("description-error"));
         assertThat(descriptionError.isDisplayed()).isTrue();
-        WebElement monetaryAmountError = webDriver.findElement(By.id("monetary-amount-error"));
-        assertThat(monetaryAmountError.isDisplayed()).isTrue();
+        WebElement monetaryAmountNumberError = webDriver.findElement(By.id("monetary-amount-number-error"));
+        assertThat(monetaryAmountNumberError.isDisplayed()).isTrue();
         WebElement heldAtError = webDriver.findElement(By.id("held-at-error"));
         assertThat(heldAtError.isDisplayed()).isTrue();
         WebElement hostNameError = webDriver.findElement(By.id("host-name-error"));
