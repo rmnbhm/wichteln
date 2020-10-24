@@ -15,6 +15,7 @@ import org.springframework.mail.SimpleMailMessage;
 import javax.money.Monetary;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +32,7 @@ public class WichtelnMailCreatorTest {
         Event acdcSanta = new Event();
         acdcSanta.setTitle("AC/DC Secret Santa");
         acdcSanta.setDescription("There's gonna be some santa'ing");
-        acdcSanta.setHeldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
+        acdcSanta.setHeldAt(LocalDateTime.now().plus(1, ChronoUnit.DAYS));
         Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
         monetaryAmount.setCurrency(Monetary.getCurrency("AUD"));
         monetaryAmount.setNumber(BigDecimal.valueOf(78.50));
@@ -65,7 +66,7 @@ public class WichtelnMailCreatorTest {
 
     @Test
     public void shouldHandleEventDataCorrectly() {
-        Date heldAt = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
+        LocalDateTime heldAt = LocalDateTime.now().plus(1, ChronoUnit.DAYS);
 
         Event acdcSanta = new Event();
         acdcSanta.setTitle("AC/DC Secret Santa");

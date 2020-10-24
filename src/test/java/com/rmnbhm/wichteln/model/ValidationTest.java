@@ -10,10 +10,9 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,7 +41,7 @@ public class ValidationTest {
         acdcSanta.setTitle("AC/DC Secret Santa");
         acdcSanta.setDescription("There's gonna be some santa'ing");
         acdcSanta.setMonetaryAmount(validMonetaryAmount());
-        acdcSanta.setHeldAt(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)));
+        acdcSanta.setHeldAt(LocalDateTime.now().plus(1, ChronoUnit.DAYS));
         acdcSanta.setHost(validHost());
         Participant angusYoung = new Participant();
         angusYoung.setName("Angus Young");
@@ -188,7 +187,7 @@ public class ValidationTest {
     @Test
     public void shouldFailEventWithPastHeldAt() {
         Event event = validEvent();
-        Date pastDate = Date.from(event.getHeldAt().toInstant().minus(2, ChronoUnit.DAYS));
+        LocalDateTime pastDate = LocalDateTime.now().minus(2, ChronoUnit.DAYS);
         event.setHeldAt(pastDate);
 
         assertThat(validator.validate(event)).isNotEmpty();

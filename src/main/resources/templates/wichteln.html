@@ -76,10 +76,9 @@
                             <input th:field="*{{heldAt}}"
                                    id="held-at"
                                    class="form-control"
-                                   type="text"
+                                   type="datetime-local"
                                    placeholder="Held At"
-                                   required
-                                   onfocus="(this.type='datetime-local')" onblur="(this.type='text')"/>
+                                   required/>
                         </p>
                         <p id="held-at-error" class="alert alert-danger" th:if="${#fields.hasErrors('heldAt')}" th:errors="*{heldAt}">Held at error</p>
                         <p>
