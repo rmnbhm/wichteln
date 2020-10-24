@@ -42,6 +42,7 @@ public class ValidationTest {
         acdcSanta.setDescription("There's gonna be some santa'ing");
         acdcSanta.setMonetaryAmount(validMonetaryAmount());
         acdcSanta.setLocalDateTime(LocalDateTime.now().plus(1, ChronoUnit.DAYS));
+        acdcSanta.setPlace("Sydney");
         acdcSanta.setHost(validHost());
         Participant angusYoung = new Participant();
         angusYoung.setName("Angus Young");
@@ -197,6 +198,38 @@ public class ValidationTest {
     public void shouldFailEventWithNullLocalDateTime() {
         Event event = validEvent();
         event.setLocalDateTime(null);
+
+        assertThat(validator.validate(event)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailEventWithTooLongPlace() {
+        Event event = validEvent();
+        event.setPlace(event.getPlace().repeat(100));
+
+        assertThat(validator.validate(event)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailEventWithNullPlace() {
+        Event event = validEvent();
+        event.setPlace(null);
+
+        assertThat(validator.validate(event)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailEventWithEmptyPlace() {
+        Event event = validEvent();
+        event.setPlace("");
+
+        assertThat(validator.validate(event)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailEventWithWhitespacePlace() {
+        Event event = validEvent();
+        event.setPlace(" ");
 
         assertThat(validator.validate(event)).isNotEmpty();
     }

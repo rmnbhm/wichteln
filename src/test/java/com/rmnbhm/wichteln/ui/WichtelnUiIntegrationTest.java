@@ -73,6 +73,8 @@ public class WichtelnUiIntegrationTest {
         assertThat(monetaryAmountCurrency).isNotNull();
         WebElement localDateTime = webDriver.findElement(By.id("local-date-time"));
         assertThat(localDateTime).isNotNull();
+        WebElement place = webDriver.findElement(By.id("place"));
+        assertThat(place).isNotNull();
         WebElement hostName = webDriver.findElement(By.id("host-name"));
         assertThat(hostName).isNotNull();
         WebElement hostEmail = webDriver.findElement(By.id("host-email"));
@@ -115,6 +117,8 @@ public class WichtelnUiIntegrationTest {
                 .atZone(ZoneId.of("Europe/Berlin"))
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))
         );
+        WebElement place = webDriver.findElement(By.id("place"));
+        place.sendKeys("Sydney");
         WebElement hostName = webDriver.findElement(By.id("host-name"));
         hostName.sendKeys("George Young");
         WebElement hostEmail = webDriver.findElement(By.id("host-email"));
@@ -190,6 +194,8 @@ public class WichtelnUiIntegrationTest {
                 .atZone(ZoneId.of("Europe/Berlin"))
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))
         );
+        WebElement place = webDriver.findElement(By.id("place"));
+        place.sendKeys("Sydney".repeat(20)); // too long
         WebElement hostName = webDriver.findElement(By.id("host-name"));
         hostName.sendKeys("George Young".repeat(20)); // too long
         WebElement hostEmail = webDriver.findElement(By.id("host-email"));
@@ -210,6 +216,8 @@ public class WichtelnUiIntegrationTest {
         assertThat(monetaryAmountNumberError.isDisplayed()).isTrue();
         WebElement localDateTimeError = webDriver.findElement(By.id("local-date-time-error"));
         assertThat(localDateTimeError.isDisplayed()).isTrue();
+        WebElement placeError = webDriver.findElement(By.id("place-error"));
+        assertThat(placeError.isDisplayed()).isTrue();
         WebElement hostNameError = webDriver.findElement(By.id("host-name-error"));
         assertThat(hostNameError.isDisplayed()).isTrue();
         WebElement hostEmailError = webDriver.findElement(By.id("host-email-error"));

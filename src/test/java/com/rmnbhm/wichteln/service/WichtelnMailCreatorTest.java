@@ -29,6 +29,7 @@ public class WichtelnMailCreatorTest {
         acdcSanta.setTitle("AC/DC Secret Santa");
         acdcSanta.setDescription("There's gonna be some santa'ing");
         acdcSanta.setLocalDateTime(LocalDateTime.now().plus(1, ChronoUnit.DAYS));
+        acdcSanta.setPlace("Sydney");
         Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
         monetaryAmount.setCurrency(Monetary.getCurrency("AUD"));
         monetaryAmount.setNumber(BigDecimal.valueOf(78.50));
@@ -68,6 +69,7 @@ public class WichtelnMailCreatorTest {
         acdcSanta.setTitle("AC/DC Secret Santa");
         acdcSanta.setDescription("There's gonna be some santa'ing");
         acdcSanta.setLocalDateTime(localDateTime);
+        acdcSanta.setPlace("Sydney");
         Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
         monetaryAmount.setCurrency(Monetary.getCurrency("AUD"));
         monetaryAmount.setNumber(BigDecimal.valueOf(78.50));
@@ -96,6 +98,7 @@ public class WichtelnMailCreatorTest {
         assertThat(mail.getText())
                 .contains("AUD 78.50")
                 .contains(localDateTime.toString())
+                .contains("Sydney")
                 .contains("George Young")
                 .contains("georgeyoung@acdc.net")
                 .contains("There's gonna be some santa'ing");

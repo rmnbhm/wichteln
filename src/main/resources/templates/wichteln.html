@@ -82,6 +82,15 @@
                         </p>
                         <p id="local-date-time-error" class="alert alert-danger" th:if="${#fields.hasErrors('localDateTime')}" th:errors="*{localDateTime}">Local datetime error error</p>
                         <p>
+                            <input th:field="*{place}"
+                                   id="place"
+                                   class="form-control"
+                                   type="text"
+                                   placeholder="Place"
+                                   required/>
+                        </p>
+                        <p id="place-error" class="alert alert-danger" th:if="${#fields.hasErrors('place')}" th:errors="*{place}">Place error</p>
+                        <p>
                             <input th:field="*{host.name}"
                                    id="host-name"
                                    class="form-control"

@@ -25,11 +25,12 @@ public class WichtelnMailCreator {
         message.setText(
                 String.format(
                         "Give a gift to %s. " +
-                                "The gift's monetary value should not exceed %s. The event will be held on %s. " +
+                                "The gift's monetary value should not exceed %s. The event will be held at %s on %s. " +
                                 "Here's what the event's host says about it: %s. " +
                                 "If you have any questions, contact %s at %s",
                         recipient.getName(),
                         Money.of(event.getMonetaryAmount().getNumber(), event.getMonetaryAmount().getCurrency()),
+                        event.getPlace(),
                         event.getLocalDateTime(),
                         event.getDescription(),
                         event.getHost().getName(),

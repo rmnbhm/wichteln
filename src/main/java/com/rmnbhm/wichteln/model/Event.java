@@ -50,6 +50,10 @@ public class Event {
     @FutureOrPresent
     private LocalDateTime localDateTime;
 
+    @NotBlank
+    @Size(max = 100)
+    private String place;
+
     @NotNull
     @Valid
     private Host host;
