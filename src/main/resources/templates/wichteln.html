@@ -73,14 +73,14 @@
                             </select>
                         </p>
                         <p>
-                            <input th:field="*{{heldAt}}"
-                                   id="held-at"
+                            <input th:field="*{{localDateTime}}"
+                                   id="local-date-time"
                                    class="form-control"
                                    type="datetime-local"
-                                   placeholder="Held At"
+                                   placeholder="Local Datetime"
                                    required/>
                         </p>
-                        <p id="held-at-error" class="alert alert-danger" th:if="${#fields.hasErrors('heldAt')}" th:errors="*{heldAt}">Held at error</p>
+                        <p id="local-date-time-error" class="alert alert-danger" th:if="${#fields.hasErrors('localDateTime')}" th:errors="*{localDateTime}">Local datetime error error</p>
                         <p>
                             <input th:field="*{host.name}"
                                    id="host-name"

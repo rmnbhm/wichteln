@@ -41,7 +41,7 @@ public class ValidationTest {
         acdcSanta.setTitle("AC/DC Secret Santa");
         acdcSanta.setDescription("There's gonna be some santa'ing");
         acdcSanta.setMonetaryAmount(validMonetaryAmount());
-        acdcSanta.setHeldAt(LocalDateTime.now().plus(1, ChronoUnit.DAYS));
+        acdcSanta.setLocalDateTime(LocalDateTime.now().plus(1, ChronoUnit.DAYS));
         acdcSanta.setHost(validHost());
         Participant angusYoung = new Participant();
         angusYoung.setName("Angus Young");
@@ -185,18 +185,18 @@ public class ValidationTest {
     }
 
     @Test
-    public void shouldFailEventWithPastHeldAt() {
+    public void shouldFailEventWithPastLocalDateTime() {
         Event event = validEvent();
         LocalDateTime pastDate = LocalDateTime.now().minus(2, ChronoUnit.DAYS);
-        event.setHeldAt(pastDate);
+        event.setLocalDateTime(pastDate);
 
         assertThat(validator.validate(event)).isNotEmpty();
     }
 
     @Test
-    public void shouldFailEventWithNullHeldAt() {
+    public void shouldFailEventWithNullLocalDateTime() {
         Event event = validEvent();
-        event.setHeldAt(null);
+        event.setLocalDateTime(null);
 
         assertThat(validator.validate(event)).isNotEmpty();
     }

@@ -48,7 +48,7 @@ public class Event {
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     @FutureOrPresent
-    private LocalDateTime heldAt;
+    private LocalDateTime localDateTime;
 
     @NotNull
     @Valid

@@ -71,8 +71,8 @@ public class WichtelnUiIntegrationTest {
         assertThat(monetaryAmountNumber).isNotNull();
         WebElement monetaryAmountCurrency = webDriver.findElement(By.id("monetary-amount-currency"));
         assertThat(monetaryAmountCurrency).isNotNull();
-        WebElement heldAt = webDriver.findElement(By.id("held-at"));
-        assertThat(heldAt).isNotNull();
+        WebElement localDateTime = webDriver.findElement(By.id("local-date-time"));
+        assertThat(localDateTime).isNotNull();
         WebElement hostName = webDriver.findElement(By.id("host-name"));
         assertThat(hostName).isNotNull();
         WebElement hostEmail = webDriver.findElement(By.id("host-email"));
@@ -110,11 +110,11 @@ public class WichtelnUiIntegrationTest {
         monetaryAmountNumber.sendKeys("78.50");
         WebElement monetaryAmountUnit = webDriver.findElement(By.id("monetary-amount-currency"));
         monetaryAmountUnit.sendKeys("AUD");
-        WebElement heldAt = webDriver.findElement(By.id("held-at"));
-        String dateTime = Instant.now().plus(1, ChronoUnit.DAYS)
+        WebElement localDateTime = webDriver.findElement(By.id("local-date-time"));
+        localDateTime.sendKeys(Instant.now().plus(1, ChronoUnit.DAYS)
                 .atZone(ZoneId.of("Europe/Berlin"))
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-        heldAt.sendKeys(dateTime);
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))
+        );
         WebElement hostName = webDriver.findElement(By.id("host-name"));
         hostName.sendKeys("George Young");
         WebElement hostEmail = webDriver.findElement(By.id("host-email"));
@@ -185,11 +185,11 @@ public class WichtelnUiIntegrationTest {
         monetaryAmountNumber.sendKeys("-1"); // negative
         WebElement monetaryAmountCurrency = webDriver.findElement(By.id("monetary-amount-currency"));
         monetaryAmountCurrency.sendKeys("XXXX"); // not a valid currency
-        WebElement heldAt = webDriver.findElement(By.id("held-at"));
-        String dateTime = Instant.now().minus(1, ChronoUnit.DAYS) // before present
+        WebElement localDateTime = webDriver.findElement(By.id("local-date-time"));
+        localDateTime.sendKeys(Instant.now().minus(1, ChronoUnit.DAYS) // before present
                 .atZone(ZoneId.of("Europe/Berlin"))
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-        heldAt.sendKeys(dateTime);
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))
+        );
         WebElement hostName = webDriver.findElement(By.id("host-name"));
         hostName.sendKeys("George Young".repeat(20)); // too long
         WebElement hostEmail = webDriver.findElement(By.id("host-email"));
@@ -208,8 +208,8 @@ public class WichtelnUiIntegrationTest {
         assertThat(descriptionError.isDisplayed()).isTrue();
         WebElement monetaryAmountNumberError = webDriver.findElement(By.id("monetary-amount-number-error"));
         assertThat(monetaryAmountNumberError.isDisplayed()).isTrue();
-        WebElement heldAtError = webDriver.findElement(By.id("held-at-error"));
-        assertThat(heldAtError.isDisplayed()).isTrue();
+        WebElement localDateTimeError = webDriver.findElement(By.id("local-date-time-error"));
+        assertThat(localDateTimeError.isDisplayed()).isTrue();
         WebElement hostNameError = webDriver.findElement(By.id("host-name-error"));
         assertThat(hostNameError.isDisplayed()).isTrue();
         WebElement hostEmailError = webDriver.findElement(By.id("host-email-error"));

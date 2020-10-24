@@ -62,7 +62,7 @@ public class WichtelnControllerTest {
 
     @Test
     public void shouldInform() throws Exception {
-        String dateTime = Instant.now().plus(1, ChronoUnit.DAYS)
+        String localDateTime = Instant.now().plus(1, ChronoUnit.DAYS)
                 .atZone(ZoneId.of("Europe/Berlin"))
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
 
@@ -73,7 +73,7 @@ public class WichtelnControllerTest {
                         .param("description", "There's gonna be some santa'ing")
                         .param("monetaryAmount.number", "78.50")
                         .param("monetaryAmount.currency", "AUD")
-                        .param("heldAt", dateTime)
+                        .param("localDateTime", localDateTime)
                         .param("host.name", "George Young")
                         .param("host.email", "georgeyoung@acdc.net")
                         .param("participants[0].name", "Angus Young")
@@ -112,7 +112,7 @@ public class WichtelnControllerTest {
                         .param("description", "There's gonna be some santa'ing")
                         .param("monetaryAmount.number", "78.50")
                         .param("monetaryAmount.currency", "AUD")
-                        .param("heldAt", invalidDateTime)
+                        .param("localDateTime", invalidDateTime)
                         .param("host.name", "George Young")
                         .param("host.email", "georgeyoung@acdc.net")
                         .param("participants[0].name", "Angus Young")

@@ -9,8 +9,6 @@ import org.javamoney.moneta.Money;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
-import javax.money.MonetaryAmount;
-
 @Component
 @RequiredArgsConstructor
 public class WichtelnMailCreator {
@@ -32,7 +30,7 @@ public class WichtelnMailCreator {
                                 "If you have any questions, contact %s at %s",
                         recipient.getName(),
                         Money.of(event.getMonetaryAmount().getNumber(), event.getMonetaryAmount().getCurrency()),
-                        event.getHeldAt(),
+                        event.getLocalDateTime(),
                         event.getDescription(),
                         event.getHost().getName(),
                         event.getHost().getEmail()
