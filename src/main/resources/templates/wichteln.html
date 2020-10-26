@@ -34,6 +34,7 @@
                       th:object="${event}"
                       method="post">
                     <fieldset>
+                        <legend>What, where, when, how much?</legend>
                         <p>
                             <button type="submit" id="submit-button" class="btn btn-success">Submit</button>
                             <button type="reset" id="reset-button" class="btn btn-danger">Reset</button>
@@ -108,16 +109,10 @@
                                    required/>
                         </p>
                         <p id="host-email-error" class="alert alert-danger" th:if="${#fields.hasErrors('host.email')}" th:errors="*{host.email}">Host email error</p>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Who?</legend>
                         <table id="participants-table" class="table">
-                            <thead>
-                            <tr>
-                                <th id="participants-table-label"
-                                    th:colspan="${#lists.size(event.participants)} lt 4 ? 2 : 3"
-                                    scope="colgroup">
-                                    Participants
-                                </th>
-                            </tr>
-                            </thead>
                             <tbody>
                             <tr th:each="participant, itemStat : *{participants}">
                                 <td>
