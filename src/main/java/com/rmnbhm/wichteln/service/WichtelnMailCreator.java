@@ -4,13 +4,11 @@ import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Donor;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Recipient;
-import lombok.RequiredArgsConstructor;
 import org.javamoney.moneta.Money;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class WichtelnMailCreator {
 
     public SimpleMailMessage createMessage(Event event, ParticipantsMatch match) {

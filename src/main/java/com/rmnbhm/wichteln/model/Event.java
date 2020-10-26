@@ -1,21 +1,8 @@
 package com.rmnbhm.wichteln.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.Value;
-import lombok.experimental.Delegate;
-import org.javamoney.moneta.Money;
-import org.javamoney.moneta.spi.DefaultMonetaryCurrenciesSingletonSpi;
-import org.javamoney.moneta.spi.DefaultNumberValue;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.money.CurrencyUnit;
-import javax.money.NumberValue;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.FutureOrPresent;
@@ -26,11 +13,8 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
 public class Event {
 
     @NotBlank
@@ -60,7 +44,11 @@ public class Event {
 
     @NotNull
     @Size(min = 3, max = 100)
-    private List<@Valid Participant> participants = new ArrayList<>();
+    private List<@Valid Participant> participants;
+
+    public Event() {
+        participants = new ArrayList<>();
+    }
 
     public void addParticipant(Participant participant) {
         participants.add(participant);
@@ -74,8 +62,75 @@ public class Event {
         removeParticipant(participants.get(index));
     }
 
-    @Data
-    @NoArgsConstructor
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public MonetaryAmount getMonetaryAmount() {
+        return monetaryAmount;
+    }
+
+    public void setMonetaryAmount(MonetaryAmount monetaryAmount) {
+        this.monetaryAmount = monetaryAmount;
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
+    }
+
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public Host getHost() {
+        return host;
+    }
+
+    public void setHost(Host host) {
+        this.host = host;
+    }
+
+    public List<Participant> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<Participant> participants) {
+        this.participants = participants;
+    }
+
+    public String toString() {
+        return String.format(
+                "Event(title=%s, description=%s, monetaryAmount=%s, localDateTime=%s, place=%s, host=%s, participants=%s)",
+                this.getTitle(),
+                this.getDescription(),
+                this.getMonetaryAmount(),
+                this.getLocalDateTime(),
+                this.getPlace(),
+                this.getHost(),
+                this.getParticipants()
+        );
+    }
+
     public static class Host {
 
         @NotBlank
@@ -85,10 +140,31 @@ public class Event {
         @NotBlank
         @Email
         private String email;
+
+        public Host() {
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String toString() {
+            return String.format("Event.Host(name=%s, email=%s)", this.getName(), this.getEmail());
+        }
     }
 
-    @Data
-    @NoArgsConstructor
     public static class MonetaryAmount {
 
         @NotNull
@@ -97,5 +173,28 @@ public class Event {
 
         @NotNull
         private CurrencyUnit currency;
+
+        public MonetaryAmount() {
+        }
+
+        public BigDecimal getNumber() {
+            return number;
+        }
+
+        public void setNumber(BigDecimal number) {
+            this.number = number;
+        }
+
+        public CurrencyUnit getCurrency() {
+            return currency;
+        }
+
+        public void setCurrency(CurrencyUnit currency) {
+            this.currency = currency;
+        }
+
+        public String toString() {
+            return String.format("Event.MonetaryAmount(number=%s, currency=%s)", this.getNumber(), this.getCurrency());
+        }
     }
 }

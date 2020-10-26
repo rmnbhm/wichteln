@@ -3,9 +3,8 @@ package com.rmnbhm.wichteln.controller;
 import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.Participant;
 import com.rmnbhm.wichteln.service.WichtelnService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.javamoney.moneta.spi.DefaultMonetaryCurrenciesSingletonSpi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,19 +20,19 @@ import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Controller
-@RequiredArgsConstructor
 public class WichtelnController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(WichtelnController.class);
     private static final Collection<CurrencyUnit> CURRENCY_UNITS = Monetary.getCurrencies();
     private final WichtelnService wichtelnService;
+
+    public WichtelnController(WichtelnService wichtelnService) {
+        this.wichtelnService = wichtelnService;
+    }
 
     @GetMapping
     public String getEvent(Model model) {
@@ -53,7 +52,7 @@ public class WichtelnController {
     @PostMapping
     public ModelAndView saveEvent(@ModelAttribute @Valid Event event, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            log.debug(
+            LOGGER.debug(
                     "Failed to save {} because {}",
                     event,
                     bindingResult.getAllErrors().stream().map(ObjectError::toString).collect(Collectors.joining(", "))
@@ -61,7 +60,7 @@ public class WichtelnController {
             return new ModelAndView("wichteln", Map.of("currencies", CURRENCY_UNITS), HttpStatus.BAD_REQUEST);
         }
         wichtelnService.save(event);
-        log.debug("Saved {}", event);
+        LOGGER.debug("Saved {}", event);
         return new ModelAndView("redirect:/");
     }
 
@@ -69,7 +68,7 @@ public class WichtelnController {
     public String addParticipant(@ModelAttribute Event event, Model model) {
         event.addParticipant(new Participant());
         model.addAttribute("event", event);
-        log.debug("Added participant to {}", event);
+        LOGGER.debug("Added participant to {}", event);
 
         return "wichteln";
     }
@@ -82,7 +81,7 @@ public class WichtelnController {
     ) {
         event.removeParticipantNumber(participantIndex);
         model.addAttribute("event", event);
-        log.debug("Removed participant {} from {}", participantIndex, event);
+        LOGGER.debug("Removed participant {} from {}", participantIndex, event);
 
         return "wichteln";
     }

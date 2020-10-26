@@ -1,35 +1,81 @@
 package com.rmnbhm.wichteln.model;
 
-import lombok.NonNull;
-import lombok.Value;
-import lombok.experimental.Delegate;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
-@Value
+import java.util.Objects;
+
 public class ParticipantsMatch {
-    Donor donor;
-    Recipient recipient;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParticipantsMatch.class);
+    private final Donor donor;
+    private final Recipient recipient;
 
-    public ParticipantsMatch(@NonNull Donor donor, @NonNull Recipient recipient) {
+    public ParticipantsMatch(Donor donor, Recipient recipient) {
+        this.donor = Objects.requireNonNull(donor);
+        this.recipient = Objects.requireNonNull(recipient);
         if (donor.getParticipant().equals(recipient.getParticipant())) {
-            log.error("Tried to match donor {} with recipient {}", donor, recipient);
+            LOGGER.error("Tried to match donor {} with recipient {}", donor, recipient);
             throw new IllegalArgumentException("Donor and recipient must not match");
         }
-        this.donor = donor;
-        this.recipient = recipient;
     }
 
-    @Value
-    public static class Recipient {
-        @Delegate
-        Participant participant;
+    public Donor getDonor() {
+        return donor;
     }
 
-    @Value
-    public static class Donor {
-        @Delegate
-        Participant participant;
+    public Recipient getRecipient() {
+        return recipient;
+    }
+
+    public String toString() {
+        return String.format("ParticipantsMatch(donor=%s, recipient=%s)", this.getDonor(), this.getRecipient());
+    }
+
+
+    public static final class Recipient {
+        private final Participant participant;
+
+        public Recipient(Participant participant) {
+            this.participant = participant;
+        }
+
+        public Participant getParticipant() {
+            return this.participant;
+        }
+
+        public String getName() {
+            return this.participant.getName();
+        }
+
+        @Override
+        public String toString() {
+            return participant.toString();
+        }
+    }
+
+    public static final class Donor {
+        private final Participant participant;
+
+        public Donor(Participant participant) {
+            this.participant = participant;
+        }
+
+        public Participant getParticipant() {
+            return this.participant;
+        }
+
+        public String getName() {
+            return this.participant.getName();
+        }
+
+        public String getEmail() {
+            return this.participant.getEmail();
+        }
+
+        @Override
+        public String toString() {
+            return participant.toString();
+        }
     }
 }
 
