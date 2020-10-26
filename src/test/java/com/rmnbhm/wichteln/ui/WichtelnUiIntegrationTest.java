@@ -82,14 +82,6 @@ public class WichtelnUiIntegrationTest {
     }
 
     @Test
-    public void shouldDisplayTableHeaders() {
-        webDriver.get(wichtelnUrl);
-
-        WebElement participantsTableHeader = webDriver.findElement(By.id("participants-table-label"));
-        assertThat(participantsTableHeader.getText()).isEqualTo("Participants");
-    }
-
-    @Test
     public void shouldDisplaySubmitAndResetButtons() {
         webDriver.get(wichtelnUrl);
 

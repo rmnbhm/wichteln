@@ -126,7 +126,7 @@ public class WichtelnControllerTest {
 
         )
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().string(containsString("must be a date in the present or in the future")));
+                .andExpect(content().string(containsString("Must take place in the future.")));
 
         assertThat(greenMail.waitForIncomingEmail(1500, 3)).isFalse();
     }
