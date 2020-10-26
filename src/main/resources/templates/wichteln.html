@@ -169,7 +169,7 @@
                                     <input th:field="*{participants[__${itemStat.index}__].name}"
                                            th:class="'form-control ' + ${#fields.hasErrors('*{participants[__${itemStat.index}__].name}') ? 'is-invalid' : ''}"
                                            type="text"
-                                           placeholder="Angus Young"
+                                           th:placeholder="'Young No. ' +  ${itemStat.index + 1}"
                                            required/>
                                     <div th:id="participants__${itemStat.index}__-name-error"
                                          class="invalid-feedback"
@@ -181,7 +181,7 @@
                                     <input th:field="*{participants[__${itemStat.index}__].email}"
                                            th:class="'form-control ' + ${#fields.hasErrors('*{participants[__${itemStat.index}__].email}') ? 'is-invalid' : ''}"
                                            type="email"
-                                           placeholder="angusyoung@acdc.net"
+                                           th:placeholder="'young' +  ${itemStat.index + 1} + '@acdc.net'"
                                            required/>
                                     <div th:id="participants__${itemStat.index}__-email-error"
                                          class="invalid-feedback"
