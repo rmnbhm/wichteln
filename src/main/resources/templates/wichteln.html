@@ -48,12 +48,12 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="description">What do participants need to know?</label>
-                            <input th:field="*{description}"
+                            <textarea th:field="*{description}"
                                    id="description"
                                    th:class="'form-control ' + ${#fields.hasErrors('description') ? 'is-invalid' : ''}"
-                                   type="text"
                                    placeholder="There's gonna be some santa'ing!"
-                                   required/>
+                                   required>
+                            </textarea>
                             <div id="description-error"
                                  class="invalid-feedback"
                                  th:if="${#fields.hasErrors('description')}">

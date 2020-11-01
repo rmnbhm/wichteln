@@ -2,6 +2,7 @@ package com.rmnbhm.wichteln.service;
 
 import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
@@ -28,7 +29,7 @@ public class WichtelnService {
         List<ParticipantsMatch> matches = matcher.match(event.getParticipants());
         matches.forEach(match -> {
             SimpleMailMessage message = mailCreator.createMessage(event, match);
-            LOGGER.info("Sent {} to {}", message, match.getDonor());
+            LOGGER.info("Sent {} to {}", StringEscapeUtils.escapeJava(message.toString()), match.getDonor());
             mailSender.send(message);
         });
     }

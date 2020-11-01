@@ -8,6 +8,8 @@ import org.javamoney.moneta.Money;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
+import java.time.temporal.ChronoUnit;
+
 @Component
 public class WichtelnMailCreator {
 
@@ -24,13 +26,13 @@ public class WichtelnMailCreator {
                 String.format(
                         "Give a gift to %s. " +
                                 "The gift's monetary value should not exceed %s. The event will be held at %s on %s. " +
-                                "Here's what the event's host says about it: %s. " +
+                                "Here's what the event's host says about it: \r\n\r\n> %s\r\n\r\n" +
                                 "If you have any questions, contact %s at %s",
                         recipient.getName(),
                         Money.of(event.getMonetaryAmount().getNumber(), event.getMonetaryAmount().getCurrency()),
                         event.getPlace(),
-                        event.getLocalDateTime(),
-                        event.getDescription(),
+                        event.getLocalDateTime().truncatedTo(ChronoUnit.MINUTES),
+                        event.getDescription().replaceAll("\\R", "\r\n> "),
                         event.getHost().getName(),
                         event.getHost().getEmail()
                 )

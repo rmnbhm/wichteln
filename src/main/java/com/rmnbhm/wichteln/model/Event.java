@@ -1,15 +1,12 @@
 package com.rmnbhm.wichteln.model;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.money.CurrencyUnit;
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -122,7 +119,12 @@ public class Event {
         return String.format(
                 "Event(title=%s, description=%s, monetaryAmount=%s, localDateTime=%s, place=%s, host=%s, participants=%s)",
                 this.getTitle(),
-                this.getDescription(),
+                // Since `Event#description` backs an `input[@type="textarea"]` element which allows for line breaks
+                // we make sure we prevent
+                // - line breaks
+                // - too long text
+                // in logs.
+                StringUtils.abbreviate(StringEscapeUtils.escapeJava(this.getDescription()), 50),
                 this.getMonetaryAmount(),
                 this.getLocalDateTime(),
                 this.getPlace(),
