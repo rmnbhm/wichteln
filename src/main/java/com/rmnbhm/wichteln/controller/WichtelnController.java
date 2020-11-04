@@ -28,6 +28,7 @@ public class WichtelnController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WichtelnController.class);
     private static final Collection<CurrencyUnit> CURRENCIES = Monetary.getCurrencies();
+    private static final String WICHTELN_VIEW = "wichteln";
     private final WichtelnService wichtelnService;
 
     public WichtelnController(WichtelnService wichtelnService) {
@@ -57,7 +58,7 @@ public class WichtelnController {
                     event,
                     bindingResult.getAllErrors().stream().map(ObjectError::toString).collect(Collectors.joining(", "))
             );
-            return new ModelAndView("wichteln", Map.of("currencies", CURRENCIES), HttpStatus.BAD_REQUEST);
+            return new ModelAndView(WICHTELN_VIEW, Map.of("currencies", CURRENCIES), HttpStatus.BAD_REQUEST);
         }
         wichtelnService.save(event);
         LOGGER.debug("Saved {}", event);
@@ -65,26 +66,34 @@ public class WichtelnController {
     }
 
     @PostMapping("/add")
-    public String addParticipant(@ModelAttribute Event event, Model model) {
+    public ModelAndView addParticipant(@ModelAttribute Event event) {
         event.addParticipant(new Participant());
-        model.addAttribute("event", event);
-        model.addAttribute("currencies", CURRENCIES);
         LOGGER.debug("Added participant to {}", event);
-
-        return "wichteln";
+        return new ModelAndView(
+                WICHTELN_VIEW,
+                Map.of(
+                        "event", event,
+                        "currencies", CURRENCIES
+                ),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping("/remove/{index}")
-    public String removeParticipant(
+    public ModelAndView removeParticipant(
             @PathVariable(name = "index") Integer participantIndex,
-            @ModelAttribute Event event,
-            Model model
+            @ModelAttribute Event event
     ) {
         event.removeParticipantNumber(participantIndex);
-        model.addAttribute("event", event);
-        model.addAttribute("currencies", CURRENCIES);
         LOGGER.debug("Removed participant {} from {}", participantIndex, event);
 
-        return "wichteln";
+        return new ModelAndView(
+                WICHTELN_VIEW,
+                Map.of(
+                        "event", event,
+                        "currencies", CURRENCIES
+                ),
+                HttpStatus.OK
+        );
     }
 }
