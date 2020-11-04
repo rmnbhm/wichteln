@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class WichtelnController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WichtelnController.class);
-    private static final Collection<CurrencyUnit> CURRENCY_UNITS = Monetary.getCurrencies();
+    private static final Collection<CurrencyUnit> CURRENCIES = Monetary.getCurrencies();
     private final WichtelnService wichtelnService;
 
     public WichtelnController(WichtelnService wichtelnService) {
@@ -45,7 +45,7 @@ public class WichtelnController {
         monetaryAmount.setCurrency(Monetary.getCurrency("EUR")); // set default currency
         event.setMonetaryAmount(monetaryAmount);
         model.addAttribute("event", event);
-        model.addAttribute("currencies", CURRENCY_UNITS);
+        model.addAttribute("currencies", CURRENCIES);
         return "wichteln";
     }
 
@@ -57,7 +57,7 @@ public class WichtelnController {
                     event,
                     bindingResult.getAllErrors().stream().map(ObjectError::toString).collect(Collectors.joining(", "))
             );
-            return new ModelAndView("wichteln", Map.of("currencies", CURRENCY_UNITS), HttpStatus.BAD_REQUEST);
+            return new ModelAndView("wichteln", Map.of("currencies", CURRENCIES), HttpStatus.BAD_REQUEST);
         }
         wichtelnService.save(event);
         LOGGER.debug("Saved {}", event);
@@ -68,6 +68,7 @@ public class WichtelnController {
     public String addParticipant(@ModelAttribute Event event, Model model) {
         event.addParticipant(new Participant());
         model.addAttribute("event", event);
+        model.addAttribute("currencies", CURRENCIES);
         LOGGER.debug("Added participant to {}", event);
 
         return "wichteln";
@@ -81,6 +82,7 @@ public class WichtelnController {
     ) {
         event.removeParticipantNumber(participantIndex);
         model.addAttribute("event", event);
+        model.addAttribute("currencies", CURRENCIES);
         LOGGER.debug("Removed participant {} from {}", participantIndex, event);
 
         return "wichteln";
