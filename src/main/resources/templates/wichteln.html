@@ -6,7 +6,7 @@
 <body>
 <div th:replace="fragments/header :: header" />
 
-<div class="container-lg">
+<div class="container-sm">
     <form id="event-creation-form" action="#" class="form-horizontal" th:action="@{/wichteln}" th:object="${event}"
           method="post">
         <button type="submit" id="submit-button" class="btn btn-primary my-3 mr-3">Submit</button>
@@ -14,7 +14,7 @@
         <fieldset>
             <legend>What, where, when, how much?</legend>
             <div class="form-row">
-                <div class="form-group col-lg-6">
+                <div class="form-group col-sm-6">
                     <label for="title">What's the occasion?</label>
                     <input th:field="*{title}" id="title" th:class="'form-control ' + ${#fields.hasErrors('title') ? 'is-invalid' : ''}"
                            type="text"
@@ -26,7 +26,7 @@
                         Must be between 1 and 100 characters long.
                     </div>
                 </div>
-                <div class="form-group col-lg-6">
+                <div class="form-group col-sm-6">
                     <label for="description">What do participants need to know?</label>
                     <textarea th:field="*{description}"
                               id="description"
@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-lg-6">
+                <div class="form-group col-sm-6">
                     <label for="monetary-amount-number">How much to spend on a gift?</label>
                     <input th:field="*{monetaryAmount.number}"
                            id="monetary-amount-number"
@@ -57,7 +57,7 @@
                         Must be greater than or equal to 0.
                     </div>
                 </div>
-                <div class="form-group col-lg-6">
+                <div class="form-group col-sm-6">
                     <label for="title">In what currency?</label>
                     <select id="monetary-amount-currency"
                             class="form-control"
@@ -68,7 +68,7 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-lg-6">
+                <div class="form-group col-sm-6">
                     <label for="local-date-time">When?</label>
                     <input th:field="*{{localDateTime}}"
                            id="local-date-time"
@@ -81,7 +81,7 @@
                         Must take place in the future.
                     </div>
                 </div>
-                <div class="form-group col-lg-6">
+                <div class="form-group col-sm-6">
                     <label for="place">Where?</label>
                     <input th:field="*{place}"
                            id="place"
@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-lg-6">
+                <div class="form-group col-sm-6">
                     <label for="host-name">Who's hosting?</label>
                     <input th:field="*{host.name}"
                            id="host-name"
@@ -111,7 +111,7 @@
                         Must be between 1 and 100 characters long.
                     </div>
                 </div>
-                <div class="form-group col-lg-6">
+                <div class="form-group col-sm-6">
                     <label for="place">What's their email?</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
