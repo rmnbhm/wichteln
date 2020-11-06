@@ -7,14 +7,16 @@
 <div th:replace="fragments/header :: header"/>
 <div style="background:transparent !important" class="jumbotron bg-light">
     <div class="container-lg">
-        <h1 class="display-4">What is this thing?</h1>
-        <p class="lead">Secret Santa (or, in German: Wichteln) means exchanging presents anonymously.</p>
+        <h1 class="display-4">What are the privacy implications?</h1>
+        <p class="lead">Rest assured: There are (next to) none.</p>
         <hr class="my-4">
-        <p>It may be rooted in a winterly, Christmas-sy tradition, but you can do it all-year-round. And this website
-            helps you do so.</p>
-        <p>You can view the site's source code on <a href="https://github.com/rmnbhm/wichteln">Github</a> or contact its
-            author on <a href="https://twitter.com/rmnbhm">Twitter</a>.</p>
-        <a class="btn btn-primary btn-lg" th:href="@{/wichteln}" role="button">Try it out!</a>
+        <p>The application might ask for names, email addresses, locations, etc., but
+        <ol>
+            <li>neither does it use it for anything but generating emails for the participants</li>
+            <li>nor does it keep it longer than 14 days (that is when logs are being rotated).</li>
+        </ol>
+        </p>
+        <p>You have further questions? Send this site's author an <a href="mailto:&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;&#114;&#111;&#109;&#097;&#110;&#098;&#111;&#101;&#104;&#109;&#046;&#099;&#111;&#109;">email</a>.</p>
     </div>
 </div>
 </body>
