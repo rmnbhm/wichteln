@@ -7,13 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.money.CurrencyUnit;
@@ -24,21 +24,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping(path = { "/", "/wichteln" })
 public class WichtelnController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WichtelnController.class);
     private static final Collection<CurrencyUnit> CURRENCIES = Monetary.getCurrencies();
     private static final String WICHTELN_VIEW = "wichteln";
-    private static final String ABOUT_VIEW = "about";
     private final WichtelnService wichtelnService;
 
     public WichtelnController(WichtelnService wichtelnService) {
         this.wichtelnService = wichtelnService;
-    }
-
-    @GetMapping("about")
-    public String getAbout() {
-        return ABOUT_VIEW;
     }
 
     @GetMapping

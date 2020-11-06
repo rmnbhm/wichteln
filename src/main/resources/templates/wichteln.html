@@ -7,7 +7,7 @@
 <div th:replace="fragments/header :: header" />
 
 <div class="container-lg">
-    <form id="event-creation-form" action="#" class="form-horizontal" th:action="@{/}" th:object="${event}"
+    <form id="event-creation-form" action="#" class="form-horizontal" th:action="@{/wichteln}" th:object="${event}"
           method="post">
         <button type="submit" id="submit-button" class="btn btn-primary my-3 mr-3">Submit</button>
         <button type="reset" id="reset-button" class="btn btn-danger my-3">Reset</button>
@@ -180,7 +180,7 @@
                                 class="btn btn-danger btn-sm rounded-0"
                                 type="submit"
                                 title="Delete"
-                                th:formaction="'/remove/' + ${itemStat.index}">
+                                th:formaction="@{/wichteln/remove/{participantIndex}(participantIndex=${itemStat.index})}">
                             <i class="fa fa-trash"></i>
                         </button>
                     </td>
@@ -191,7 +191,7 @@
                     id="add-participant-button"
                     class="btn btn-secondary"
                     type="submit"
-                    formaction="/add">
+                    th:formaction="@{/wichteln/add}">
                 Add participant
             </button>
         </fieldset>

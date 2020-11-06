@@ -53,7 +53,7 @@ public class WichtelnUiIntegrationTest {
 
     @BeforeEach
     public void establishWebDriver() {
-        wichtelnUrl = "http://" + HOST_IP_ADDRESS + ":" + port + "/"; // port is dynamic
+        wichtelnUrl = "http://" + HOST_IP_ADDRESS + ":" + port + "/wichteln"; // port is dynamic
         webDriver = container.getWebDriver();
     }
 
