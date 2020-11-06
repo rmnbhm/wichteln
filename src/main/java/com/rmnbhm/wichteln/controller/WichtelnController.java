@@ -29,14 +29,20 @@ public class WichtelnController {
     private static final Logger LOGGER = LoggerFactory.getLogger(WichtelnController.class);
     private static final Collection<CurrencyUnit> CURRENCIES = Monetary.getCurrencies();
     private static final String WICHTELN_VIEW = "wichteln";
+    private static final String ABOUT_VIEW = "about";
     private final WichtelnService wichtelnService;
 
     public WichtelnController(WichtelnService wichtelnService) {
         this.wichtelnService = wichtelnService;
     }
 
+    @GetMapping("about")
+    public String getAbout() {
+        return ABOUT_VIEW;
+    }
+
     @GetMapping
-    public String getEvent(Model model) {
+    public ModelAndView getEvent() {
         Event event = new Event();
         // at least three participants needed
         event.addParticipant(new Participant());
@@ -45,9 +51,14 @@ public class WichtelnController {
         Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
         monetaryAmount.setCurrency(Monetary.getCurrency("EUR")); // set default currency
         event.setMonetaryAmount(monetaryAmount);
-        model.addAttribute("event", event);
-        model.addAttribute("currencies", CURRENCIES);
-        return "wichteln";
+        return new ModelAndView(
+                WICHTELN_VIEW,
+                Map.of(
+                        "event", event,
+                        "currencies", CURRENCIES
+                ),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping
