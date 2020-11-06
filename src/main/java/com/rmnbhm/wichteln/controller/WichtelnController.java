@@ -38,18 +38,10 @@ public class WichtelnController {
 
     @GetMapping
     public ModelAndView getEvent() {
-        Event event = new Event();
-        // at least three participants needed
-        event.addParticipant(new Participant());
-        event.addParticipant(new Participant());
-        event.addParticipant(new Participant());
-        Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
-        monetaryAmount.setCurrency(Monetary.getCurrency("EUR")); // set default currency
-        event.setMonetaryAmount(monetaryAmount);
         return new ModelAndView(
                 WICHTELN_VIEW,
                 Map.of(
-                        "event", event,
+                        "event", Event.withMinimalDefaults(),
                         "currencies", CURRENCIES
                 ),
                 HttpStatus.OK

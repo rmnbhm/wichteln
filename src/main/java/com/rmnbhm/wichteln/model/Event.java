@@ -5,6 +5,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.money.CurrencyUnit;
+import javax.money.Monetary;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
@@ -13,6 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Event {
+
+    public static Event withMinimalDefaults() {
+        Event event = new Event();
+        // at least three participants needed
+        event.addParticipant(new Participant());
+        event.addParticipant(new Participant());
+        event.addParticipant(new Participant());
+        Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
+        monetaryAmount.setCurrency(Monetary.getCurrency("EUR")); // set default currency
+        event.setMonetaryAmount(monetaryAmount);
+        return event;
+    }
 
     @NotBlank
     @Size(max = 100)
