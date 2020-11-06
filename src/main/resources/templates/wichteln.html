@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-<div th:replace="fragments/head :: head" />
+<div th:replace="fragments/head :: head"></div>
 
 <body>
-<div th:replace="fragments/header :: header" />
+<div th:replace="fragments/header :: header"></div>
 
 <div class="container-sm">
     <form id="event-creation-form" action="#" class="form-horizontal" th:action="@{/wichteln}" th:object="${event}"
@@ -202,29 +202,7 @@
                 Add participant
             </button>
         </fieldset>
-        <div class="modal fade" id="preview-modal" tabindex="-1" role="dialog" aria-labelledby="preview-modalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Email preview</h5>
-                        <button type="button" class="close" data-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p th:text="'FROM: ' + ${preview.from}"></p>
-                        <p th:text="'TO: ' + ${preview.to[0]}"></p>
-                        <p th:text="'SUBJECT: ' + ${preview.subject}"></p>
-                        <p>TEXT:</p>
-                        <blockquote style="background: #eee;border-radius: 5px; padding: 15px;"
-                                    th:utext="${#strings.replace(preview.text, T(org.apache.commons.lang3.StringUtils).LF, '&lt;br /&gt;')}">
-                        </blockquote>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
-                        <button type="button" class="btn btn-primary">Submit</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div th:replace="fragments/preview :: preview"></div>
     </form>
 </div> <!-- /container -->
 <script th:inline="javascript">
