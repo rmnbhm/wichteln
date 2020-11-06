@@ -10,6 +10,13 @@
     <form id="event-creation-form" action="#" class="form-horizontal" th:action="@{/wichteln}" th:object="${event}"
           method="post">
         <button type="submit" id="submit-button" class="btn btn-primary my-3 mr-3">Submit</button>
+        <button formnovalidate
+                type="submit"
+                id="preview-button"
+                class="btn btn-outline-primary my-3 mr-3"
+                th:formaction="@{/wichteln/preview}">
+            Preview...
+        </button>
         <button type="reset" id="reset-button" class="btn btn-danger my-3">Reset</button>
         <fieldset>
             <legend>What, where, when, how much?</legend>
@@ -195,9 +202,32 @@
                 Add participant
             </button>
         </fieldset>
+        <div class="modal fade" id="preview-modal" tabindex="-1" role="dialog" aria-labelledby="preview-modalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Email preview</h5>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p th:text="'FROM: ' + ${preview.from}"></p>
+                        <p th:text="'TO: ' + ${preview.to[0]}"></p>
+                        <p th:text="'SUBJECT: ' + ${preview.subject}"></p>
+                        <p>TEXT:</p>
+                        <blockquote style="background: #eee;border-radius: 5px; padding: 15px;"
+                                    th:utext="${#strings.replace(preview.text, T(org.apache.commons.lang3.StringUtils).LF, '&lt;br /&gt;')}">
+                        </blockquote>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+                        <button type="button" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </div> <!-- /container -->
-<script>
+<script th:inline="javascript">
     function needsFallback() {
         // Test whether a new datetime-local input falls back to a text input or not
         const test = document.createElement('input');
@@ -219,6 +249,15 @@
             dateTimeInput.type = 'text';
             dateTimeInput.value = dateTimeInput.value + "T00:00";
         };
+    }
+
+    function canDisplayPreview() {
+        const canDisplayPreview = [[(${preview})]] !== null;
+        return canDisplayPreview;
+    }
+
+    if (canDisplayPreview()) {
+        $('#preview-modal').modal('show');
     }
 </script>
 </body>

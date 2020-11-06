@@ -6,6 +6,7 @@ import com.rmnbhm.wichteln.service.WichtelnService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -24,7 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping(path = { "/", "/wichteln" })
+@RequestMapping(path = {"/", "/wichteln"})
 public class WichtelnController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WichtelnController.class);
@@ -61,6 +62,29 @@ public class WichtelnController {
         wichtelnService.save(event);
         LOGGER.debug("Saved {}", event);
         return new ModelAndView("redirect:/");
+    }
+
+    @PostMapping("preview")
+    public ModelAndView createPreview(@ModelAttribute @Valid Event event, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            LOGGER.debug(
+                    "Failed to preview {} because {}",
+                    event,
+                    bindingResult.getAllErrors().stream().map(ObjectError::toString).collect(Collectors.joining(", "))
+            );
+            return new ModelAndView(WICHTELN_VIEW, Map.of("currencies", CURRENCIES), HttpStatus.BAD_REQUEST);
+        }
+        SimpleMailMessage preview = wichtelnService.createPreview(event);
+        LOGGER.debug("Previewed {}", event);
+        return new ModelAndView(
+                WICHTELN_VIEW,
+                Map.of(
+                        "event", event,
+                        "preview", preview,
+                        "currencies", CURRENCIES
+                ),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping("/add")

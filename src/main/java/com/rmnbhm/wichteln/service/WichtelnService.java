@@ -1,6 +1,7 @@
 package com.rmnbhm.wichteln.service;
 
 import com.rmnbhm.wichteln.model.Event;
+import com.rmnbhm.wichteln.model.Participant;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
@@ -32,5 +33,18 @@ public class WichtelnService {
             LOGGER.info("Sent {} to {}", StringEscapeUtils.escapeJava(message.toString()), match.getDonor());
             mailSender.send(message);
         });
+    }
+
+    public SimpleMailMessage createPreview(Event event) {
+        Participant donor = new Participant();
+        donor.setName("Angus Young");
+        donor.setEmail("angusyoung@acdc.net");
+        Participant recipient = new Participant();
+        recipient.setName("Phil Rudd");
+        recipient.setEmail("philrudd@acdc.net");
+        return mailCreator.createMessage(
+                event,
+                new ParticipantsMatch(new ParticipantsMatch.Donor(donor), new ParticipantsMatch.Recipient(recipient))
+        );
     }
 }
