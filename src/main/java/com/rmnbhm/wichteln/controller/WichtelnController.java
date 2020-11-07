@@ -31,6 +31,7 @@ public class WichtelnController {
     private static final Logger LOGGER = LoggerFactory.getLogger(WichtelnController.class);
     private static final Collection<CurrencyUnit> CURRENCIES = Monetary.getCurrencies();
     private static final String WICHTELN_VIEW = "wichteln";
+    public static final String PREVIEW_FRAGMENT = "fragments/preview :: preview";
     private final WichtelnService wichtelnService;
 
     public WichtelnController(WichtelnService wichtelnService) {
@@ -64,7 +65,7 @@ public class WichtelnController {
         return new ModelAndView("redirect:/");
     }
 
-    @PostMapping("preview")
+    @GetMapping("preview")
     public ModelAndView createPreview(@ModelAttribute @Valid Event event, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             LOGGER.debug(
@@ -76,15 +77,8 @@ public class WichtelnController {
         }
         SimpleMailMessage preview = wichtelnService.createPreview(event);
         LOGGER.debug("Previewed {}", event);
-        return new ModelAndView(
-                WICHTELN_VIEW,
-                Map.of(
-                        "event", event,
-                        "preview", preview,
-                        "currencies", CURRENCIES
-                ),
-                HttpStatus.OK
-        );
+        // Fragment, since this is handled as an AJAX call.
+        return new ModelAndView(PREVIEW_FRAGMENT, Map.of("preview", preview), HttpStatus.OK);
     }
 
     @PostMapping("/add")

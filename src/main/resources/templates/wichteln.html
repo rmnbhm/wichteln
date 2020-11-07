@@ -10,11 +10,9 @@
     <form id="event-creation-form" action="#" class="form-horizontal" th:action="@{/wichteln}" th:object="${event}"
           method="post">
         <button type="submit" id="submit-button" class="btn btn-primary my-3 mr-3">Submit</button>
-        <button formnovalidate
-                type="submit"
+        <button type="button"
                 id="preview-button"
-                class="btn btn-outline-primary my-3 mr-3"
-                th:formaction="@{/wichteln/preview}">
+                class="btn btn-outline-primary my-3 mr-3">
             Preview...
         </button>
         <button type="reset" id="reset-button" class="btn btn-danger my-3">Reset</button>
@@ -202,7 +200,23 @@
                 Add participant
             </button>
         </fieldset>
-        <div th:replace="fragments/preview :: preview"></div>
+        <div class="modal fade" id="preview-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Email preview</h5>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="preview-modal-holder"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+                        <button type="button" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </div> <!-- /container -->
 <script th:inline="javascript">
@@ -229,14 +243,18 @@
         };
     }
 
-    function canDisplayPreview() {
-        const canDisplayPreview = [[(${preview})]] !== null;
-        return canDisplayPreview;
-    }
-
-    if (canDisplayPreview()) {
-        $('#preview-modal').modal('show');
-    }
+    $('#preview-button').click(function(event) {
+        event.preventDefault(); // So the button does not submit the form
+        const formEncoded = $("form").serialize();
+        $.ajax({
+            url: "/wichteln/preview",
+            data: formEncoded,
+            success: function(data) {
+                $('#preview-modal-holder').html(data);
+                $('#preview-modal').modal('show');
+            }
+        });
+    });
 </script>
 </body>
 </html>

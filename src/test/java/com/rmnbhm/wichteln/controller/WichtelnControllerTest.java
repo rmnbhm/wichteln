@@ -21,6 +21,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -128,5 +129,41 @@ public class WichtelnControllerTest {
                 .andExpect(content().string(containsString("Must take place in the future.")));
 
         assertThat(greenMail.waitForIncomingEmail(1500, 3)).isFalse();
+    }
+
+    @Test
+    public void shouldPreview() throws Exception {
+        String localDateTime = Instant.now().plus(1, ChronoUnit.DAYS)
+                .atZone(ZoneId.of("Europe/Berlin"))
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+
+        mockMvc.perform(
+                get("/wichteln/preview")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("title", "AC/DC Secret Santa")
+                        .param("description", "There's gonna be some santa'ing")
+                        .param("monetaryAmount.number", "78.50")
+                        .param("monetaryAmount.currency", "AUD")
+                        .param("localDateTime", localDateTime)
+                        .param("place", "Sydney")
+                        .param("host.name", "George Young")
+                        .param("host.email", "georgeyoung@acdc.net")
+                        .param("participants[0].name", "Angus Young")
+                        .param("participants[0].email", "angusyoung@acdc.net")
+                        .param("participants[1].name", "Malcolm Young")
+                        .param("participants[1].email", "malcolmyoung@acdc.net")
+                        .param("participants[2].name", "Phil Rudd")
+                        .param("participants[2].email", "philrudd@acdc.net")
+
+        )
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().string(containsString("FROM: wichteln@romanboehm.com")))
+                .andExpect(content().string(containsString("TO: angusyoung@acdc.net")))
+                .andExpect(content().string(containsString(
+                        "SUBJECT: You have been invited to wichtel at AC/DC Secret Santa"
+                )))
+                .andExpect(content().string(containsString("TEXT:")))
+                .andExpect(content().string(containsString("Give a gift to Phil Rudd")));
+
     }
 }
