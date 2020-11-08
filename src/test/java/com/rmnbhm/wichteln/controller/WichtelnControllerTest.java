@@ -138,7 +138,7 @@ public class WichtelnControllerTest {
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
 
         mockMvc.perform(
-                get("/wichteln/preview")
+                post("/wichteln?preview=true")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("title", "AC/DC Secret Santa")
                         .param("description", "There's gonna be some santa'ing")

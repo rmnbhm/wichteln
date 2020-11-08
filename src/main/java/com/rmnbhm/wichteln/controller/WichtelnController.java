@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.money.CurrencyUnit;
@@ -51,48 +52,41 @@ public class WichtelnController {
     }
 
     @PostMapping
-    public ModelAndView saveEvent(@ModelAttribute @Valid Event event, BindingResult bindingResult) {
+    public ModelAndView saveEvent(
+            @RequestParam(name = "preview", defaultValue = "false") boolean preview,
+            @ModelAttribute @Valid Event event,
+            BindingResult bindingResult
+    ) {
         if (bindingResult.hasErrors()) {
             LOGGER.debug(
-                    "Failed to save {} because {}",
+                    "Failed to create {} because {}",
                     event,
                     bindingResult.getAllErrors().stream().map(ObjectError::toString).collect(Collectors.joining(", "))
             );
             return new ModelAndView(WICHTELN_VIEW, Map.of("currencies", CURRENCIES), HttpStatus.BAD_REQUEST);
+        }
+        if (preview) {
+            SimpleMailMessage mailPreview = wichtelnService.createPreview(event);
+            LOGGER.debug("Previewed {}", event);
+            return new ModelAndView(
+                    WICHTELN_VIEW,
+                    Map.of(
+                            "preview", mailPreview,
+                            "currencies", CURRENCIES
+                    ),
+                    HttpStatus.OK
+            );
         }
         wichtelnService.save(event);
         LOGGER.debug("Saved {}", event);
         return new ModelAndView("redirect:/");
     }
 
-    @GetMapping("preview")
-    public ModelAndView createPreview(@ModelAttribute @Valid Event event, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            LOGGER.debug(
-                    "Failed to preview {} because {}",
-                    event,
-                    bindingResult.getAllErrors().stream().map(ObjectError::toString).collect(Collectors.joining(", "))
-            );
-            return new ModelAndView(WICHTELN_VIEW, Map.of("currencies", CURRENCIES), HttpStatus.BAD_REQUEST);
-        }
-        SimpleMailMessage preview = wichtelnService.createPreview(event);
-        LOGGER.debug("Previewed {}", event);
-        // Fragment, since this is handled as an AJAX call.
-        return new ModelAndView(PREVIEW_FRAGMENT, Map.of("preview", preview), HttpStatus.OK);
-    }
-
     @PostMapping("/add")
     public ModelAndView addParticipant(@ModelAttribute Event event) {
         event.addParticipant(new Participant());
         LOGGER.debug("Added participant to {}", event);
-        return new ModelAndView(
-                WICHTELN_VIEW,
-                Map.of(
-                        "event", event,
-                        "currencies", CURRENCIES
-                ),
-                HttpStatus.OK
-        );
+        return new ModelAndView(WICHTELN_VIEW, Map.of("currencies", CURRENCIES), HttpStatus.OK);
     }
 
     @PostMapping("/remove/{index}")
@@ -103,13 +97,6 @@ public class WichtelnController {
         event.removeParticipantNumber(participantIndex);
         LOGGER.debug("Removed participant {} from {}", participantIndex, event);
 
-        return new ModelAndView(
-                WICHTELN_VIEW,
-                Map.of(
-                        "event", event,
-                        "currencies", CURRENCIES
-                ),
-                HttpStatus.OK
-        );
+        return new ModelAndView(WICHTELN_VIEW, Map.of("currencies", CURRENCIES), HttpStatus.OK);
     }
 }
