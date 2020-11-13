@@ -60,8 +60,6 @@ public class WichtelnUiIntegrationTest {
     private final static String RESET_BUTTON_ID = "reset-button";
     private final static String PARTICIPANTS_TABLE_ID = "participants-table";
 
-    @LocalServerPort
-    private int port;
     private RemoteWebDriver webDriver;
 
     @Container
@@ -73,7 +71,7 @@ public class WichtelnUiIntegrationTest {
 
 
     @BeforeEach
-    public void establishWebDriver() {
+    public void establishWebDriver(@LocalServerPort int port) {
         webDriver = container.getWebDriver();
         webDriver.get("http://" + HOST_IP_ADDRESS + ":" + port + "/wichteln"); // Port is dynamic.
     }
