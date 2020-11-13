@@ -39,94 +39,92 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class WichtelnUiIntegrationTest {
 
     private final static String HOST_IP_ADDRESS = SystemUtils.IS_OS_LINUX ? "172.17.0.1" : "host.docker.internal";
+    private static final String ADD_PARTICIPANT_BUTTON_ID = "add-participant-button";
+    private final static String FORM_ID = "event-creation-form";
+    private final static String TITLE_ID = "title";
+    private final static String TITLE_ERROR_ID = TITLE_ID + "-error";
+    private final static String DESCRIPTION_ID = "description";
+    private final static String DESCRIPTION_ERROR_ID = DESCRIPTION_ID + "-error";
+    private final static String MONETARYAMOUNT_NUMBER_ID = "monetary-amount-number";
+    private final static String MONETARYAMOUNT_NUMBER_ERROR_ID = MONETARYAMOUNT_NUMBER_ID + "-error";
+    private final static String MONETARYAMOUNT_CURRENCY_ID = "monetary-amount-currency";
+    private final static String LOCALDATETIME_ID = "local-date-time";
+    private final static String LOCALDATETIME_ERROR_ID = LOCALDATETIME_ID + "-error";
+    private final static String PLACE_ID = "place";
+    private final static String PLACE_ERROR_ID = PLACE_ID + "-error";
+    private final static String HOST_NAME_ID = "host-name";
+    private final static String HOST_NAME_ERROR_ID = HOST_NAME_ID + "-error";
+    private final static String HOST_EMAIL_ID = "host-email";
+    private final static String HOST_EMAIL_ERROR_ID = HOST_EMAIL_ID + "-error";
+    private final static String PREVIEW_BUTTON_ID = "preview-button";
+    private final static String RESET_BUTTON_ID = "reset-button";
+    private final static String PARTICIPANTS_TABLE_ID = "participants-table";
 
     @LocalServerPort
     private int port;
-    private String wichtelnUrl;
     private RemoteWebDriver webDriver;
+
     @Container
     private BrowserWebDriverContainer<?> container = new BrowserWebDriverContainer<>()
             .withSharedMemorySize(536_870_912L) // 512 MiB
             // This is a workaround to make the container start under WSL 2,
-            // s. https://github.com/testcontainers/testcontainers-java/issues/2552
+            // Cf. https://github.com/testcontainers/testcontainers-java/issues/2552
             .withCapabilities(new FirefoxOptions());
+
 
     @BeforeEach
     public void establishWebDriver() {
-        wichtelnUrl = "http://" + HOST_IP_ADDRESS + ":" + port + "/wichteln"; // port is dynamic
         webDriver = container.getWebDriver();
+        webDriver.get("http://" + HOST_IP_ADDRESS + ":" + port + "/wichteln"); // Port is dynamic.
+    }
+
+    private WebElement supply(String idString) {
+        return webDriver.findElement(By.id(idString));
     }
 
     @Test
     public void shouldDisplayEventCreationForm() {
-        webDriver.get(wichtelnUrl);
-
-        WebElement eventCreationForm = webDriver.findElement(By.id("event-creation-form"));
+        WebElement eventCreationForm = supply(FORM_ID);
         assertThat(eventCreationForm).isNotNull();
-        WebElement title = webDriver.findElement(By.id("title"));
+        WebElement title = supply(TITLE_ID);
         assertThat(title).isNotNull();
-        WebElement description = webDriver.findElement(By.id("description"));
+        WebElement description = supply(DESCRIPTION_ID);
         assertThat(description).isNotNull();
-        WebElement monetaryAmountNumber = webDriver.findElement(By.id("monetary-amount-number"));
+        WebElement monetaryAmountNumber = supply(MONETARYAMOUNT_NUMBER_ID);
         assertThat(monetaryAmountNumber).isNotNull();
-        WebElement monetaryAmountCurrency = webDriver.findElement(By.id("monetary-amount-currency"));
+        WebElement monetaryAmountCurrency = supply(MONETARYAMOUNT_CURRENCY_ID);
         assertThat(monetaryAmountCurrency).isNotNull();
-        WebElement localDateTime = webDriver.findElement(By.id("local-date-time"));
+        WebElement localDateTime = supply(LOCALDATETIME_ID);
         assertThat(localDateTime).isNotNull();
-        WebElement place = webDriver.findElement(By.id("place"));
+        WebElement place = supply(PLACE_ID);
         assertThat(place).isNotNull();
-        WebElement hostName = webDriver.findElement(By.id("host-name"));
+        WebElement hostName = supply(HOST_NAME_ID);
         assertThat(hostName).isNotNull();
-        WebElement hostEmail = webDriver.findElement(By.id("host-email"));
+        WebElement hostEmail = supply(HOST_EMAIL_ID);
         assertThat(hostEmail).isNotNull();
     }
 
     @Test
     public void shouldDisplaySubmitAndResetButtons() {
-        webDriver.get(wichtelnUrl);
-
-        WebElement submitButton = webDriver.findElement(By.id("submit-button"));
-        assertThat(submitButton.getText()).isEqualTo("Submit");
-        WebElement resetButton = webDriver.findElement(By.id("reset-button"));
+        WebElement submitButton = supply(PREVIEW_BUTTON_ID);
+        assertThat(submitButton.getText()).isEqualTo("Preview...");
+        WebElement resetButton = supply(RESET_BUTTON_ID);
         assertThat(resetButton.getText()).isEqualTo("Reset");
     }
 
     @Test
     public void shouldAddAndRemoveParticipants() {
-        webDriver.get(wichtelnUrl);
-
-        // Fill with data
-        WebElement title = webDriver.findElement(By.id("title"));
-        title.sendKeys("AC/DC Secret Santa");
-        WebElement description = webDriver.findElement(By.id("description"));
-        description.sendKeys("There's gonna be some santa'ing");
-        WebElement monetaryAmountNumber = webDriver.findElement(By.id("monetary-amount-number"));
-        monetaryAmountNumber.sendKeys("78.50");
-        WebElement monetaryAmountUnit = webDriver.findElement(By.id("monetary-amount-currency"));
-        monetaryAmountUnit.sendKeys("AUD");
-        WebElement localDateTime = webDriver.findElement(By.id("local-date-time"));
-        localDateTime.sendKeys(Instant.now().plus(1, ChronoUnit.DAYS)
-                .atZone(ZoneId.of("Europe/Berlin"))
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))
-        );
-        WebElement place = webDriver.findElement(By.id("place"));
-        place.sendKeys("Sydney");
-        WebElement hostName = webDriver.findElement(By.id("host-name"));
-        hostName.sendKeys("George Young");
-        WebElement hostEmail = webDriver.findElement(By.id("host-email"));
-        hostEmail.sendKeys("georgeyoung@acdc.net");
-
-        WebElement participantsTable = webDriver.findElement(By.id("participants-table"));
+        WebElement participantsTable = supply(PARTICIPANTS_TABLE_ID);
         assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(3);
 
         // Remove buttons should be hidden initially since we do _not_ have more than three participants
-        assertThat(webDriver.findElement(By.id("remove-participants0-button")).isDisplayed()).isFalse();
-        assertThat(webDriver.findElement(By.id("remove-participants1-button")).isDisplayed()).isFalse();
-        assertThat(webDriver.findElement(By.id("remove-participants2-button")).isDisplayed()).isFalse();
+        assertThat(supply("remove-participants0-button").isDisplayed()).isFalse();
+        assertThat(supply("remove-participants1-button").isDisplayed()).isFalse();
+        assertThat(supply("remove-participants2-button").isDisplayed()).isFalse();
 
-        assertThat(webDriver.findElement(By.id("add-participant-button"))).isNotNull();
-        webDriver.findElement(By.id("add-participant-button")).click();
-        webDriver.findElement(By.id("add-participant-button")).click();
+        assertThat(supply(ADD_PARTICIPANT_BUTTON_ID)).isNotNull();
+        supply(ADD_PARTICIPANT_BUTTON_ID).click();
+        supply(ADD_PARTICIPANT_BUTTON_ID).click();
 
         fillRow(0, "Angus Young", "angusyoung@acdc.net");
         fillRow(1, "Malcolm Young", "malcolmyoung@acdc.net");
@@ -134,7 +132,7 @@ public class WichtelnUiIntegrationTest {
         fillRow(3, "Bon Scott", "bonscott@acdc.net");
         fillRow(4, "Cliff Williams", "cliffwilliams@acdc.net");
 
-        participantsTable = webDriver.findElement(By.id("participants-table"));
+        participantsTable = supply(PARTICIPANTS_TABLE_ID);
         assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(5);
         assertThat(tableData()).containsExactly(
                 List.of("Angus Young", "angusyoung@acdc.net"),
@@ -145,16 +143,16 @@ public class WichtelnUiIntegrationTest {
         );
 
         // Remove buttons should now be displayed since we have more than three participants
-        assertThat(webDriver.findElement(By.id("remove-participants0-button")).isDisplayed()).isTrue();
-        assertThat(webDriver.findElement(By.id("remove-participants1-button")).isDisplayed()).isTrue();
-        assertThat(webDriver.findElement(By.id("remove-participants2-button")).isDisplayed()).isTrue();
+        assertThat(supply("remove-participants0-button").isDisplayed()).isTrue();
+        assertThat(supply("remove-participants1-button").isDisplayed()).isTrue();
+        assertThat(supply("remove-participants2-button").isDisplayed()).isTrue();
 
         // Button id suffix (i.e. index) get recalculated after every removal, so in order to remove participants with
         // actual indices 1 and 2, we need to click removeParticipantButton1 twice
-        webDriver.findElement(By.id("remove-participants1-button")).click();
-        webDriver.findElement(By.id("remove-participants1-button")).click();
+        supply("remove-participants1-button").click();
+        supply("remove-participants1-button").click();
 
-        participantsTable = webDriver.findElement(By.id("participants-table"));
+        participantsTable = supply(PARTICIPANTS_TABLE_ID);
         assertThat(participantsTable.findElements(By.cssSelector("tbody tr"))).hasSize(3);
         assertThat(tableData()).containsExactly(
                 List.of("Angus Young", "angusyoung@acdc.net"),
@@ -163,67 +161,65 @@ public class WichtelnUiIntegrationTest {
         );
 
         // Remove buttons should be hidden again
-        assertThat(webDriver.findElement(By.id("remove-participants0-button")).isDisplayed()).isFalse();
-        assertThat(webDriver.findElement(By.id("remove-participants1-button")).isDisplayed()).isFalse();
-        assertThat(webDriver.findElement(By.id("remove-participants2-button")).isDisplayed()).isFalse();
+        assertThat(supply("remove-participants0-button").isDisplayed()).isFalse();
+        assertThat(supply("remove-participants1-button").isDisplayed()).isFalse();
+        assertThat(supply("remove-participants2-button").isDisplayed()).isFalse();
     }
 
     @Test
     public void shouldValidateFormInput() {
-        webDriver.get(wichtelnUrl);
-
         // Fill with invalid data
-        WebElement title = webDriver.findElement(By.id("title"));
+        WebElement title = supply(TITLE_ID);
         title.sendKeys("AC/DC Secret Santa".repeat(20)); // too long
-        WebElement description = webDriver.findElement(By.id("description")); // too long
+        WebElement description = supply(DESCRIPTION_ID); // too long
         description.sendKeys("There's gonna be some santa'ing".repeat(100));
-        WebElement monetaryAmountNumber = webDriver.findElement(By.id("monetary-amount-number"));
+        WebElement monetaryAmountNumber = supply(MONETARYAMOUNT_NUMBER_ID);
         monetaryAmountNumber.sendKeys("-1"); // negative
-        WebElement monetaryAmountCurrency = webDriver.findElement(By.id("monetary-amount-currency"));
+        WebElement monetaryAmountCurrency = supply(MONETARYAMOUNT_CURRENCY_ID);
         monetaryAmountCurrency.sendKeys("XXXX"); // not a valid currency
-        WebElement localDateTime = webDriver.findElement(By.id("local-date-time"));
+        WebElement localDateTime = supply(LOCALDATETIME_ID);
         localDateTime.sendKeys(Instant.now().minus(1, ChronoUnit.DAYS) // before present
                 .atZone(ZoneId.of("Europe/Berlin"))
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))
+                // Will also test "polyfill" for Firefox since it lacks `input[@type=datetime-local]` on desktop
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         );
-        WebElement place = webDriver.findElement(By.id("place"));
+        WebElement place = supply(PLACE_ID);
         place.sendKeys("Sydney".repeat(20)); // too long
-        WebElement hostName = webDriver.findElement(By.id("host-name"));
+        WebElement hostName = supply(HOST_NAME_ID);
         hostName.sendKeys("George Young".repeat(20)); // too long
-        WebElement hostEmail = webDriver.findElement(By.id("host-email"));
+        WebElement hostEmail = supply(HOST_EMAIL_ID);
         hostEmail.sendKeys("georgeyoungacdc.net"); // no '@'
 
         fillRow(0, "Angus Young".repeat(20), "angusyoung@acdc.net"); // too long
         fillRow(1, "Malcolm Young", "malcolmyoung@acdc.net");
         fillRow(2, "Phil Rudd".repeat(20), "philrudd@acdc.net"); // too long
 
-        WebElement submitButton = webDriver.findElement(By.id("submit-button"));
-        submitButton.click();
+        WebElement previewButton = supply(PREVIEW_BUTTON_ID);
+        previewButton.click();
 
-        WebElement titleError = webDriver.findElement(By.id("title-error"));
+        WebElement titleError = supply(TITLE_ERROR_ID);
         assertThat(titleError.isDisplayed()).isTrue();
-        WebElement descriptionError = webDriver.findElement(By.id("description-error"));
+        WebElement descriptionError = supply(DESCRIPTION_ERROR_ID);
         assertThat(descriptionError.isDisplayed()).isTrue();
-        WebElement monetaryAmountNumberError = webDriver.findElement(By.id("monetary-amount-number-error"));
+        WebElement monetaryAmountNumberError = supply(MONETARYAMOUNT_NUMBER_ERROR_ID);
         assertThat(monetaryAmountNumberError.isDisplayed()).isTrue();
-        WebElement localDateTimeError = webDriver.findElement(By.id("local-date-time-error"));
+        WebElement localDateTimeError = supply(LOCALDATETIME_ERROR_ID);
         assertThat(localDateTimeError.isDisplayed()).isTrue();
-        WebElement placeError = webDriver.findElement(By.id("place-error"));
+        WebElement placeError = supply(PLACE_ERROR_ID);
         assertThat(placeError.isDisplayed()).isTrue();
-        WebElement hostNameError = webDriver.findElement(By.id("host-name-error"));
+        WebElement hostNameError = supply(HOST_NAME_ERROR_ID);
         assertThat(hostNameError.isDisplayed()).isTrue();
-        WebElement hostEmailError = webDriver.findElement(By.id("host-email-error"));
+        WebElement hostEmailError = supply(HOST_EMAIL_ERROR_ID);
         assertThat(hostEmailError.isDisplayed()).isTrue();
 
-        WebElement angusFirstNameError = webDriver.findElement(By.id("participants0-name-error"));
+        WebElement angusFirstNameError = supply("participants0-name-error");
         assertThat(angusFirstNameError.isDisplayed()).isTrue();
-        WebElement malcolmLastNameError = webDriver.findElement(By.id("participants2-name-error"));
+        WebElement malcolmLastNameError = supply("participants2-name-error");
         assertThat(malcolmLastNameError.isDisplayed()).isTrue();
-
     }
 
     private void fillRow(int rowIndex, String name, String email) {
-        WebElement participantsTable = webDriver.findElement(By.id("participants-table"));
+        WebElement participantsTable = supply(PARTICIPANTS_TABLE_ID);
         WebElement row = participantsTable.findElements(By.cssSelector("tbody tr")).get(rowIndex);
         List<WebElement> inputFields = row.findElements(By.cssSelector("input"));
         WebElement firstNameInput = inputFields.get(0);
@@ -233,7 +229,7 @@ public class WichtelnUiIntegrationTest {
     }
 
     private List<List<String>> tableData() {
-        WebElement participantsTable = webDriver.findElement(By.id("participants-table"));
+        WebElement participantsTable = supply(PARTICIPANTS_TABLE_ID);
         List<List<String>> rows = new ArrayList<>();
         participantsTable.findElements(By.cssSelector("tbody tr")).forEach(row -> {
             List<WebElement> inputFields = row.findElements(By.cssSelector("input"));

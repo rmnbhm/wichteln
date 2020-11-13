@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,30 +23,12 @@ public class Event {
     public static Event withMinimalDefaults() {
         Event event = new Event();
         // at least three participants needed
-        Participant a = new Participant();
-        a.setName("a");
-        a.setEmail("a@a");
-        event.addParticipant(a);
-        Participant b = new Participant();
-        b.setName("b");
-        b.setEmail("b@b");
-        event.addParticipant(b);
-        Participant c = new Participant();
-        c.setName("c");
-        c.setEmail("c@c");
-        event.addParticipant(c);
+        event.addParticipant(new Participant());
+        event.addParticipant(new Participant());
+        event.addParticipant(new Participant());
         Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
         monetaryAmount.setCurrency(Monetary.getCurrency("EUR")); // set default currency
-        monetaryAmount.setNumber(BigDecimal.valueOf(1));
         event.setMonetaryAmount(monetaryAmount);
-        Host host = new Host();
-        host.setName("h");
-        host.setEmail("h@h");
-        event.setHost(host);
-        event.setPlace("p");
-        event.setTitle("t");
-        event.setDescription("d");
-        event.setLocalDateTime(LocalDateTime.now().plus(1, ChronoUnit.DAYS));
         return event;
     }
 
