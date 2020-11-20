@@ -33,7 +33,6 @@ import static com.rmnbhm.wichteln.config.WebConfig.WICHTELN_VIEW;
 public class WichtelnController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WichtelnController.class);
-    private static final Collection<CurrencyUnit> CURRENCIES = Monetary.getCurrencies();
     private final WichtelnService wichtelnService;
 
     public WichtelnController(WichtelnService wichtelnService) {
@@ -42,14 +41,7 @@ public class WichtelnController {
 
     @GetMapping
     public ModelAndView getEvent() {
-        return new ModelAndView(
-                WICHTELN_VIEW,
-                Map.of(
-                        "event", Event.withMinimalDefaults(),
-                        "currencies", CURRENCIES
-                ),
-                HttpStatus.OK
-        );
+        return new ModelAndView(WICHTELN_VIEW, Map.of("event", Event.withMinimalDefaults()), HttpStatus.OK);
     }
 
     @PostMapping
@@ -64,7 +56,7 @@ public class WichtelnController {
                     event,
                     bindingResult.getAllErrors().stream().map(ObjectError::toString).collect(Collectors.joining(", "))
             );
-            return new ModelAndView(WICHTELN_VIEW, Map.of("currencies", CURRENCIES), HttpStatus.BAD_REQUEST);
+            return new ModelAndView(WICHTELN_VIEW, HttpStatus.BAD_REQUEST);
         }
         redirectAttributes.addFlashAttribute("event", event);
         return new ModelAndView(new RedirectView(PREVIEW_VIEW));
@@ -74,7 +66,7 @@ public class WichtelnController {
     public ModelAndView addParticipant(@ModelAttribute Event event) {
         event.addParticipant(new Participant());
         LOGGER.debug("Added participant to {}", event);
-        return new ModelAndView(WICHTELN_VIEW, Map.of("currencies", CURRENCIES), HttpStatus.OK);
+        return new ModelAndView(WICHTELN_VIEW, HttpStatus.OK);
     }
 
     @PostMapping("/remove/{index}")
@@ -85,6 +77,6 @@ public class WichtelnController {
         event.removeParticipantNumber(participantIndex);
         LOGGER.debug("Removed participant {} from {}", participantIndex, event);
 
-        return new ModelAndView(WICHTELN_VIEW, Map.of("currencies", CURRENCIES), HttpStatus.OK);
+        return new ModelAndView(WICHTELN_VIEW, HttpStatus.OK);
     }
 }
