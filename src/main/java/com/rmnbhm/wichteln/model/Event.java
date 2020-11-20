@@ -4,18 +4,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +22,7 @@ public class Event {
         event.addParticipant(new Participant());
         event.addParticipant(new Participant());
         event.addParticipant(new Participant());
-        Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
+        MonetaryAmount monetaryAmount = new MonetaryAmount();
         monetaryAmount.setCurrency(Monetary.getCurrency("EUR")); // set default currency
         event.setMonetaryAmount(monetaryAmount);
         return event;
@@ -152,70 +147,4 @@ public class Event {
         );
     }
 
-    public static class Host {
-
-        @NotBlank
-        @Size(max = 100)
-        private String name;
-
-        @NotBlank
-        @Email
-        private String email;
-
-        public Host() {
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String toString() {
-            return String.format("Event.Host(name=%s, email=%s)", this.getName(), this.getEmail());
-        }
-    }
-
-    public static class MonetaryAmount {
-
-        @NotNull
-        @Min(0)
-        private BigDecimal number;
-
-        @NotNull
-        private CurrencyUnit currency;
-
-        public MonetaryAmount() {
-        }
-
-        public BigDecimal getNumber() {
-            return number;
-        }
-
-        public void setNumber(BigDecimal number) {
-            this.number = number;
-        }
-
-        public CurrencyUnit getCurrency() {
-            return currency;
-        }
-
-        public void setCurrency(CurrencyUnit currency) {
-            this.currency = currency;
-        }
-
-        public String toString() {
-            return String.format("Event.MonetaryAmount(number=%s, currency=%s)", this.getNumber(), this.getCurrency());
-        }
-    }
 }

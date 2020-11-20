@@ -1,6 +1,8 @@
 package com.rmnbhm.wichteln.service;
 
 import com.rmnbhm.wichteln.model.Event;
+import com.rmnbhm.wichteln.model.Host;
+import com.rmnbhm.wichteln.model.MonetaryAmount;
 import com.rmnbhm.wichteln.model.Participant;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Donor;
@@ -30,11 +32,11 @@ public class WichtelnMailCreatorTest {
         acdcSanta.setDescription("There's gonna be some santa'ing");
         acdcSanta.setLocalDateTime(LocalDateTime.now().plus(1, ChronoUnit.DAYS));
         acdcSanta.setPlace("Sydney");
-        Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
+        MonetaryAmount monetaryAmount = new MonetaryAmount();
         monetaryAmount.setCurrency(Monetary.getCurrency("AUD"));
         monetaryAmount.setNumber(BigDecimal.valueOf(78.50));
         acdcSanta.setMonetaryAmount(monetaryAmount);
-        Event.Host georgeYoung = new Event.Host();
+        Host georgeYoung = new Host();
         georgeYoung.setName("George Young");
         georgeYoung.setEmail("georgeyoung@acdc.net");
         acdcSanta.setHost(georgeYoung);
@@ -70,11 +72,11 @@ public class WichtelnMailCreatorTest {
         acdcSanta.setDescription("There's gonna be some santa'ing");
         acdcSanta.setLocalDateTime(localDateTime);
         acdcSanta.setPlace("Sydney");
-        Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
+        MonetaryAmount monetaryAmount = new MonetaryAmount();
         monetaryAmount.setCurrency(Monetary.getCurrency("AUD"));
         monetaryAmount.setNumber(BigDecimal.valueOf(78.50));
         acdcSanta.setMonetaryAmount(monetaryAmount);
-        Event.Host georgeYoung = new Event.Host();
+        Host georgeYoung = new Host();
         georgeYoung.setName("George Young");
         georgeYoung.setEmail("georgeyoung@acdc.net");
         acdcSanta.setHost(georgeYoung);
@@ -114,11 +116,11 @@ public class WichtelnMailCreatorTest {
         acdcSanta.setDescription("There's gonna be some santa'ing...\nAt the show...\r\n\r\ntonight.");
         acdcSanta.setLocalDateTime(localDateTime);
         acdcSanta.setPlace("Sydney");
-        Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
+        MonetaryAmount monetaryAmount = new MonetaryAmount();
         monetaryAmount.setCurrency(Monetary.getCurrency("AUD"));
         monetaryAmount.setNumber(BigDecimal.valueOf(78.50));
         acdcSanta.setMonetaryAmount(monetaryAmount);
-        Event.Host georgeYoung = new Event.Host();
+        Host georgeYoung = new Host();
         georgeYoung.setName("George Young");
         georgeYoung.setEmail("georgeyoung@acdc.net");
         acdcSanta.setHost(georgeYoung);

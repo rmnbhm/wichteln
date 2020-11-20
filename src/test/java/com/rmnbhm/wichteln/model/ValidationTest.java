@@ -64,15 +64,15 @@ public class ValidationTest {
         return angusYoung;
     }
 
-    private Event.Host validHost() {
-        Event.Host georgeYoung = new Event.Host();
+    private Host validHost() {
+        Host georgeYoung = new Host();
         georgeYoung.setName("George Young");
         georgeYoung.setEmail("angusyoung@acdc.net");
         return georgeYoung;
     }
 
-    private Event.MonetaryAmount validMonetaryAmount() {
-        Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
+    private MonetaryAmount validMonetaryAmount() {
+        MonetaryAmount monetaryAmount = new MonetaryAmount();
         monetaryAmount.setCurrency(Monetary.getCurrency("AUD"));
         monetaryAmount.setNumber(BigDecimal.valueOf(78.50));
         return monetaryAmount;
@@ -155,7 +155,7 @@ public class ValidationTest {
     @Test
     public void shouldFailEventWithInvalidMonetaryAmount() {
         Event event = validEvent();
-        Event.MonetaryAmount monetaryAmount = new Event.MonetaryAmount();
+        MonetaryAmount monetaryAmount = new MonetaryAmount();
         event.setMonetaryAmount(monetaryAmount);
 
         assertThat(validator.validate(event)).isNotEmpty();
@@ -163,7 +163,7 @@ public class ValidationTest {
 
     @Test
     public void shouldMonetaryAmountWithNegativeNumber() {
-        Event.MonetaryAmount monetaryAmount = validMonetaryAmount();
+        MonetaryAmount monetaryAmount = validMonetaryAmount();
         monetaryAmount.setNumber(BigDecimal.valueOf(-1));
 
         assertThat(validator.validate(monetaryAmount)).isNotEmpty();
@@ -171,7 +171,7 @@ public class ValidationTest {
 
     @Test
     public void shouldFailMonetaryAmountWithNullNumber() {
-        Event.MonetaryAmount monetaryAmount = validMonetaryAmount();
+        MonetaryAmount monetaryAmount = validMonetaryAmount();
         monetaryAmount.setNumber(null);
 
         assertThat(validator.validate(monetaryAmount)).isNotEmpty();
@@ -179,7 +179,7 @@ public class ValidationTest {
 
     @Test
     public void shouldFailMonetaryAmountWithNullCurrency() {
-        Event.MonetaryAmount monetaryAmount = validMonetaryAmount();
+        MonetaryAmount monetaryAmount = validMonetaryAmount();
         monetaryAmount.setCurrency(null);
 
         assertThat(validator.validate(monetaryAmount)).isNotEmpty();
@@ -245,21 +245,21 @@ public class ValidationTest {
     @Test
     public void shouldFailEventWithInvalidHost() {
         Event event = validEvent();
-        event.setHost(new Event.Host());
+        event.setHost(new Host());
 
         assertThat(validator.validate(event)).isNotEmpty();
     }
 
     @Test
     public void shouldAcceptValidHost() {
-        Event.Host host = validHost();
+        Host host = validHost();
 
         assertThat(validator.validate(host)).isEmpty();
     }
 
     @Test
     public void shouldFailHostWithTooLongName() {
-        Event.Host host = validHost();
+        Host host = validHost();
         host.setName(host.getName().repeat(20));
 
         assertThat(validator.validate(host)).isNotEmpty();
@@ -267,7 +267,7 @@ public class ValidationTest {
 
     @Test
     public void shouldFailHostWithEmptyName() {
-        Event.Host host = validHost();
+        Host host = validHost();
         host.setName("");
 
         assertThat(validator.validate(host)).isNotEmpty();
@@ -275,7 +275,7 @@ public class ValidationTest {
 
     @Test
     public void shouldFailHostWithWhitespaceName() {
-        Event.Host host = validHost();
+        Host host = validHost();
         host.setName(" ");
 
         assertThat(validator.validate(host)).isNotEmpty();
@@ -283,7 +283,7 @@ public class ValidationTest {
 
     @Test
     public void shouldFailHostWithNullName() {
-        Event.Host host = validHost();
+        Host host = validHost();
         host.setName(null);
 
         assertThat(validator.validate(host)).isNotEmpty();
@@ -291,7 +291,7 @@ public class ValidationTest {
 
     @Test
     public void shouldFailHostWithInvalidEmail() {
-        Event.Host host = validHost();
+        Host host = validHost();
         host.setEmail("not an email address");
 
         assertThat(validator.validate(host)).isNotEmpty();
@@ -299,7 +299,7 @@ public class ValidationTest {
 
     @Test
     public void shouldFailHostWithEmptyEmail() {
-        Event.Host host = validHost();
+        Host host = validHost();
         host.setEmail("");
 
         assertThat(validator.validate(host)).isNotEmpty();
@@ -307,7 +307,7 @@ public class ValidationTest {
 
     @Test
     public void shouldFailHostWithWhitespaceEmail() {
-        Event.Host host = validHost();
+        Host host = validHost();
         host.setEmail(" ");
 
         assertThat(validator.validate(host)).isNotEmpty();
@@ -315,7 +315,7 @@ public class ValidationTest {
 
     @Test
     public void shouldFailHostWithNullEmail() {
-        Event.Host host = validHost();
+        Host host = validHost();
         host.setEmail(null);
 
         assertThat(validator.validate(host)).isNotEmpty();
