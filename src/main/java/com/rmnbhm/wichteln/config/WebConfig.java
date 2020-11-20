@@ -6,4 +6,5 @@ public class WebConfig {
     public static final String PREVIEW_VIEW = "preview";
     public static final String ABOUT_VIEW = "about";
     public static final String PRIVACY_VIEW = "privacy";
+    public static final String ERROR_VIEW = "error";
 }
