@@ -21,5 +21,5 @@ Make sure you have `docker` and `docker-compose` installed. Then
 ## Upcoming Features
 - [x] An actual UI
 - [x] HTTPS access
-- [ ] A nice looking, mobile friendly UI
+- [x] A nice looking, mobile friendly UI
 - [ ] User accounts and, with it, wichtel events administration (necessitates a database)
