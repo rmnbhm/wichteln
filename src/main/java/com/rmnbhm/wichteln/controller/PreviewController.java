@@ -23,9 +23,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.rmnbhm.wichteln.config.WebConfig.PREVIEW_VIEW;
-import static com.rmnbhm.wichteln.config.WebConfig.WICHTELN_VIEW;
-
 @Controller
 @RequestMapping(path = "preview")
 public class PreviewController {
@@ -43,7 +40,7 @@ public class PreviewController {
         SimpleMailMessage mailPreview = wichtelnService.createPreview(event);
         LOGGER.debug("Previewed {}", event);
         return new ModelAndView(
-                PREVIEW_VIEW,
+                "preview",
                 Map.of(
                         "preview", mailPreview,
                         "currencies", CURRENCIES
@@ -60,10 +57,10 @@ public class PreviewController {
                     event,
                     bindingResult.getAllErrors().stream().map(ObjectError::toString).collect(Collectors.joining(", "))
             );
-            return new ModelAndView(WICHTELN_VIEW, Map.of("currencies", CURRENCIES), HttpStatus.BAD_REQUEST);
+            return new ModelAndView("wichteln", Map.of("currencies", CURRENCIES), HttpStatus.BAD_REQUEST);
         }
         wichtelnService.save(event);
         LOGGER.debug("Saved {}", event);
-        return new ModelAndView(new RedirectView(WICHTELN_VIEW));
+        return new ModelAndView(new RedirectView("wichteln"));
     }
 }

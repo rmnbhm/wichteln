@@ -9,8 +9,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static com.rmnbhm.wichteln.config.WebConfig.ERROR_VIEW;
-
 @ControllerAdvice
 public class ErrorController {
 
@@ -19,6 +17,6 @@ public class ErrorController {
     @ExceptionHandler(value = Throwable.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) {
         LOGGER.error("Encountered exception while requesting {}: {}", req.getRequestURI(), e.getMessage());
-        return new ModelAndView(ERROR_VIEW, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ModelAndView("error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

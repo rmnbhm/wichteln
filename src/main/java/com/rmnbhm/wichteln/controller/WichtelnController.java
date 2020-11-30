@@ -9,24 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.money.CurrencyUnit;
-import javax.money.Monetary;
 import javax.validation.Valid;
-import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.rmnbhm.wichteln.config.WebConfig.PREVIEW_VIEW;
-import static com.rmnbhm.wichteln.config.WebConfig.WICHTELN_VIEW;
 
 @Controller
 @RequestMapping(path = {"/", "/wichteln"})
@@ -41,7 +31,7 @@ public class WichtelnController {
 
     @GetMapping
     public ModelAndView getEvent() {
-        return new ModelAndView(WICHTELN_VIEW, Map.of("event", Event.withMinimalDefaults()), HttpStatus.OK);
+        return new ModelAndView("wichteln", Map.of("event", Event.withMinimalDefaults()), HttpStatus.OK);
     }
 
     @PostMapping
@@ -59,17 +49,17 @@ public class WichtelnController {
                             .map(ObjectError::toString)
                             .collect(Collectors.joining(", "))
             );
-            return new ModelAndView(WICHTELN_VIEW, HttpStatus.BAD_REQUEST);
+            return new ModelAndView("wichteln", HttpStatus.BAD_REQUEST);
         }
         redirectAttributes.addFlashAttribute("event", event);
-        return new ModelAndView(new RedirectView(PREVIEW_VIEW));
+        return new ModelAndView(new RedirectView("preview"));
     }
 
     @PostMapping("/add")
     public ModelAndView addParticipant(@ModelAttribute Event event) {
         event.addParticipant(new Participant());
         LOGGER.debug("Added participant to {}", event);
-        return new ModelAndView(WICHTELN_VIEW, HttpStatus.OK);
+        return new ModelAndView("wichteln", HttpStatus.OK);
     }
 
     @PostMapping("/remove/{index}")
@@ -80,6 +70,6 @@ public class WichtelnController {
         event.removeParticipantNumber(participantIndex);
         LOGGER.debug("Removed participant {} from {}", participantIndex, event);
 
-        return new ModelAndView(WICHTELN_VIEW, HttpStatus.OK);
+        return new ModelAndView("wichteln", HttpStatus.OK);
     }
 }
