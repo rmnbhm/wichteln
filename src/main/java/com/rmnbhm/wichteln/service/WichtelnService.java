@@ -3,6 +3,7 @@ package com.rmnbhm.wichteln.service;
 import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.Participant;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,21 +31,32 @@ public class WichtelnService {
         List<ParticipantsMatch> matches = matcher.match(event.getParticipants());
         matches.forEach(match -> {
             SimpleMailMessage message = mailCreator.createMessage(event, match);
-            LOGGER.info("Sent {} to {}", StringEscapeUtils.escapeJava(message.toString()), match.getDonor());
+            LOGGER.info(
+                    "Sent {} to {}",
+                    StringUtils.abbreviate(
+                            // Escape java since `SimpleMailMessage::toString` includes linebreaks.
+                            StringEscapeUtils.escapeJava(message.toString()),
+                            50
+                    ),
+                    match.getDonor()
+            );
             mailSender.send(message);
         });
     }
 
     public SimpleMailMessage createPreview(Event event) {
-        Participant donor = new Participant();
-        donor.setName("Angus Young");
-        donor.setEmail("angusyoung@acdc.net");
-        Participant recipient = new Participant();
-        recipient.setName("Phil Rudd");
-        recipient.setEmail("philrudd@acdc.net");
+        Participant exampleDonor = new Participant();
+        exampleDonor.setName("Angus Young");
+        exampleDonor.setEmail("angusyoung@acdc.net");
+        Participant exampleRecipient = new Participant();
+        exampleRecipient.setName("Phil Rudd");
+        exampleRecipient.setEmail("philrudd@acdc.net");
         return mailCreator.createMessage(
                 event,
-                new ParticipantsMatch(new ParticipantsMatch.Donor(donor), new ParticipantsMatch.Recipient(recipient))
+                new ParticipantsMatch(
+                        new ParticipantsMatch.Donor(exampleDonor),
+                        new ParticipantsMatch.Recipient(exampleRecipient)
+                )
         );
     }
 }
