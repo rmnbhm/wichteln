@@ -32,7 +32,7 @@ public class ParticipantsMatch {
     }
 
 
-    public static final class Recipient {
+    public static class Recipient {
         private final Participant participant;
 
         public Recipient(Participant participant) {
@@ -53,7 +53,7 @@ public class ParticipantsMatch {
         }
     }
 
-    public static final class Donor {
+    public static class Donor {
         private final Participant participant;
 
         public Donor(Participant participant) {
