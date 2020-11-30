@@ -1,5 +1,7 @@
 package com.rmnbhm.wichteln.model;
 
+import com.rmnbhm.wichteln.validation.NoHtml;
+import com.rmnbhm.wichteln.validation.NoJavaControlCharacters;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -30,10 +32,14 @@ public class Event {
 
     @NotBlank
     @Size(max = 100)
+    @NoJavaControlCharacters
+    @NoHtml
     private String title;
 
     @NotBlank
     @Size(max = 1000)
+    @NoJavaControlCharacters
+    @NoHtml
     private String description;
 
     @NotNull
@@ -47,6 +53,8 @@ public class Event {
 
     @NotBlank
     @Size(max = 100)
+    @NoJavaControlCharacters
+    @NoHtml
     private String place;
 
     @NotNull
@@ -133,12 +141,8 @@ public class Event {
         return String.format(
                 "Event(title=%s, description=%s, monetaryAmount=%s, localDateTime=%s, place=%s, host=%s, participants=%s)",
                 this.getTitle(),
-                // Since `Event#description` backs an `input[@type="textarea"]` element which allows for line breaks
-                // we make sure we prevent
-                // - line breaks
-                // - too long text
-                // in logs.
-                StringUtils.abbreviate(StringEscapeUtils.escapeJava(this.getDescription()), 50),
+                // Make sure text is not too long since `Event#description` allows for up to 1000 characters.
+                StringUtils.abbreviate(this.getDescription(), 50),
                 this.getMonetaryAmount(),
                 this.getLocalDateTime(),
                 this.getPlace(),

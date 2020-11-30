@@ -147,7 +147,23 @@ public class ValidationTest {
     @Test
     public void shouldFailEventWithWhitespaceDescription() {
         Event event = validEvent();
-        event.setTitle(" ");
+        event.setDescription(" ");
+
+        assertThat(validator.validate(event)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailEventWithJavaControlCharactersInDescription() {
+        Event event = validEvent();
+        event.setDescription("my\\ndescription");
+
+        assertThat(validator.validate(event)).isNotEmpty();
+    }
+
+    @Test
+    public void shouldFailEventWithHtmlInDescription() {
+        Event event = validEvent();
+        event.setDescription("my<span>title</span>");
 
         assertThat(validator.validate(event)).isNotEmpty();
     }
