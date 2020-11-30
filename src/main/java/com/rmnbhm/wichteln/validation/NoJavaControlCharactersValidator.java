@@ -25,7 +25,7 @@ public class NoJavaControlCharactersValidator implements ConstraintValidator<NoJ
         boolean containsJavaControlCharacters = javaEscaped.length() > value.length();
         if (containsJavaControlCharacters) {
             LOGGER.warn(
-                    "User tried to enter description containing Java control characters: {} (escaped)", javaEscaped
+                    "User tried to enter text containing Java control characters: {} (escaped)", javaEscaped
             );
             context
                     .buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
