@@ -3,7 +3,6 @@ package com.rmnbhm.wichteln.model;
 import com.rmnbhm.wichteln.validation.NoHtml;
 import com.rmnbhm.wichteln.validation.NoJavaControlCharacters;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.money.Monetary;
