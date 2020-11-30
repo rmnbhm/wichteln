@@ -24,9 +24,7 @@ public class NoHtmlValidator implements ConstraintValidator<NoHtml, String> {
         // e.g. "<" turns to "&lt;".
         boolean containsHtml = htmlEscaped.length() > value.length();
         if (containsHtml) {
-            LOGGER.warn(
-                    "User tried to enter description containing Java control characters: {} (escaped)", htmlEscaped
-            );
+            LOGGER.warn("User tried to enter description containing HTML: {} (escaped)", htmlEscaped);
             context
                     .buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
                     .addConstraintViolation();
