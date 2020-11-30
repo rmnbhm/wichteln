@@ -10,6 +10,8 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 public class ScreenshotOnFailureExtension implements AfterEachCallback {
@@ -27,7 +29,7 @@ public class ScreenshotOnFailureExtension implements AfterEachCallback {
                 Path path = Paths
                         .get("target/selenium-screenshots")
                         .resolve(String.format("%s-%s-%s.png",
-                                UUID.randomUUID(),
+                                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss")),
                                 extensionContext.getRequiredTestClass().getName(),
                                 extensionContext.getRequiredTestMethod().getName()));
 
