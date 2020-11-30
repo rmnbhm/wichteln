@@ -54,7 +54,10 @@ public class WichtelnController {
             LOGGER.debug(
                     "Failed to create {} because {}",
                     event,
-                    bindingResult.getAllErrors().stream().map(ObjectError::toString).collect(Collectors.joining(", "))
+                    bindingResult.getAllErrors()
+                            .stream()
+                            .map(ObjectError::toString)
+                            .collect(Collectors.joining(", "))
             );
             return new ModelAndView(WICHTELN_VIEW, HttpStatus.BAD_REQUEST);
         }
