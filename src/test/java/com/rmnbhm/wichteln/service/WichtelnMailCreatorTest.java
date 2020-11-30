@@ -20,7 +20,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(MockitoExtension.class)
 public class WichtelnMailCreatorTest {
 
     private final WichtelnMailCreator wichtelnMailCreator = new WichtelnMailCreator();
@@ -137,8 +136,6 @@ public class WichtelnMailCreatorTest {
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
                 new Donor(acdcSanta.getParticipants().get(0)), new Recipient(acdcSanta.getParticipants().get(1))
         );
-
-        System.out.println(acdcSanta.toString());
 
         SimpleMailMessage mail = wichtelnMailCreator.createMessage(acdcSanta, angusGiftsToMalcolm);
 
