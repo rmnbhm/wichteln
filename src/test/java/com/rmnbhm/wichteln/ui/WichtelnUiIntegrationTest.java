@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class WichtelnUiIntegrationTest {
 
     private final static String HOST_IP_ADDRESS = SystemUtils.IS_OS_LINUX ? "172.17.0.1" : "host.docker.internal";
-    private static final String ADD_PARTICIPANT_BUTTON_ID = "add-participant-button";
+    private final static String ADD_PARTICIPANT_BUTTON_ID = "add-participant-button";
     private final static String FORM_ID = "event-creation-form";
     private final static String TITLE_ID = "title";
     private final static String TITLE_ERROR_ID = TITLE_ID + "-error";
