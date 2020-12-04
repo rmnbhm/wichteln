@@ -10,9 +10,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
-public class ErrorController {
+public class ErrorAdvice {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ErrorController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ErrorAdvice.class);
 
     @ExceptionHandler(value = Throwable.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) {

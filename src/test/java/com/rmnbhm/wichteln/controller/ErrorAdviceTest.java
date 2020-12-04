@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "spring.mail.protocol=smtp"
 })
 @AutoConfigureMockMvc
-public class ErrorControllerTest {
+public class ErrorAdviceTest {
 
     @Controller
     private static class ThrowingController {

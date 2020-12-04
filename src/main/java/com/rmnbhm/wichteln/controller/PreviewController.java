@@ -1,11 +1,11 @@
 package com.rmnbhm.wichteln.controller;
 
 import com.rmnbhm.wichteln.model.Event;
+import com.rmnbhm.wichteln.model.WichtelnMail;
 import com.rmnbhm.wichteln.service.WichtelnService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -37,12 +37,12 @@ public class PreviewController {
 
     @GetMapping
     public ModelAndView getPreview(@ModelAttribute @Valid Event event) {
-        SimpleMailMessage mailPreview = wichtelnService.createPreview(event);
-        LOGGER.debug("Previewed {}", event);
+        WichtelnMail preview = wichtelnService.createPreview(event);
+        LOGGER.info("Previewed {}", event);
         return new ModelAndView(
                 "preview",
                 Map.of(
-                        "preview", mailPreview,
+                        "preview", preview,
                         "currencies", CURRENCIES
                 ),
                 HttpStatus.OK
@@ -60,7 +60,7 @@ public class PreviewController {
             return new ModelAndView("wichteln", Map.of("currencies", CURRENCIES), HttpStatus.BAD_REQUEST);
         }
         wichtelnService.save(event);
-        LOGGER.debug("Saved {}", event);
+        LOGGER.info("Saved {}", event);
         return new ModelAndView(new RedirectView("wichteln"));
     }
 }
