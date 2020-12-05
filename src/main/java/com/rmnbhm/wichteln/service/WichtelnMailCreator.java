@@ -22,7 +22,6 @@ public class WichtelnMailCreator {
 
     @Autowired
     private final TemplateEngine templateEngine;
-
     @Autowired
     private final JavaMailSender mailSender;
 
@@ -32,16 +31,24 @@ public class WichtelnMailCreator {
     }
 
     public WichtelnMail createMessage(Event event, ParticipantsMatch match) {
+        return createMessage(event, match, MailMode.TEXT);
+    }
+
+    public WichtelnMail createMessage(Event event, ParticipantsMatch match, MailMode mailMode) {
         try {
-            return new WichtelnMail(createMimeMessage(event, match.getDonor(), match.getRecipient()));
+            return new WichtelnMail(createMimeMessage(event, match.getDonor(), match.getRecipient(), mailMode));
         } catch (MessagingException e) {
             // Re-throw as custom `RuntimeException` to be handled by upstream by `ErrorController`
             throw new WichtelnMailCreationException();
         }
     }
 
-
-    private MimeMessage createMimeMessage(Event event, Donor donor, Recipient recipient) throws MessagingException {
+    private MimeMessage createMimeMessage(
+            Event event,
+            Donor donor,
+            Recipient recipient,
+            MailMode mailMode
+    ) throws MessagingException {
         Context ctx = new Context();
         ctx.setVariable("event", event);
         ctx.setVariable("donor", donor);
@@ -53,12 +60,21 @@ public class WichtelnMailCreator {
         message.setFrom("wichteln@romanboehm.com");
         message.setTo(donor.getEmail());
 
-        // Create the plain TEXT body using Thymeleaf
-        String textContent = templateEngine.process("mail.txt", ctx);
+        String textContent = templateEngine.process(mailMode.file, ctx);
         message.setText(textContent);
 
-        // Send email
         return mimeMessage;
+    }
+
+    public enum MailMode {
+        TEXT("mail.txt"),
+        HTML("mail.html");
+
+        private final String file;
+
+        MailMode(String file) {
+            this.file = file;
+        }
     }
 
 }

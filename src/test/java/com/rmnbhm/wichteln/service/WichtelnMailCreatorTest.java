@@ -76,7 +76,7 @@ public class WichtelnMailCreatorTest {
 
         assertThat(mail).isNotNull();
         assertThat(mail.subject()).isEqualTo("You have been invited to wichtel at AC/DC Secret Santa");
-        assertThat(mail.text())
+        assertThat(mail.body())
                 .isEqualTo(
                         "Hey Angus Young,\n" +
                         "\n" +
@@ -90,7 +90,7 @@ public class WichtelnMailCreatorTest {
                         "\n" +
                         "Here's what the event's host says about it:\n" +
                         "\n" +
-                        "There's gonna be some santa'ing\n" +
+                        "\"There's gonna be some santa'ing\"\n" +
                         "\n" +
                         "If you have any questions, contact the event's host George Young at georgeyoung@acdc.net.\n" +
                         "\n" +

@@ -39,11 +39,11 @@ public class WichtelnMail {
         }
     }
 
-    public String text() {
+    public String body() {
         try {
             return mimeMessage.getContent().toString();
         } catch (IOException | MessagingException e) {
-            throw new IllegalWichtelnMailStateException("text");
+            throw new IllegalWichtelnMailStateException("body");
         }
     }
 
@@ -53,6 +53,6 @@ public class WichtelnMail {
 
     @Override
     public String toString() {
-        return String.format("WichtelnMail(from=%s, to=%s, subject=%s, text=%s)", from(), to(), subject(), text());
+        return String.format("WichtelnMail(from=%s, to=%s, subject=%s, body=%s)", from(), to(), subject(), body());
     }
 }

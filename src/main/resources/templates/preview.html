@@ -25,7 +25,7 @@
             <p th:text="'SUBJECT: ' + ${preview.subject()}"></p>
             <p>TEXT:</p>
             <blockquote style="background: #eee;border-radius: 5px; padding: 15px;"
-                        th:utext="${#strings.replace(preview.text(), T(org.apache.commons.lang3.StringUtils).LF, '&lt;br /&gt;')}">
+                        th:utext="${preview.body()}"> <!-- Use `th:utext` to include HTML tags unescaped -->
             </blockquote>
         </div>
     </form>

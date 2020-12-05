@@ -28,7 +28,7 @@ public class WichtelnService {
     public void save(Event event) {
         List<ParticipantsMatch> matches = matcher.match(event.getParticipants());
         matches.forEach(match -> {
-            WichtelnMail mail = mailCreator.createMessage(event, match);
+            WichtelnMail mail = mailCreator.createMessage(event, match, WichtelnMailCreator.MailMode.TEXT);
             LOGGER.debug("Created {} for {} matching {}", mail, event, match);
             mailSender.send(mail.getMimeMessage());
             LOGGER.debug("Sent {} for {} matching {}", mail, event, match);
@@ -47,7 +47,8 @@ public class WichtelnService {
                 new ParticipantsMatch(
                         new ParticipantsMatch.Donor(exampleDonor),
                         new ParticipantsMatch.Recipient(exampleRecipient)
-                )
+                ),
+                WichtelnMailCreator.MailMode.HTML
         );
         LOGGER.debug("Created {} as preview for {}", preview, event);
         return preview;
