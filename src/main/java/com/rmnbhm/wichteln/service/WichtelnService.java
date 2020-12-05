@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class WichtelnService {
@@ -35,22 +36,18 @@ public class WichtelnService {
         });
     }
 
-    public WichtelnMail createPreview(Event event) {
-        Participant exampleDonor = new Participant();
-        exampleDonor.setName("Angus Young");
-        exampleDonor.setEmail("angusyoung@acdc.net");
-        Participant exampleRecipient = new Participant();
-        exampleRecipient.setName("Phil Rudd");
-        exampleRecipient.setEmail("philrudd@acdc.net");
-        WichtelnMail preview = mailCreator.createMessage(
-                event,
-                new ParticipantsMatch(
-                        new ParticipantsMatch.Donor(exampleDonor),
-                        new ParticipantsMatch.Recipient(exampleRecipient)
-                ),
-                WichtelnMailCreator.MailMode.HTML
+    public Map<String, Object> previewData() {
+        Participant angusYoung = new Participant();
+        angusYoung.setName("Angus Young");
+        angusYoung.setEmail("angusyoung@acdc.net");
+        Participant philRudd = new Participant();
+        philRudd.setName("Phil Rudd");
+        philRudd.setEmail("philrudd@acdc.net");
+        ParticipantsMatch.Donor donor = new ParticipantsMatch.Donor(angusYoung);
+        ParticipantsMatch.Recipient recipient = new ParticipantsMatch.Recipient(philRudd);
+        return Map.of(
+                "donor", donor,
+                "recipient", recipient
         );
-        LOGGER.debug("Created {} as preview for {}", preview, event);
-        return preview;
     }
 }

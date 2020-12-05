@@ -1,23 +1,18 @@
 package com.rmnbhm.wichteln.service;
 
 import com.rmnbhm.wichteln.TestData;
-import com.rmnbhm.wichteln.model.*;
+import com.rmnbhm.wichteln.model.Event;
+import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Donor;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Recipient;
+import com.rmnbhm.wichteln.model.WichtelnMail;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.test.context.ContextConfiguration;
-import org.thymeleaf.TemplateEngine;
 
-import javax.money.Monetary;
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

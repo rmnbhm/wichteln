@@ -20,8 +20,9 @@
             <button type="button" id="back-button" class="btn btn-secondary my-3 mr-3" onclick="history.back()">Back
             </button>
             <button type="submit" id="submit-button" class="btn btn-primary my-3">Submit</button>
-            <blockquote style="background: #eee;border-radius: 5px; padding: 15px;"
-                        th:utext="${preview.body()}"> <!-- Use `th:utext` to include HTML tags unescaped -->
+            <p>This is what your email will look like:</p>
+            <blockquote style="background: #eee;border-radius: 5px; padding: 15px;">
+                <div th:replace="fragments/mail :: mail"></div>
             </blockquote>
         </div>
     </form>

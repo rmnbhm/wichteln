@@ -68,7 +68,7 @@ public class WichtelnMailCreator {
 
     public enum MailMode {
         TEXT("mail.txt"),
-        HTML("mail.html");
+        HTML("fragments/mail.html");
 
         private final String file;
 

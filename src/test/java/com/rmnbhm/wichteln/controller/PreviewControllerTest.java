@@ -23,11 +23,7 @@ import org.springframework.web.servlet.FlashMap;
 
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -122,6 +118,11 @@ public class PreviewControllerTest {
 
     @Test
     public void shouldPreview() throws Exception {
+        LocalDateTime localDateTime = Instant.now()
+                .plus(1, ChronoUnit.DAYS)
+                .atZone(ZoneId.of("Europe/Berlin"))
+                .toLocalDateTime();
+
         FlashMap flashMap = mockMvc.perform(post("/wichteln")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .params(TestData.event().asFormParams())
@@ -134,41 +135,20 @@ public class PreviewControllerTest {
         mockMvc.perform(get("/preview").flashAttrs(flashMap))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().string(containsString(
-                        //TODO: fix expected value
-                        "<p>Hey Angus Young,</p>"/* +
-                                "<p>You have been invited to wichtel at AC/DC Secret Santa (<a href=\"https://wichteln.rmnbhm.com/about\">https://wichteln.rmnbhm.com/about</a>)!<br/>" +
-                                "You're therefore asked to give a gift to Phil Rudd. The gift's monetary value should not exceed AUD 78.50.<br/>" +
-                                String.format(
-                                        "The event will take place at Sydney Harbor on %s at %s local time.</p>",
-                                        LocalDate.from(localDateTime),
-                                        LocalTime.from(localDateTime).truncatedTo(ChronoUnit.MINUTES)
-                                ) +
-                                "<p>Here's what the event's host says about it:</p>" +
-                                <p>"\"There's gonna be some santa'ing\"</p>" +
-                                "<p>If you have any questions, contact the event's host George Young at georgeyoung@acdc.net.</p>" +
-                                "<p>This mail was generated using <a href="https://wichteln.rmnbhm.com">https://wichteln.rmnbhm.com</a>"*/
+                "<p>Hey <span>Angus Young</span>,</p>" +
+                        "<p>You have been invited to wichtel at <span>AC/DC Secret Santa</span> (<a href=\"https://wichteln.rmnbhm.com/about\">https://wichteln.rmnbhm.com/about</a>)!<br/>" +
+                        "You're therefore asked to give a gift to <span>Phil Rudd</span>. The gift's monetary value should not exceed <span>AUD 78.50</span>.<br/>" +
+                        String.format(
+                                "The event will take place at <span>Sydney Harbor</span> on <span>%s</span> at <span>%s</span> local time.</p>",
+                                LocalDate.from(localDateTime),
+                                LocalTime.from(localDateTime).truncatedTo(ChronoUnit.MINUTES)
+                        ) +
+                        "The event will take place at <span>Sydney Harbor</span> on <span>2020-12-06</span> at <span>20:Sydney Harbor33</span> local time.</p>" +
+                        "<p>Here's what the event's host says about it:</p>" +
+                        "<p>\"<span>There&#39;s gonna be some santa&#39;ing</span>\"</p>" +
+                        "<p>If you have any questions, contact the event's host <span>George Young</span> at <a href=\"mailto:georgeyoung@acdc.net\"><span>georgeyoung@acdc.net</span></a>.</p>" +
+                        "<p>This mail was generated using <a href=\"https://wichteln.rmnbhm.com\">https://wichteln.rmnbhm.com</a></p>"
                 )));
-    }
-
-
-    @Test
-    public void shouldShowErrorPageWhenMailCannotBeCreated() throws Exception {
-        Mockito
-                .doThrow(WichtelnMailCreationException.class)
-                .when(wichtelnMailCreator).createMessage(any(), any(), any());
-
-        FlashMap flashMap = mockMvc.perform(post("/wichteln")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .params(TestData.event().asFormParams())
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("preview"))
-                .andExpect(flash().attributeCount(1))
-                .andReturn().getFlashMap();
-
-        mockMvc.perform(get("/preview").flashAttrs(flashMap))
-                .andExpect(status().is5xxServerError())
-                .andExpect(view().name("error"));
     }
 
     @Test

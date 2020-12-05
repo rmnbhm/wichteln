@@ -1,7 +1,8 @@
 package com.rmnbhm.wichteln.controller;
 
 import com.rmnbhm.wichteln.model.Event;
-import com.rmnbhm.wichteln.model.WichtelnMail;
+import com.rmnbhm.wichteln.model.Participant;
+import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import com.rmnbhm.wichteln.service.WichtelnService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,11 +38,10 @@ public class PreviewController {
 
     @GetMapping
     public ModelAndView getPreview(@ModelAttribute @Valid Event event) {
-        WichtelnMail preview = wichtelnService.createPreview(event);
         LOGGER.info("Previewed {}", event);
         return new ModelAndView(
                 "preview",
-                Map.of("preview", preview),
+                wichtelnService.previewData(),
                 HttpStatus.OK
         );
     }
