@@ -7,6 +7,9 @@ import com.rmnbhm.wichteln.model.ParticipantsMatch.Recipient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.test.context.ContextConfiguration;
+import org.thymeleaf.TemplateEngine;
 
 import javax.money.Monetary;
 import java.math.BigDecimal;
@@ -32,29 +35,7 @@ public class WichtelnMailCreatorTest {
 
     @Test
     public void shouldHandleToAndFromCorrectly() {
-        Event acdcSanta = new Event();
-        acdcSanta.setTitle("AC/DC Secret Santa");
-        acdcSanta.setDescription("There's gonna be some santa'ing");
-        acdcSanta.setLocalDateTime(LocalDateTime.now().plus(1, ChronoUnit.DAYS));
-        acdcSanta.setPlace("Sydney Harbor");
-        MonetaryAmount monetaryAmount = new MonetaryAmount();
-        monetaryAmount.setCurrency(Monetary.getCurrency("AUD"));
-        monetaryAmount.setNumber(BigDecimal.valueOf(78.50));
-        acdcSanta.setMonetaryAmount(monetaryAmount);
-        Host georgeYoung = new Host();
-        georgeYoung.setName("George Young");
-        georgeYoung.setEmail("georgeyoung@acdc.net");
-        acdcSanta.setHost(georgeYoung);
-        Participant angusYoung = new Participant();
-        angusYoung.setName("Angus Young");
-        angusYoung.setEmail("angusyoung@acdc.net");
-        Participant malcolmYoung = new Participant();
-        malcolmYoung.setName("Malcolm Young");
-        malcolmYoung.setEmail("malcolmyoung@acdc.net");
-        Participant philRudd = new Participant();
-        philRudd.setName("Phil Rudd");
-        philRudd.setEmail("philrudd@acdc.net");
-        acdcSanta.setParticipants(List.of(angusYoung, malcolmYoung, philRudd));
+        Event acdcSanta = TestData.event().asObject();
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
                 new Donor(acdcSanta.getParticipants().get(0)), new Recipient(acdcSanta.getParticipants().get(1))
         );
