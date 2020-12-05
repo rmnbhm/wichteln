@@ -79,10 +79,6 @@ public class PreviewControllerTest {
 
     @Test
     public void shouldInform() throws Exception {
-        String localDateTime = Instant.now().plus(1, ChronoUnit.DAYS)
-                .atZone(ZoneId.of("Europe/Berlin"))
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-
         mockMvc.perform(
                 post("/preview")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -126,9 +122,6 @@ public class PreviewControllerTest {
 
     @Test
     public void shouldPreview() throws Exception {
-        ZonedDateTime localDateTime = Instant.now().plus(1, ChronoUnit.DAYS)
-                .atZone(ZoneId.of("Europe/Berlin"));
-
         FlashMap flashMap = mockMvc.perform(post("/wichteln")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .params(TestData.event().asFormParams())
