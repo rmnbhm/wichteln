@@ -4,6 +4,7 @@ import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
+import com.rmnbhm.wichteln.TestData;
 import com.rmnbhm.wichteln.exception.WichtelnMailCreationException;
 import com.rmnbhm.wichteln.service.WichtelnMailCreator;
 import org.junit.jupiter.api.AfterEach;
@@ -82,20 +83,7 @@ public class PreviewControllerTest {
         mockMvc.perform(
                 post("/preview")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("title", "AC/DC Secret Santa")
-                        .param("description", "There's gonna be some santa'ing")
-                        .param("monetaryAmount.number", "78.50")
-                        .param("monetaryAmount.currency", "AUD")
-                        .param("localDateTime", localDateTime)
-                        .param("place", "Sydney")
-                        .param("host.name", "George Young")
-                        .param("host.email", "georgeyoung@acdc.net")
-                        .param("participants[0].name", "Angus Young")
-                        .param("participants[0].email", "angusyoung@acdc.net")
-                        .param("participants[1].name", "Malcolm Young")
-                        .param("participants[1].email", "malcolmyoung@acdc.net")
-                        .param("participants[2].name", "Phil Rudd")
-                        .param("participants[2].email", "philrudd@acdc.net")
+                        .params(TestData.event().asFormParams())
 
         )
                 .andExpect(status().is3xxRedirection());
@@ -114,28 +102,18 @@ public class PreviewControllerTest {
 
     @Test
     public void shouldStillValidateToPreventHiddenFormTampering() throws Exception {
-        String invalidDateTime = Instant.now().minus(1, ChronoUnit.DAYS)
+        LocalDateTime invalidDateTime = Instant.now().minus(1, ChronoUnit.DAYS)
                 .atZone(ZoneId.of("Europe/Berlin"))
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+                .toLocalDateTime();
 
         mockMvc.perform(
                 post("/preview")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("title", "AC/DC Secret Santa")
-                        .param("description", "There's gonna be some santa'ing")
-                        .param("monetaryAmount.number", "78.50")
-                        .param("monetaryAmount.currency", "AUD")
-                        .param("localDateTime", invalidDateTime)
-                        .param("place", "Sydney")
-                        .param("host.name", "George Young")
-                        .param("host.email", "georgeyoung@acdc.net")
-                        .param("participants[0].name", "Angus Young")
-                        .param("participants[0].email", "angusyoung@acdc.net")
-                        .param("participants[1].name", "Malcolm Young")
-                        .param("participants[1].email", "malcolmyoung@acdc.net")
-                        .param("participants[2].name", "Phil Young")
-                        .param("participants[2].email", "philrudd@acdc.net")
-
+                        .params(
+                                TestData.event()
+                                        .modifying(event -> event.setLocalDateTime(invalidDateTime))
+                                        .asFormParams()
+                        )
         )
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().string(containsString("Must take place in the future.")));
@@ -150,21 +128,7 @@ public class PreviewControllerTest {
 
         FlashMap flashMap = mockMvc.perform(post("/wichteln")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("title", "AC/DC Secret Santa")
-                .param("description", "There's gonna be some santa'ing")
-                .param("monetaryAmount.number", "78.50")
-                .param("monetaryAmount.currency", "AUD")
-                .param("localDateTime", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")))
-                .param("place", "Sydney Harbor")
-                .param("host.name", "George Young")
-                .param("host.email", "georgeyoung@acdc.net")
-                .param("participants[0].name", "Angus Young")
-                .param("participants[0].email", "angusyoung@acdc.net")
-                .param("participants[1].name", "Malcolm Young")
-                .param("participants[1].email", "malcolmyoung@acdc.net")
-                .param("participants[2].name", "Phil Rudd")
-                .param("participants[2].email", "philrudd@acdc.net")
-
+                .params(TestData.event().asFormParams())
         )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("preview"))
@@ -206,26 +170,9 @@ public class PreviewControllerTest {
     public void shouldShowErrorPageWhenMailCannotBeCreated() throws Exception {
         Mockito.doThrow(WichtelnMailCreationException.class).when(wichtelnMailCreator).createMessage(any(), any());
 
-        ZonedDateTime localDateTime = Instant.now().plus(1, ChronoUnit.DAYS)
-                .atZone(ZoneId.of("Europe/Berlin"));
-
         FlashMap flashMap = mockMvc.perform(post("/wichteln")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("title", "AC/DC Secret Santa")
-                .param("description", "There's gonna be some santa'ing")
-                .param("monetaryAmount.number", "78.50")
-                .param("monetaryAmount.currency", "AUD")
-                .param("localDateTime", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")))
-                .param("place", "Sydney Harbor")
-                .param("host.name", "George Young")
-                .param("host.email", "georgeyoung@acdc.net")
-                .param("participants[0].name", "Angus Young")
-                .param("participants[0].email", "angusyoung@acdc.net")
-                .param("participants[1].name", "Malcolm Young")
-                .param("participants[1].email", "malcolmyoung@acdc.net")
-                .param("participants[2].name", "Phil Rudd")
-                .param("participants[2].email", "philrudd@acdc.net")
-
+                .params(TestData.event().asFormParams())
         )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("preview"))
@@ -239,28 +186,12 @@ public class PreviewControllerTest {
 
     @Test
     public void shouldShowErrorPageWhenMailCannotBeSent() throws Exception {
-        Mockito.doThrow(new MailException("error") {}).when(mailSender).send(any(MimeMessage.class));
-
-        ZonedDateTime localDateTime = Instant.now().plus(1, ChronoUnit.DAYS)
-                .atZone(ZoneId.of("Europe/Berlin"));
+        Mockito.doThrow(new MailException("error") {
+        }).when(mailSender).send(any(MimeMessage.class));
 
         FlashMap flashMap = mockMvc.perform(post("/wichteln")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("title", "AC/DC Secret Santa")
-                .param("description", "There's gonna be some santa'ing")
-                .param("monetaryAmount.number", "78.50")
-                .param("monetaryAmount.currency", "AUD")
-                .param("localDateTime", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")))
-                .param("place", "Sydney Harbor")
-                .param("host.name", "George Young")
-                .param("host.email", "georgeyoung@acdc.net")
-                .param("participants[0].name", "Angus Young")
-                .param("participants[0].email", "angusyoung@acdc.net")
-                .param("participants[1].name", "Malcolm Young")
-                .param("participants[1].email", "malcolmyoung@acdc.net")
-                .param("participants[2].name", "Phil Rudd")
-                .param("participants[2].email", "philrudd@acdc.net")
-
+                .params(TestData.event().asFormParams())
         )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("preview"))
@@ -272,20 +203,7 @@ public class PreviewControllerTest {
 
         mockMvc.perform(post("/preview")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("title", "AC/DC Secret Santa")
-                .param("description", "There's gonna be some santa'ing")
-                .param("monetaryAmount.number", "78.50")
-                .param("monetaryAmount.currency", "AUD")
-                .param("localDateTime", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")))
-                .param("place", "Sydney Harbor")
-                .param("host.name", "George Young")
-                .param("host.email", "georgeyoung@acdc.net")
-                .param("participants[0].name", "Angus Young")
-                .param("participants[0].email", "angusyoung@acdc.net")
-                .param("participants[1].name", "Malcolm Young")
-                .param("participants[1].email", "malcolmyoung@acdc.net")
-                .param("participants[2].name", "Phil Rudd")
-                .param("participants[2].email", "philrudd@acdc.net")
+                .params(TestData.event().asFormParams())
         )
                 .andExpect(status().is5xxServerError())
                 .andExpect(view().name("error"));

@@ -1,5 +1,6 @@
 package com.rmnbhm.wichteln.validation;
 
+import com.rmnbhm.wichteln.TestData;
 import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.Host;
 import com.rmnbhm.wichteln.model.MonetaryAmount;
@@ -20,7 +21,7 @@ public class EventValidationTest extends BaseValidationTest {
 
     @Test
     public void shouldAcceptValidEvent() {
-        Event event = TestData.event();
+        Event event = TestData.event().asObject();
 
         assertThat(getValidator().validate(event)).isEmpty();
     }
@@ -30,7 +31,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithTooLongPlace() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setPlace(event.getPlace().repeat(100));
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -38,7 +39,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithNullPlace() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setPlace(null);
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -46,7 +47,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithEmptyPlace() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setPlace("");
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -54,7 +55,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithWhitespacePlace() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setPlace(" ");
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -62,7 +63,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithJavaControlCharactersInPlace() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setPlace("my\\ndplace");
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -70,7 +71,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithHtmlInPlace() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setPlace("my<span>place</span>");
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -82,7 +83,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithInvalidMonetaryAmount() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             MonetaryAmount monetaryAmount = new MonetaryAmount();
             event.setMonetaryAmount(monetaryAmount);
 
@@ -91,7 +92,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithNullMonetaryAmount() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setMonetaryAmount(null);
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -99,7 +100,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithNullHost() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setHost(null);
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -107,7 +108,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithInvalidHost() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setHost(new Host());
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -115,7 +116,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithNullParticipants() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setParticipants(null);
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -123,7 +124,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithLessThanThreeParticipants() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             List<Participant> oneParticipantTooFew = IntStream.rangeClosed(1, 2)
                     .mapToObj(value -> {
                         Participant participant = new Participant();
@@ -138,7 +139,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithMoreThanOneHundredParticipants() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             List<Participant> oneParticipantTooMany = IntStream.rangeClosed(1, 101)
                     .mapToObj(value -> {
                         Participant participant = new Participant();
@@ -153,7 +154,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithInvalidParticipant() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             Participant participant = new Participant();
             participant.setName(null);
             participant.setEmail(null);
@@ -172,7 +173,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithTooLongTitle() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setTitle(event.getTitle().repeat(100));
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -180,7 +181,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithNullTitle() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setTitle(null);
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -188,7 +189,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithEmptyTitle() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setTitle("");
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -196,7 +197,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithWhitespaceTitle() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setTitle(" ");
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -204,7 +205,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithJavaControlCharactersInTitle() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setTitle("my\\ndtitle");
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -212,7 +213,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithHtmlInTitle() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setTitle("my<span>title</span>");
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -225,7 +226,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithTooLongDescription() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setDescription(event.getDescription().repeat(1000));
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -233,7 +234,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithNullDescription() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setDescription(null);
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -241,7 +242,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithEmptyDescription() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setDescription("");
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -249,7 +250,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithWhitespaceDescription() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setDescription(" ");
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -257,7 +258,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithJavaControlCharactersInDescription() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setDescription("my\\ndescription");
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -265,7 +266,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithHtmlInDescription() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setDescription("my<span>description</span>");
 
             assertThat(getValidator().validate(event)).isNotEmpty();
@@ -278,7 +279,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithPastLocalDateTime() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             LocalDateTime pastDate = LocalDateTime.now().minus(2, ChronoUnit.DAYS);
             event.setLocalDateTime(pastDate);
 
@@ -287,7 +288,7 @@ public class EventValidationTest extends BaseValidationTest {
 
         @Test
         public void shouldFailEventWithNullLocalDateTime() {
-            Event event = TestData.event();
+            Event event = TestData.event().asObject();
             event.setLocalDateTime(null);
 
             assertThat(getValidator().validate(event)).isNotEmpty();
