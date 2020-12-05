@@ -140,11 +140,6 @@ public class PreviewControllerTest {
 
         mockMvc.perform(get("/preview").flashAttrs(flashMap))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(content().string(containsString("FROM: wichteln@romanboehm.com")))
-                .andExpect(content().string(containsString("TO: angusyoung@acdc.net")))
-                .andExpect(content().string(containsString(
-                        "SUBJECT: You have been invited to wichtel at AC/DC Secret Santa"
-                )))
                 .andExpect(content().string(containsString(
                         //TODO: fix expected value
                         "<p>Hey Angus Young,</p>"/* +

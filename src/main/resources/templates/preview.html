@@ -20,10 +20,6 @@
             <button type="button" id="back-button" class="btn btn-secondary my-3 mr-3" onclick="history.back()">Back
             </button>
             <button type="submit" id="submit-button" class="btn btn-primary my-3">Submit</button>
-            <p th:text="'FROM: ' + ${preview.from()}"></p>
-            <p th:text="'TO: ' + ${preview.to()}"></p>
-            <p th:text="'SUBJECT: ' + ${preview.subject()}"></p>
-            <p>TEXT:</p>
             <blockquote style="background: #eee;border-radius: 5px; padding: 15px;"
                         th:utext="${preview.body()}"> <!-- Use `th:utext` to include HTML tags unescaped -->
             </blockquote>
