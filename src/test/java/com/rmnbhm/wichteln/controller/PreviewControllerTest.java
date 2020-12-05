@@ -15,10 +15,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.FlashMap;
 
 import javax.mail.Address;
+import javax.mail.internet.MimeMessage;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -47,6 +50,9 @@ public class PreviewControllerTest {
 
     @SpyBean
     private WichtelnMailCreator wichtelnMailCreator;
+
+    @SpyBean
+    private JavaMailSender mailSender;
 
     @BeforeAll
     public static void setupGreenmail() {
@@ -227,6 +233,60 @@ public class PreviewControllerTest {
                 .andReturn().getFlashMap();
 
         mockMvc.perform(get("/preview").flashAttrs(flashMap))
+                .andExpect(status().is5xxServerError())
+                .andExpect(view().name("error"));
+    }
+
+    @Test
+    public void shouldShowErrorPageWhenMailCannotBeSent() throws Exception {
+        Mockito.doThrow(new MailException("error") {}).when(mailSender).send(any(MimeMessage.class));
+
+        ZonedDateTime localDateTime = Instant.now().plus(1, ChronoUnit.DAYS)
+                .atZone(ZoneId.of("Europe/Berlin"));
+
+        FlashMap flashMap = mockMvc.perform(post("/wichteln")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("title", "AC/DC Secret Santa")
+                .param("description", "There's gonna be some santa'ing")
+                .param("monetaryAmount.number", "78.50")
+                .param("monetaryAmount.currency", "AUD")
+                .param("localDateTime", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")))
+                .param("place", "Sydney Harbor")
+                .param("host.name", "George Young")
+                .param("host.email", "georgeyoung@acdc.net")
+                .param("participants[0].name", "Angus Young")
+                .param("participants[0].email", "angusyoung@acdc.net")
+                .param("participants[1].name", "Malcolm Young")
+                .param("participants[1].email", "malcolmyoung@acdc.net")
+                .param("participants[2].name", "Phil Rudd")
+                .param("participants[2].email", "philrudd@acdc.net")
+
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("preview"))
+                .andExpect(flash().attributeCount(1))
+                .andReturn().getFlashMap();
+
+        mockMvc.perform(get("/preview").flashAttrs(flashMap))
+                .andExpect(status().is2xxSuccessful());
+
+        mockMvc.perform(post("/preview")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("title", "AC/DC Secret Santa")
+                .param("description", "There's gonna be some santa'ing")
+                .param("monetaryAmount.number", "78.50")
+                .param("monetaryAmount.currency", "AUD")
+                .param("localDateTime", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")))
+                .param("place", "Sydney Harbor")
+                .param("host.name", "George Young")
+                .param("host.email", "georgeyoung@acdc.net")
+                .param("participants[0].name", "Angus Young")
+                .param("participants[0].email", "angusyoung@acdc.net")
+                .param("participants[1].name", "Malcolm Young")
+                .param("participants[1].email", "malcolmyoung@acdc.net")
+                .param("participants[2].name", "Phil Rudd")
+                .param("participants[2].email", "philrudd@acdc.net")
+        )
                 .andExpect(status().is5xxServerError())
                 .andExpect(view().name("error"));
     }
