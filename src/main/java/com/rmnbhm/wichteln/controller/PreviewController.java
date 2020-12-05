@@ -41,10 +41,7 @@ public class PreviewController {
         LOGGER.info("Previewed {}", event);
         return new ModelAndView(
                 "preview",
-                Map.of(
-                        "preview", preview,
-                        "currencies", CURRENCIES
-                ),
+                Map.of("preview", preview),
                 HttpStatus.OK
         );
     }
