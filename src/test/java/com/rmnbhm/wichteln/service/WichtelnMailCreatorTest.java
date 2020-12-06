@@ -5,11 +5,15 @@ import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Donor;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Recipient;
-import com.rmnbhm.wichteln.model.WichtelnMail;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -29,30 +33,32 @@ public class WichtelnMailCreatorTest {
     private WichtelnMailCreator wichtelnMailCreator;
 
     @Test
-    public void shouldHandleToAndFromCorrectly() {
+    public void shouldHandleToAndFromCorrectly() throws MessagingException {
         Event acdcSanta = TestData.event().asObject();
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
                 new Donor(acdcSanta.getParticipants().get(0)), new Recipient(acdcSanta.getParticipants().get(1))
         );
 
-        WichtelnMail mail = wichtelnMailCreator.createMessage(acdcSanta, angusGiftsToMalcolm);
+        MimeMessage mail = wichtelnMailCreator.createMessage(acdcSanta, angusGiftsToMalcolm);
 
         assertThat(mail).isNotNull();
-        assertThat(mail.to()).isEqualTo("angusyoung@acdc.net");
+        assertThat(mail.getRecipients(Message.RecipientType.TO))
+                .extracting(Address::toString)
+                .containsExactly("angusyoung@acdc.net");
     }
 
     @Test
-    public void shouldHandleEventDataCorrectly() {
+    public void shouldHandleEventDataCorrectly() throws IOException, MessagingException {
         Event acdcSanta = TestData.event().asObject();
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
                 new Donor(acdcSanta.getParticipants().get(0)), new Recipient(acdcSanta.getParticipants().get(1))
         );
 
-        WichtelnMail mail = wichtelnMailCreator.createMessage(acdcSanta, angusGiftsToMalcolm);
+        MimeMessage mail = wichtelnMailCreator.createMessage(acdcSanta, angusGiftsToMalcolm);
 
         assertThat(mail).isNotNull();
-        assertThat(mail.subject()).isEqualTo("You have been invited to wichtel at AC/DC Secret Santa");
-        assertThat(mail.body())
+        assertThat(mail.getSubject()).isEqualTo("You have been invited to wichtel at AC/DC Secret Santa");
+        assertThat(mail.getContent().toString())
                 .isEqualTo(
                         "Hey Angus Young,\n" +
                         "\n" +

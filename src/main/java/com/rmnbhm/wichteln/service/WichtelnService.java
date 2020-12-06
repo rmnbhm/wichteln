@@ -3,12 +3,12 @@ package com.rmnbhm.wichteln.service;
 import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.Participant;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
-import com.rmnbhm.wichteln.model.WichtelnMail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.MimeMessage;
 import java.util.List;
 import java.util.Map;
 
@@ -29,10 +29,10 @@ public class WichtelnService {
     public void save(Event event) {
         List<ParticipantsMatch> matches = matcher.match(event.getParticipants());
         matches.forEach(match -> {
-            WichtelnMail mail = mailCreator.createMessage(event, match, WichtelnMailCreator.MailMode.TEXT);
-            LOGGER.debug("Created {} for {} matching {}", mail, event, match);
-            mailSender.send(mail.getMimeMessage());
-            LOGGER.debug("Sent {} for {} matching {}", mail, event, match);
+            MimeMessage mail = mailCreator.createMessage(event, match, WichtelnMailCreator.MailMode.TEXT);
+            LOGGER.debug("Created mail for {} matching {}", event, match);
+            mailSender.send(mail);
+            LOGGER.debug("Sent mail for {} matching {}", event, match);
         });
     }
 

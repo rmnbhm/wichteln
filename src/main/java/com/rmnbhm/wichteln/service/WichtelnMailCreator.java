@@ -5,7 +5,6 @@ import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Donor;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Recipient;
-import com.rmnbhm.wichteln.model.WichtelnMail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -30,13 +29,13 @@ public class WichtelnMailCreator {
         this.mailSender = mailSender;
     }
 
-    public WichtelnMail createMessage(Event event, ParticipantsMatch match) {
+    public MimeMessage createMessage(Event event, ParticipantsMatch match) {
         return createMessage(event, match, MailMode.TEXT);
     }
 
-    public WichtelnMail createMessage(Event event, ParticipantsMatch match, MailMode mailMode) {
+    public MimeMessage createMessage(Event event, ParticipantsMatch match, MailMode mailMode) {
         try {
-            return new WichtelnMail(createMimeMessage(event, match.getDonor(), match.getRecipient(), mailMode));
+            return createMimeMessage(event, match.getDonor(), match.getRecipient(), mailMode);
         } catch (MessagingException e) {
             // Re-throw as custom `RuntimeException` to be handled by upstream by `ErrorController`
             throw new WichtelnMailCreationException();
