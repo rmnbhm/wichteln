@@ -7,6 +7,11 @@ import com.icegreen.greenmail.util.ServerSetupTest;
 import com.rmnbhm.wichteln.TestData;
 import com.rmnbhm.wichteln.exception.WichtelnMailCreationException;
 import com.rmnbhm.wichteln.service.WichtelnMailCreator;
+import org.apache.commons.lang3.StringUtils;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,16 +24,22 @@ import org.springframework.http.MediaType;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.result.ContentResultMatchers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.servlet.FlashMap;
+import org.w3c.dom.Node;
 
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
+import javax.xml.transform.Source;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -134,20 +145,19 @@ public class PreviewControllerTest {
 
         mockMvc.perform(get("/preview").flashAttrs(flashMap))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(content().string(containsString(
-                "<p>Hey <span>Angus Young</span>,</p>" +
-                        "<p>You have been invited to wichtel at <span>AC/DC Secret Santa</span> (<a href=\"https://wichteln.rmnbhm.com/about\">https://wichteln.rmnbhm.com/about</a>)!<br/>" +
-                        "You're therefore asked to give a gift to <span>Phil Rudd</span>. The gift's monetary value should not exceed <span>AUD 78.50</span>.<br/>" +
+                .andExpect(content().string(Matchers.stringContainsInOrder(
+                        "Hey <span>Angus Young</span>,",
+                        "You have been invited to wichtel at <span>AC/DC Secret Santa</span> (<a href=\"https://wichteln.rmnbhm.com/about\">https://wichteln.rmnbhm.com/about</a>)!<br/>",
+                        "You're therefore asked to give a gift to <span>Phil Rudd</span>. The gift's monetary value should not exceed <span>AUD 78.50</span>.<br/>",
                         String.format(
-                                "The event will take place at <span>Sydney Harbor</span> on <span>%s</span> at <span>%s</span> local time.</p>",
+                                "The event will take place at <span>Sydney Harbor</span> on <span>%s</span> at <span>%s</span> local time.",
                                 LocalDate.from(localDateTime),
                                 LocalTime.from(localDateTime).truncatedTo(ChronoUnit.MINUTES)
-                        ) +
-                        "The event will take place at <span>Sydney Harbor</span> on <span>2020-12-06</span> at <span>20:Sydney Harbor33</span> local time.</p>" +
-                        "<p>Here's what the event's host says about it:</p>" +
-                        "<p>\"<span>There&#39;s gonna be some santa&#39;ing</span>\"</p>" +
-                        "<p>If you have any questions, contact the event's host <span>George Young</span> at <a href=\"mailto:georgeyoung@acdc.net\"><span>georgeyoung@acdc.net</span></a>.</p>" +
-                        "<p>This mail was generated using <a href=\"https://wichteln.rmnbhm.com\">https://wichteln.rmnbhm.com</a></p>"
+                        ),
+                        "Here's what the event's host says about it:",
+                        "\"<span>There&#39;s gonna be some santa&#39;ing</span>\"",
+                        "If you have any questions, contact the event's host <span>George Young</span> at <a href=\"mailto:georgeyoung@acdc.net\"><span>georgeyoung@acdc.net</span></a>.",
+                        "This mail was generated using <a href=\"https://wichteln.rmnbhm.com\">https://wichteln.rmnbhm.com</a>"
                 )));
     }
 

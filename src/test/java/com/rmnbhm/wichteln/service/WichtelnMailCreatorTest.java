@@ -5,6 +5,8 @@ import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Donor;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Recipient;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -58,26 +60,20 @@ public class WichtelnMailCreatorTest {
 
         assertThat(mail).isNotNull();
         assertThat(mail.getSubject()).isEqualTo("You have been invited to wichtel at AC/DC Secret Santa");
-        assertThat(mail.getContent().toString())
-                .isEqualTo(
-                        "Hey Angus Young,\n" +
-                        "\n" +
-                        "You have been invited to wichtel at AC/DC Secret Santa (https://wichteln.rmnbhm.com/about)!\n" +
-                        "You're therefore asked to give a gift to Malcolm Young. The gift's monetary value should not exceed AUD 78.50.\n" +
-                        String.format(
-                                "The event will take place at Sydney Harbor on %s at %s local time.\n",
-                                LocalDate.from(acdcSanta.getLocalDateTime()),
-                                LocalTime.from(acdcSanta.getLocalDateTime()).truncatedTo(ChronoUnit.MINUTES)
-                        ) +
-                        "\n" +
-                        "Here's what the event's host says about it:\n" +
-                        "\n" +
-                        "\"There's gonna be some santa'ing\"\n" +
-                        "\n" +
-                        "If you have any questions, contact the event's host George Young at georgeyoung@acdc.net.\n" +
-                        "\n" +
-                        "This mail was generated using https://wichteln.rmnbhm.com"
-                );
+        MatcherAssert.assertThat(mail.getContent().toString(), Matchers.stringContainsInOrder(
+                "Hey Angus Young,",
+                "You have been invited to wichtel at AC/DC Secret Santa (https://wichteln.rmnbhm.com/about)!",
+                "You're therefore asked to give a gift to Malcolm Young. The gift's monetary value should not exceed AUD 78.50.",
+                String.format(
+                        "The event will take place at Sydney Harbor on %s at %s local time.",
+                        LocalDate.from(acdcSanta.getLocalDateTime()),
+                        LocalTime.from(acdcSanta.getLocalDateTime()).truncatedTo(ChronoUnit.MINUTES)
+                ),
+                "Here's what the event's host says about it:",
+                "\"There's gonna be some santa'ing\"",
+                "If you have any questions, contact the event's host George Young at georgeyoung@acdc.net.",
+                "This mail was generated using https://wichteln.rmnbhm.com"
+        ));
     }
 
 }
