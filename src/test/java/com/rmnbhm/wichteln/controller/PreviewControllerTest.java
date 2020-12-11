@@ -144,21 +144,6 @@ public class PreviewControllerTest {
     }
 
     @Test
-    public void shouldRemoveHtmlFromUserInput() throws Exception {
-        FlashMap flashMap = new FlashMap();
-        flashMap.put(
-                "event",
-                TestData.event()
-                    .modifying(event -> event.setTitle("<script>AC/DC Secret Santa</script>"))
-                    .asObject()
-        );
-
-        mockMvc.perform(get("/preview").flashAttrs(flashMap))
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(content().string(Matchers.stringContainsInOrder(expectedHtml)));
-    }
-
-    @Test
     public void shouldShowErrorPageWhenMailCannotBeSent() throws Exception {
         Mockito.doThrow(new MailException("error") {
         }).when(mailSender).send(any(MimeMessage.class));
