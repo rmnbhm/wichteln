@@ -13,5 +13,5 @@ Navigate to http://wichteln.rmnbhm.com
 Make sure you have `docker` and `docker-compose` installed. Then
 1) Clone this repo
 2) Change to the repository's root directory
-3) Run `docker-compose up`
+3) Run `docker-compose -f docker-compose-local.yml up`
 4) Navigate to http://localhost:8080
