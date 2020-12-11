@@ -10,8 +10,8 @@ import org.springframework.util.MultiValueMap;
 import javax.money.Monetary;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -22,7 +22,7 @@ public class TestData {
         acdcSanta.setTitle("AC/DC Secret Santa");
         acdcSanta.setDescription("There's gonna be some santa'ing");
         acdcSanta.setMonetaryAmount(monetaryAmount());
-        acdcSanta.setLocalDateTime(LocalDateTime.now().plus(1, ChronoUnit.DAYS));
+        acdcSanta.setLocalDateTime(LocalDateTime.of(2666, Month.JUNE, 6, 6, 6));
         acdcSanta.setPlace("Sydney Harbor");
         acdcSanta.setHost(host());
         Participant angusYoung = new Participant();

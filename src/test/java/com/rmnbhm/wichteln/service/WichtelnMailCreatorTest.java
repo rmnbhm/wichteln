@@ -16,9 +16,6 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,11 +61,7 @@ public class WichtelnMailCreatorTest {
                 "Hey Angus Young,",
                 "You have been invited to wichtel at AC/DC Secret Santa (https://wichteln.rmnbhm.com/about)!",
                 "You're therefore asked to give a gift to Malcolm Young. The gift's monetary value should not exceed AUD 78.50.",
-                String.format(
-                        "The event will take place at Sydney Harbor on %s at %s local time.",
-                        LocalDate.from(acdcSanta.getLocalDateTime()),
-                        LocalTime.from(acdcSanta.getLocalDateTime()).truncatedTo(ChronoUnit.MINUTES)
-                ),
+                "The event will take place at Sydney Harbor on 2666-06-06 at 06:06 local time.",
                 "Here's what the event's host says about it:",
                 "\"There's gonna be some santa'ing\"",
                 "If you have any questions, contact the event's host George Young at georgeyoung@acdc.net.",

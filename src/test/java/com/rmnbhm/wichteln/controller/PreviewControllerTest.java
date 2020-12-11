@@ -24,9 +24,7 @@ import org.springframework.web.servlet.FlashMap;
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
@@ -80,6 +78,17 @@ public class PreviewControllerTest {
         }
     }
 
+    private static String[] expectedHtml = new String[]{
+            "Hey <span>Angus Young</span>,",
+            "You have been invited to wichtel at <span>AC/DC Secret Santa</span> (<a href=\"https://wichteln.rmnbhm.com/about\">https://wichteln.rmnbhm.com/about</a>)!<br/>",
+            "You're therefore asked to give a gift to <span>Phil Rudd</span>. The gift's monetary value should not exceed <span>AUD 78.50</span>.<br/>",
+            "The event will take place at <span>Sydney Harbor</span> on <span>2666-06-06</span> at <span>06:06</span> local time.",
+            "Here's what the event's host says about it:",
+            "<i>\"<span>There&#39;s gonna be some santa&#39;ing</span>\"</i>",
+            "If you have any questions, contact the event's host <span>George Young</span> at <a href=\"mailto:georgeyoung@acdc.net\"><span>georgeyoung@acdc.net</span></a>.",
+            "This mail was generated using <a href=\"https://wichteln.rmnbhm.com\">https://wichteln.rmnbhm.com</a>"
+    };
+
 
     @Test
     public void shouldInform() throws Exception {
@@ -126,11 +135,6 @@ public class PreviewControllerTest {
 
     @Test
     public void shouldPreview() throws Exception {
-        LocalDateTime localDateTime = Instant.now()
-                .plus(1, ChronoUnit.DAYS)
-                .atZone(ZoneId.of("Europe/Berlin"))
-                .toLocalDateTime();
-
         FlashMap flashMap = mockMvc.perform(post("/wichteln")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .params(TestData.event().asFormParams())
@@ -142,29 +146,11 @@ public class PreviewControllerTest {
 
         mockMvc.perform(get("/preview").flashAttrs(flashMap))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(content().string(Matchers.stringContainsInOrder(
-                        "Hey <span>Angus Young</span>,",
-                        "You have been invited to wichtel at <span>AC/DC Secret Santa</span> (<a href=\"https://wichteln.rmnbhm.com/about\">https://wichteln.rmnbhm.com/about</a>)!<br/>",
-                        "You're therefore asked to give a gift to <span>Phil Rudd</span>. The gift's monetary value should not exceed <span>AUD 78.50</span>.<br/>",
-                        String.format(
-                                "The event will take place at <span>Sydney Harbor</span> on <span>%s</span> at <span>%s</span> local time.",
-                                LocalDate.from(localDateTime),
-                                LocalTime.from(localDateTime).truncatedTo(ChronoUnit.MINUTES)
-                        ),
-                        "Here's what the event's host says about it:",
-                        "\"<span>There&#39;s gonna be some santa&#39;ing</span>\"",
-                        "If you have any questions, contact the event's host <span>George Young</span> at <a href=\"mailto:georgeyoung@acdc.net\"><span>georgeyoung@acdc.net</span></a>.",
-                        "This mail was generated using <a href=\"https://wichteln.rmnbhm.com\">https://wichteln.rmnbhm.com</a>"
-                )));
+                .andExpect(content().string(Matchers.stringContainsInOrder(expectedHtml)));
     }
 
     @Test
     public void shouldRemoveHtmlFromUserInput() throws Exception {
-        LocalDateTime localDateTime = Instant.now()
-                .plus(1, ChronoUnit.DAYS)
-                .atZone(ZoneId.of("Europe/Berlin"))
-                .toLocalDateTime();
-
         FlashMap flashMap = mockMvc.perform(post("/wichteln")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .params(TestData.event()
@@ -179,20 +165,7 @@ public class PreviewControllerTest {
 
         mockMvc.perform(get("/preview").flashAttrs(flashMap))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(content().string(Matchers.stringContainsInOrder(
-                        "Hey <span>Angus Young</span>,",
-                        "You have been invited to wichtel at <span>AC/DC Secret Santa</span> (<a href=\"https://wichteln.rmnbhm.com/about\">https://wichteln.rmnbhm.com/about</a>)!<br/>",
-                        "You're therefore asked to give a gift to <span>Phil Rudd</span>. The gift's monetary value should not exceed <span>AUD 78.50</span>.<br/>",
-                        String.format(
-                                "The event will take place at <span>Sydney Harbor</span> on <span>%s</span> at <span>%s</span> local time.",
-                                LocalDate.from(localDateTime),
-                                LocalTime.from(localDateTime).truncatedTo(ChronoUnit.MINUTES)
-                        ),
-                        "Here's what the event's host says about it:",
-                        "\"<span>There&#39;s gonna be some santa&#39;ing</span>\"",
-                        "If you have any questions, contact the event's host <span>George Young</span> at <a href=\"mailto:georgeyoung@acdc.net\"><span>georgeyoung@acdc.net</span></a>.",
-                        "This mail was generated using <a href=\"https://wichteln.rmnbhm.com\">https://wichteln.rmnbhm.com</a>"
-                )));
+                .andExpect(content().string(Matchers.stringContainsInOrder(expectedHtml)));
     }
 
     @Test
@@ -218,5 +191,7 @@ public class PreviewControllerTest {
         )
                 .andExpect(status().is5xxServerError())
                 .andExpect(view().name("error"));
+
+        assertThat(greenMail.waitForIncomingEmail(1500, 3)).isFalse();
     }
 }

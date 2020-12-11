@@ -1,11 +1,9 @@
 package com.rmnbhm.wichteln.model;
 
 import javax.money.CurrencyUnit;
-import javax.money.Monetary;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.Collection;
 
 public class MonetaryAmount {
 
