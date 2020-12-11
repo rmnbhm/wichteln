@@ -1,7 +1,5 @@
 package com.rmnbhm.wichteln.model;
 
-import com.rmnbhm.wichteln.validation.NoHtml;
-import com.rmnbhm.wichteln.validation.NoJavaControlCharacters;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -31,14 +29,10 @@ public class Event {
 
     @NotBlank
     @Size(max = 100)
-    @NoJavaControlCharacters
-    @NoHtml
     private String title;
 
     @NotBlank
     @Size(max = 1000)
-    @NoJavaControlCharacters
-    @NoHtml
     private String description;
 
     @NotNull
@@ -52,8 +46,6 @@ public class Event {
 
     @NotBlank
     @Size(max = 100)
-    @NoJavaControlCharacters
-    @NoHtml
     private String place;
 
     @NotNull

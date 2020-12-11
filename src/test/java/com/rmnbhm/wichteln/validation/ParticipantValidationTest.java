@@ -50,22 +50,6 @@ public class ParticipantValidationTest extends BaseValidationTest {
 
             assertThat(getValidator().validate(participant)).isNotEmpty();
         }
-
-        @Test
-        public void shouldFailParticipantWithJavaControlCharactersInName() {
-            Participant participant = TestData.participant();
-            participant.setName("my\\nname");
-
-            assertThat(getValidator().validate(participant)).isNotEmpty();
-        }
-
-        @Test
-        public void shouldFailParticipantWithHtmlInName() {
-            Participant participant = TestData.participant();
-            participant.setName("my<span>name</span>");
-
-            assertThat(getValidator().validate(participant)).isNotEmpty();
-        }
     }
 
     @Nested

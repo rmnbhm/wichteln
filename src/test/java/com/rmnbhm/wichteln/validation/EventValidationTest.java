@@ -60,22 +60,6 @@ public class EventValidationTest extends BaseValidationTest {
 
             assertThat(getValidator().validate(event)).isNotEmpty();
         }
-
-        @Test
-        public void shouldFailEventWithJavaControlCharactersInPlace() {
-            Event event = TestData.event().asObject();
-            event.setPlace("my\\ndplace");
-
-            assertThat(getValidator().validate(event)).isNotEmpty();
-        }
-
-        @Test
-        public void shouldFailEventWithHtmlInPlace() {
-            Event event = TestData.event().asObject();
-            event.setPlace("my<span>place</span>");
-
-            assertThat(getValidator().validate(event)).isNotEmpty();
-        }
     }
 
     @Nested
@@ -202,23 +186,6 @@ public class EventValidationTest extends BaseValidationTest {
 
             assertThat(getValidator().validate(event)).isNotEmpty();
         }
-
-        @Test
-        public void shouldFailEventWithJavaControlCharactersInTitle() {
-            Event event = TestData.event().asObject();
-            event.setTitle("my\\ndtitle");
-
-            assertThat(getValidator().validate(event)).isNotEmpty();
-        }
-
-        @Test
-        public void shouldFailEventWithHtmlInTitle() {
-            Event event = TestData.event().asObject();
-            event.setTitle("my<span>title</span>");
-
-            assertThat(getValidator().validate(event)).isNotEmpty();
-        }
-
     }
 
     @Nested
@@ -252,22 +219,6 @@ public class EventValidationTest extends BaseValidationTest {
         public void shouldFailEventWithWhitespaceDescription() {
             Event event = TestData.event().asObject();
             event.setDescription(" ");
-
-            assertThat(getValidator().validate(event)).isNotEmpty();
-        }
-
-        @Test
-        public void shouldFailEventWithJavaControlCharactersInDescription() {
-            Event event = TestData.event().asObject();
-            event.setDescription("my\\ndescription");
-
-            assertThat(getValidator().validate(event)).isNotEmpty();
-        }
-
-        @Test
-        public void shouldFailEventWithHtmlInDescription() {
-            Event event = TestData.event().asObject();
-            event.setDescription("my<span>description</span>");
 
             assertThat(getValidator().validate(event)).isNotEmpty();
         }

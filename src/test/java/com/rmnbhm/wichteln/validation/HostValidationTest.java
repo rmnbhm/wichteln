@@ -49,22 +49,6 @@ public class HostValidationTest extends BaseValidationTest {
 
             assertThat(getValidator().validate(host)).isNotEmpty();
         }
-
-        @Test
-        public void shouldFailHostWithJavaControlCharactersInName() {
-            Host host = TestData.host();
-            host.setName("my\\nname");
-
-            assertThat(getValidator().validate(host)).isNotEmpty();
-        }
-
-        @Test
-        public void shouldFailHostWithHtmlInName() {
-            Host host = TestData.host();
-            host.setName("my<span>name</span>");
-
-            assertThat(getValidator().validate(host)).isNotEmpty();
-        }
     }
 
     @Nested

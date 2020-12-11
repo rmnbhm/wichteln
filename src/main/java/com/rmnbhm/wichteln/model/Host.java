@@ -1,8 +1,5 @@
 package com.rmnbhm.wichteln.model;
 
-import com.rmnbhm.wichteln.validation.NoHtml;
-import com.rmnbhm.wichteln.validation.NoJavaControlCharacters;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -11,14 +8,10 @@ public class Host {
 
     @NotBlank
     @Size(max = 100)
-    @NoJavaControlCharacters
-    @NoHtml
     private String name;
 
     @NotBlank
     @Email
-    @NoJavaControlCharacters
-    @NoHtml
     private String email;
 
     public Host() {

@@ -1,8 +1,6 @@
 package com.rmnbhm.wichteln.controller;
 
 import com.rmnbhm.wichteln.model.Event;
-import com.rmnbhm.wichteln.model.Participant;
-import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import com.rmnbhm.wichteln.service.WichtelnService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
