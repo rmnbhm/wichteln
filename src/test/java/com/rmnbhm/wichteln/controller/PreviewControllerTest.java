@@ -135,14 +135,8 @@ public class PreviewControllerTest {
 
     @Test
     public void shouldPreview() throws Exception {
-        FlashMap flashMap = mockMvc.perform(post("/wichteln")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .params(TestData.event().asFormParams())
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("preview"))
-                .andExpect(flash().attributeCount(1))
-                .andReturn().getFlashMap();
+        FlashMap flashMap = new FlashMap();
+        flashMap.put("event", TestData.event().asObject());
 
         mockMvc.perform(get("/preview").flashAttrs(flashMap))
                 .andExpect(status().is2xxSuccessful())
@@ -151,17 +145,13 @@ public class PreviewControllerTest {
 
     @Test
     public void shouldRemoveHtmlFromUserInput() throws Exception {
-        FlashMap flashMap = mockMvc.perform(post("/wichteln")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .params(TestData.event()
-                        .modifying(event -> event.setTitle("<script>AC/DC Secret Santa</script>"))
-                        .asFormParams()
-                )
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("preview"))
-                .andExpect(flash().attributeCount(1))
-                .andReturn().getFlashMap();
+        FlashMap flashMap = new FlashMap();
+        flashMap.put(
+                "event",
+                TestData.event()
+                    .modifying(event -> event.setTitle("<script>AC/DC Secret Santa</script>"))
+                    .asObject()
+        );
 
         mockMvc.perform(get("/preview").flashAttrs(flashMap))
                 .andExpect(status().is2xxSuccessful())
@@ -173,14 +163,8 @@ public class PreviewControllerTest {
         Mockito.doThrow(new MailException("error") {
         }).when(mailSender).send(any(MimeMessage.class));
 
-        FlashMap flashMap = mockMvc.perform(post("/wichteln")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .params(TestData.event().asFormParams())
-        )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("preview"))
-                .andExpect(flash().attributeCount(1))
-                .andReturn().getFlashMap();
+        FlashMap flashMap = new FlashMap();
+        flashMap.put("event", TestData.event().asObject());
 
         mockMvc.perform(get("/preview").flashAttrs(flashMap))
                 .andExpect(status().is2xxSuccessful());
