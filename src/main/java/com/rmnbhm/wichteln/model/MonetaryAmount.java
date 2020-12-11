@@ -9,8 +9,6 @@ import java.util.Collection;
 
 public class MonetaryAmount {
 
-    public static final Collection<CurrencyUnit> CURRENCIES = Monetary.getCurrencies();
-
     @NotNull
     @Min(0)
     private BigDecimal number;

@@ -15,11 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.money.CurrencyUnit;
-import javax.money.Monetary;
 import javax.validation.Valid;
-import java.util.Collection;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -27,7 +23,6 @@ import java.util.stream.Collectors;
 public class PreviewController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PreviewController.class);
-    private static final Collection<CurrencyUnit> CURRENCIES = Monetary.getCurrencies();
     private final WichtelnService wichtelnService;
 
     public PreviewController(WichtelnService wichtelnService) {
@@ -52,7 +47,7 @@ public class PreviewController {
                     event,
                     bindingResult.getAllErrors().stream().map(ObjectError::toString).collect(Collectors.joining(", "))
             );
-            return new ModelAndView("wichteln", Map.of("currencies", CURRENCIES), HttpStatus.BAD_REQUEST);
+            return new ModelAndView("wichteln", HttpStatus.BAD_REQUEST);
         }
         wichtelnService.save(event);
         LOGGER.info("Saved {}", event);

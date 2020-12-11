@@ -55,7 +55,7 @@
                 <select id="monetary-amount-currency"
                         class="form-control"
                         th:field="*{monetaryAmount.currency}">
-                    <option th:each="currency : ${T(com.rmnbhm.wichteln.model.MonetaryAmount).CURRENCIES}"
+                    <option th:each="currency : ${T(javax.money.Monetary).getCurrencies()}"
                             th:value="${currency}"
                             th:text="${currency}"
                             th:selected="*{monetaryAmount.currency}">
