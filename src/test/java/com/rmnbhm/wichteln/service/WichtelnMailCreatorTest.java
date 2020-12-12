@@ -33,12 +33,12 @@ public class WichtelnMailCreatorTest {
 
     @Test
     public void shouldHandleToAndFromCorrectly() throws MessagingException {
-        Event acdcSanta = TestData.event().asObject();
+        Event event = TestData.event().asObject();
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
-                new Donor(acdcSanta.getParticipants().get(0)), new Recipient(acdcSanta.getParticipants().get(1))
+                new Donor(event.getParticipants().get(0)), new Recipient(event.getParticipants().get(1))
         );
 
-        MimeMessage mail = wichtelnMailCreator.createMessage(acdcSanta, angusGiftsToMalcolm);
+        MimeMessage mail = wichtelnMailCreator.createMessage(event, angusGiftsToMalcolm);
 
         assertThat(mail).isNotNull();
         assertThat(mail.getRecipients(Message.RecipientType.TO))
@@ -48,12 +48,12 @@ public class WichtelnMailCreatorTest {
 
     @Test
     public void shouldHandleEventDataCorrectly() throws IOException, MessagingException {
-        Event acdcSanta = TestData.event().asObject();
+        Event event = TestData.event().asObject();
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
-                new Donor(acdcSanta.getParticipants().get(0)), new Recipient(acdcSanta.getParticipants().get(1))
+                new Donor(event.getParticipants().get(0)), new Recipient(event.getParticipants().get(1))
         );
 
-        MimeMessage mail = wichtelnMailCreator.createMessage(acdcSanta, angusGiftsToMalcolm);
+        MimeMessage mail = wichtelnMailCreator.createMessage(event, angusGiftsToMalcolm);
 
         assertThat(mail).isNotNull();
         assertThat(mail.getSubject()).isEqualTo("You have been invited to wichtel at AC/DC Secret Santa");

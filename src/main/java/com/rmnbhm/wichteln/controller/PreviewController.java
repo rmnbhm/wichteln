@@ -32,11 +32,7 @@ public class PreviewController {
     @GetMapping
     public ModelAndView getPreview(@ModelAttribute @Valid Event event) {
         LOGGER.info("Previewed {}", event);
-        return new ModelAndView(
-                "preview",
-                wichtelnService.previewData(),
-                HttpStatus.OK
-        );
+        return new ModelAndView("preview", HttpStatus.OK);
     }
 
     @PostMapping

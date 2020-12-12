@@ -22,7 +22,7 @@
             <button type="submit" id="submit-button" class="btn btn-primary my-3">Submit</button>
             <p>This is what your email will look like:</p>
             <blockquote style="background: #eee;border-radius: 5px; padding: 15px;">
-                <div th:replace="fragments/mail :: mail"></div>
+                <div th:replace="fragments/mail :: mail(donor='Angus Young', recipient='Phil Rudd', event=${event})"></div>
             </blockquote>
         </div>
     </form>

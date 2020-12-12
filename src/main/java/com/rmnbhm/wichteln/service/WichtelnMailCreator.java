@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class WichtelnMailCreator {
 
+    public static final String MAIL_TXT = "mail.txt";
     @Autowired
     private final TemplateEngine templateEngine;
     @Autowired
@@ -30,28 +31,19 @@ public class WichtelnMailCreator {
     }
 
     public MimeMessage createMessage(Event event, ParticipantsMatch match) {
-        return createMessage(event, match, MailMode.TEXT);
-    }
-
-    public MimeMessage createMessage(Event event, ParticipantsMatch match, MailMode mailMode) {
         try {
-            return createMimeMessage(event, match.getDonor(), match.getRecipient(), mailMode);
+            return createMimeMessage(event, match.getDonor(), match.getRecipient());
         } catch (MessagingException e) {
             // Re-throw as custom `RuntimeException` to be handled by upstream by `ErrorController`
             throw new WichtelnMailCreationException();
         }
     }
 
-    private MimeMessage createMimeMessage(
-            Event event,
-            Donor donor,
-            Recipient recipient,
-            MailMode mailMode
-    ) throws MessagingException {
+    private MimeMessage createMimeMessage(Event event, Donor donor, Recipient recipient) throws MessagingException {
         Context ctx = new Context();
         ctx.setVariable("event", event);
-        ctx.setVariable("donor", donor);
-        ctx.setVariable("recipient", recipient);
+        ctx.setVariable("donor", donor.getName());
+        ctx.setVariable("recipient", recipient.getName());
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper message = new MimeMessageHelper(mimeMessage, StandardCharsets.UTF_8.toString());
@@ -59,21 +51,10 @@ public class WichtelnMailCreator {
         message.setFrom("wichteln@romanboehm.com");
         message.setTo(donor.getEmail());
 
-        String textContent = templateEngine.process(mailMode.file, ctx);
+        String textContent = templateEngine.process(MAIL_TXT, ctx);
         message.setText(textContent);
 
         return mimeMessage;
-    }
-
-    public enum MailMode {
-        TEXT("mail.txt"),
-        HTML("fragments/mail.html");
-
-        private final String file;
-
-        MailMode(String file) {
-            this.file = file;
-        }
     }
 
 }

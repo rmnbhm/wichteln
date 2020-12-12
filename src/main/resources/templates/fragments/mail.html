@@ -5,9 +5,9 @@
 </head>
 <body>
 <div id="mail" th:fragment="mail">
-<p>Hey <span th:text="${donor.name}"></span>,</p>
+<p>Hey <span th:text="${donor}"></span>,</p>
 <p>You have been invited to wichtel at <span th:text="${event.title}"></span> (<a href="https://wichteln.rmnbhm.com/about">https://wichteln.rmnbhm.com/about</a>)!<br/>
-    You're therefore asked to give a gift to <span th:text="${recipient.name}"></span>. The gift's monetary value should not exceed <span th:text="${T(org.javamoney.moneta.Money).of(event.monetaryAmount.number, event.monetaryAmount.currency)}"></span>.<br/>
+    You're therefore asked to give a gift to <span th:text="${recipient}"></span>. The gift's monetary value should not exceed <span th:text="${T(org.javamoney.moneta.Money).of(event.monetaryAmount.number, event.monetaryAmount.currency)}"></span>.<br/>
     The event will take place at <span th:text="${event.place}"></span> on <span th:text="${T(java.time.LocalDate).from(event.localDateTime)}"></span> at <span th:text="${(T(java.time.LocalTime).from(event.localDateTime)).truncatedTo(T(java.time.temporal.ChronoUnit).MINUTES)}"></span> local time.</p>
 <p>Here's what the event's host says about it:</p>
 <p><i>"<span th:text="${event.description}"></span>"</i></p>
