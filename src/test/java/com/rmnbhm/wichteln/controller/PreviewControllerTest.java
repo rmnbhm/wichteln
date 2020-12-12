@@ -34,8 +34,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -78,7 +76,7 @@ public class PreviewControllerTest {
         }
     }
 
-    private static String[] expectedHtml = new String[]{
+    private static final String[] expectedHtml = new String[]{
             "Hey <span>Angus Young</span>,",
             "You have been invited to wichtel at <span>AC/DC Secret Santa</span> (<a href=\"https://wichteln.rmnbhm.com/about\">https://wichteln.rmnbhm.com/about</a>)!<br/>",
             "You're therefore asked to give a gift to <span>Phil Rudd</span>. The gift's monetary value should not exceed <span>AUD 78.50</span>.<br/>",
@@ -145,8 +143,7 @@ public class PreviewControllerTest {
 
     @Test
     public void shouldShowErrorPageWhenMailCannotBeSent() throws Exception {
-        Mockito.doThrow(new MailException("error") {
-        }).when(mailSender).send(any(MimeMessage.class));
+        Mockito.doThrow(new MailException("error") { }).when(mailSender).send(any(MimeMessage.class));
 
         FlashMap flashMap = new FlashMap();
         flashMap.put("event", TestData.event().asObject());

@@ -2,7 +2,6 @@ package com.rmnbhm.wichteln.controller;
 
 import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.Participant;
-import com.rmnbhm.wichteln.service.WichtelnService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,11 +26,6 @@ import java.util.stream.Collectors;
 public class WichtelnController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WichtelnController.class);
-    private final WichtelnService wichtelnService;
-
-    public WichtelnController(WichtelnService wichtelnService) {
-        this.wichtelnService = wichtelnService;
-    }
 
     @GetMapping
     public ModelAndView getEvent() {

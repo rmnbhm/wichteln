@@ -1,6 +1,5 @@
 package com.rmnbhm.wichteln.model;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.money.Monetary;
@@ -132,8 +131,7 @@ public class Event {
         return String.format(
                 "Event(title=%s, description=%s, monetaryAmount=%s, localDateTime=%s, place=%s, host=%s, participants=%s)",
                 this.getTitle(),
-                // Make sure text is not too long since `Event#description` allows for up to 1000 characters.
-                StringUtils.abbreviate(this.getDescription(), 50),
+                this.getDescription(),
                 this.getMonetaryAmount(),
                 this.getLocalDateTime(),
                 this.getPlace(),

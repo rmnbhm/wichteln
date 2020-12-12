@@ -32,13 +32,6 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- For `StringEscapeUtils -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-text</artifactId>
-			<version>1.9</version>
-		</dependency>
-
 		<!-- For sending mail to participants -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -131,6 +124,12 @@
 			<groupId>com.icegreen</groupId>
 			<artifactId>greenmail-spring</artifactId>
 			<version>1.6.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.11</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
