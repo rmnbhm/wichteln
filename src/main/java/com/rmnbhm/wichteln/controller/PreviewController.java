@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(path = "preview")
@@ -33,7 +36,15 @@ public class PreviewController {
     }
 
     @PostMapping
-    public ModelAndView saveEvent(@ModelAttribute @Valid Event event) {
+    public ModelAndView saveEvent(@ModelAttribute @Valid Event event, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            LOGGER.debug(
+                    "Failed to create {} because {}",
+                    event,
+                    bindingResult.getAllErrors().stream().map(ObjectError::toString).collect(Collectors.joining(", "))
+            );
+            return new ModelAndView("wichteln", HttpStatus.BAD_REQUEST);
+        }
         wichtelnService.save(event);
         LOGGER.info("Saved {}", event);
         return new ModelAndView(new RedirectView("wichteln"));

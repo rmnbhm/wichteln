@@ -112,17 +112,21 @@ public class PreviewControllerTest {
 
     @Test
     public void shouldStillValidateToPreventHiddenFormTampering() throws Exception {
+        LocalDateTime invalidDateTime = Instant.now().minus(1, ChronoUnit.DAYS)
+                .atZone(ZoneId.of("Europe/Berlin"))
+                .toLocalDateTime();
+
         mockMvc.perform(
                 post("/preview")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .params(
                                 TestData.event()
-                                        .modifying(event -> event.setTitle("This is a too long title".repeat(20)))
+                                        .modifying(event -> event.setLocalDateTime(invalidDateTime))
                                         .asFormParams()
                         )
         )
-                .andExpect(status().is5xxServerError())
-                .andExpect(view().name("error"));
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().string(containsString("Must take place in the future.")));
 
         assertThat(greenMail.waitForIncomingEmail(1500, 3)).isFalse();
     }
