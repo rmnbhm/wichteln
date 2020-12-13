@@ -2,6 +2,7 @@ package com.rmnbhm.wichteln.controller;
 
 import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.Participant;
+import com.rmnbhm.wichteln.service.WichtelnService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
@@ -26,18 +26,19 @@ import java.util.stream.Collectors;
 public class WichtelnController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WichtelnController.class);
+    private final WichtelnService wichtelnService;
+
+    public WichtelnController(WichtelnService wichtelnService) {
+        this.wichtelnService = wichtelnService;
+    }
 
     @GetMapping
     public ModelAndView getEvent() {
         return new ModelAndView("wichteln", Map.of("event", Event.withMinimalDefaults()), HttpStatus.OK);
     }
 
-    @PostMapping
-    public ModelAndView previewEvent(
-            @ModelAttribute @Valid Event event,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes
-    ) {
+    @PostMapping("/preview")
+    public ModelAndView previewEvent(@ModelAttribute @Valid Event event, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             LOGGER.debug(
                     "Failed to create {} because {}",
@@ -49,8 +50,17 @@ public class WichtelnController {
             );
             return new ModelAndView("wichteln", HttpStatus.BAD_REQUEST);
         }
-        redirectAttributes.addFlashAttribute("event", event);
-        return new ModelAndView(new RedirectView("preview"));
+        LOGGER.info("Previewed {}", event);
+        return new ModelAndView("wichteln", Map.of("preview", true), HttpStatus.OK);
+    }
+
+    @PostMapping("/save")
+    public ModelAndView submitEvent(@ModelAttribute @Valid Event event, BindingResult bindingResult) {
+        if (!bindingResult.hasErrors()) {
+            wichtelnService.save(event);
+            LOGGER.info("Saved {}", event);
+        }
+        return new ModelAndView(new RedirectView("wichteln"));
     }
 
     @PostMapping("/add")

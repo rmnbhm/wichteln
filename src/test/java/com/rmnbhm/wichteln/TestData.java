@@ -77,7 +77,7 @@ public class TestData {
 
         public MultiValueMap<String, String> asFormParams() {
             LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-            map.add("title", "AC/DC Secret Santa");
+            map.add("title", event.getTitle());
             map.add("description", event.getDescription());
             map.add("monetaryAmount.number", event.getMonetaryAmount().getNumber().toString());
             map.add("monetaryAmount.currency", event.getMonetaryAmount().getCurrency().toString());
