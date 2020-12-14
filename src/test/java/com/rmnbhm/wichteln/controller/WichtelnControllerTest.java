@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -117,16 +118,14 @@ public class WichtelnControllerTest {
 
     @Test
     public void shouldValidate() throws Exception {
-        LocalDateTime invalidDateTime = Instant.now().minus(1, ChronoUnit.DAYS)
-                .atZone(ZoneId.of("Europe/Berlin"))
-                .toLocalDateTime();
+        LocalDate invalidDate = LocalDate.now().minus(1, ChronoUnit.DAYS);
 
         mockMvc.perform(post("/wichteln/preview")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .params(
                         TestData
                                 .event()
-                                .modifying(event -> event.setLocalDateTime(invalidDateTime))
+                                .modifying(event -> event.setLocalDate(invalidDate))
                                 .asFormParams()
                 )
         )

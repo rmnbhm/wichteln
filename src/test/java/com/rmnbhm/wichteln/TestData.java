@@ -9,7 +9,9 @@ import org.springframework.util.MultiValueMap;
 
 import javax.money.Monetary;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -22,7 +24,8 @@ public class TestData {
         acdcSanta.setTitle("AC/DC Secret Santa");
         acdcSanta.setDescription("There's gonna be some santa'ing");
         acdcSanta.setMonetaryAmount(monetaryAmount());
-        acdcSanta.setLocalDateTime(LocalDateTime.of(2666, Month.JUNE, 6, 6, 6));
+        acdcSanta.setLocalDate(LocalDate.of(2666, Month.JUNE, 6));
+        acdcSanta.setLocalTime(LocalTime.of(6, 6));
         acdcSanta.setPlace("Sydney Harbor");
         acdcSanta.setHost(host());
         Participant angusYoung = new Participant();
@@ -81,7 +84,8 @@ public class TestData {
             map.add("description", event.getDescription());
             map.add("monetaryAmount.number", event.getMonetaryAmount().getNumber().toString());
             map.add("monetaryAmount.currency", event.getMonetaryAmount().getCurrency().toString());
-            map.add("localDateTime", event.getLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
+            map.add("localDate", event.getLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            map.add("localTime", event.getLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")));
             map.add("place", event.getPlace());
             map.add("host.name", event.getHost().getName());
             map.add("host.email", event.getHost().getEmail());

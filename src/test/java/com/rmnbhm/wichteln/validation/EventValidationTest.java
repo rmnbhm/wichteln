@@ -8,7 +8,9 @@ import com.rmnbhm.wichteln.model.Participant;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -231,16 +233,26 @@ public class EventValidationTest extends BaseValidationTest {
         @Test
         public void shouldFailEventWithPastLocalDateTime() {
             Event event = TestData.event().asObject();
-            LocalDateTime pastDate = LocalDateTime.now().minus(2, ChronoUnit.DAYS);
-            event.setLocalDateTime(pastDate);
+            LocalDate today = LocalDate.now();
+            event.setLocalDate(today);
+            LocalTime pastTime = LocalTime.now().minus(1, ChronoUnit.HOURS);
+            event.setLocalTime(pastTime);
 
             assertThat(getValidator().validate(event)).isNotEmpty();
         }
 
         @Test
-        public void shouldFailEventWithNullLocalDateTime() {
+        public void shouldFailEventWithNullLocalDate() {
             Event event = TestData.event().asObject();
-            event.setLocalDateTime(null);
+            event.setLocalDate(null);
+
+            assertThat(getValidator().validate(event)).isNotEmpty();
+        }
+
+        @Test
+        public void shouldFailEventWithNullLocalTime() {
+            Event event = TestData.event().asObject();
+            event.setLocalTime(null);
 
             assertThat(getValidator().validate(event)).isNotEmpty();
         }

@@ -65,18 +65,33 @@
         </div>
         <div class="form-row">
             <div class="form-group col-sm-6">
-                <label for="local-date-time">When?</label>
-                <input th:field="*{{localDateTime}}"
-                       id="local-date-time"
+                <label for="local-date">On what day?</label>
+                <input th:field="*{{localDate}}"
+                       id="local-date"
                        th:class="'form-control ' + ${#fields.hasErrors('localDateTime') ? 'is-invalid' : ''}"
-                       type="datetime-local"
+                       type="date"
                        required/>
-                <div id="local-date-time-error"
+                <div id="local-date-error"
                      class="invalid-feedback"
                      th:if="${#fields.hasErrors('localDateTime')}">
                     Must take place in the future.
                 </div>
             </div>
+            <div class="form-group col-sm-6">
+                <label for="local-time">At what hour?</label>
+                <input th:field="*{{localTime}}"
+                       id="local-time"
+                       th:class="'form-control ' + ${#fields.hasErrors('localDateTime') ? 'is-invalid' : ''}"
+                       type="time"
+                       required/>
+                <div id="local-time-error"
+                     class="invalid-feedback"
+                     th:if="${#fields.hasErrors('localDateTime')}">
+                    Must take place in the future.
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
             <div class="form-group col-sm-6">
                 <label for="place">Where?</label>
                 <input th:field="*{place}"
