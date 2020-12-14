@@ -24,7 +24,7 @@ public class TestData {
         acdcSanta.setTitle("AC/DC Secret Santa");
         acdcSanta.setDescription("There's gonna be some santa'ing");
         acdcSanta.setMonetaryAmount(monetaryAmount());
-        acdcSanta.setLocalDate(LocalDate.of(2666, Month.JUNE, 6));
+        acdcSanta.setLocalDate(LocalDate.of(2666, Month.JUNE, 7));
         acdcSanta.setLocalTime(LocalTime.of(6, 6));
         acdcSanta.setPlace("Sydney Harbor");
         acdcSanta.setHost(host());

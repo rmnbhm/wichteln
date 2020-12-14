@@ -22,10 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,17 +43,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 @AutoConfigureMockMvc
 public class WichtelnControllerTest {
-
-    private static final String[] PREVIEW_HTML = new String[]{
-            "Hey <span>Angus Young</span>,",
-            "You have been invited to wichtel at <span>AC/DC Secret Santa</span> (<a href=\"https://wichteln.rmnbhm.com/about\">https://wichteln.rmnbhm.com/about</a>)!<br/>",
-            "You're therefore asked to give a gift to <span>Phil Rudd</span>. The gift's monetary value should not exceed <span>AUD 78.50</span>.<br/>",
-            "The event will take place at <span>Sydney Harbor</span> on <span>2666-06-06</span> at <span>06:06</span> local time.",
-            "Here's what the event's host says about it:",
-            "<i>\"<span>There&#39;s gonna be some santa&#39;ing</span>\"</i>",
-            "If you have any questions, contact the event's host <span>George Young</span> at <a href=\"mailto:georgeyoung@acdc.net\"><span>georgeyoung@acdc.net</span></a>.",
-            "This mail was generated using <a href=\"https://wichteln.rmnbhm.com\">https://wichteln.rmnbhm.com</a>"
-    };
 
     private static GreenMail greenMail;
 
@@ -97,7 +83,15 @@ public class WichtelnControllerTest {
                 .params(TestData.event().asFormParams())
         )
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(content().string(Matchers.stringContainsInOrder(PREVIEW_HTML)));
+                .andExpect(content().string(Matchers.stringContainsInOrder(
+                        "Hey <span>Angus Young</span>,",
+                        "You have been invited to wichtel at <span>AC/DC Secret Santa</span> (<a href=\"https://wichteln.rmnbhm.com/about\">https://wichteln.rmnbhm.com/about</a>)!<br/>",
+                        "You're therefore asked to give a gift to <span>Phil Rudd</span>. The gift's monetary value should not exceed <span>AUD 78.50</span>.<br/>",
+                        "The event will take place at <span>Sydney Harbor</span> on <span>2666-06-07</span> at <span>06:06</span> local time.",
+                        "Here's what the event's host says about it:",
+                        "<i>\"<span>There&#39;s gonna be some santa&#39;ing</span>\"</i>",
+                        "If you have any questions, contact the event's host <span>George Young</span> at <a href=\"mailto:georgeyoung@acdc.net\"><span>georgeyoung@acdc.net</span></a>.",
+                        "This mail was generated using <a href=\"https://wichteln.rmnbhm.com\">https://wichteln.rmnbhm.com</a>")));
 
         mockMvc.perform(post("/wichteln/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
