@@ -15,6 +15,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -48,8 +50,10 @@ public class WichtelnUiIntegrationTest {
     private final static String MONETARYAMOUNT_NUMBER_ID = "monetary-amount-number";
     private final static String MONETARYAMOUNT_NUMBER_ERROR_ID = MONETARYAMOUNT_NUMBER_ID + "-error";
     private final static String MONETARYAMOUNT_CURRENCY_ID = "monetary-amount-currency";
-    private final static String LOCALDATETIME_ID = "local-date-time";
-    private final static String LOCALDATETIME_ERROR_ID = LOCALDATETIME_ID + "-error";
+    private final static String LOCALDATE_ID = "local-date";
+    private final static String LOCALTIME_ID = "local-time";
+    private final static String LOCALDATE_ERROR_ID = LOCALDATE_ID + "-error";
+    private final static String LOCALTIME_ERROR_ID = LOCALTIME_ID + "-error";
     private final static String PLACE_ID = "place";
     private final static String PLACE_ERROR_ID = PLACE_ID + "-error";
     private final static String HOST_NAME_ID = "host-name";
@@ -92,7 +96,7 @@ public class WichtelnUiIntegrationTest {
         assertThat(monetaryAmountNumber).isNotNull();
         WebElement monetaryAmountCurrency = supply(MONETARYAMOUNT_CURRENCY_ID);
         assertThat(monetaryAmountCurrency).isNotNull();
-        WebElement localDateTime = supply(LOCALDATETIME_ID);
+        WebElement localDateTime = supply(LOCALDATE_ID);
         assertThat(localDateTime).isNotNull();
         WebElement place = supply(PLACE_ID);
         assertThat(place).isNotNull();
@@ -175,11 +179,11 @@ public class WichtelnUiIntegrationTest {
         monetaryAmountNumber.sendKeys("-1"); // negative
         WebElement monetaryAmountCurrency = supply(MONETARYAMOUNT_CURRENCY_ID);
         monetaryAmountCurrency.sendKeys("XXXX"); // not a valid currency
-        WebElement localDateTime = supply(LOCALDATETIME_ID);
-        localDateTime.sendKeys(Instant.now().minus(1, ChronoUnit.DAYS) // before present
-                .atZone(ZoneId.of("Europe/Berlin"))
-                // Will also test "polyfill" for Firefox since it lacks `input[@type=datetime-local]` on desktop
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        WebElement localDate = supply(LOCALDATE_ID);
+        localDate.sendKeys(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        WebElement localTime = supply(LOCALTIME_ID);
+        localTime.sendKeys(LocalTime.now().minus(1, ChronoUnit.HOURS) // before present
+                .format(DateTimeFormatter.ofPattern("HH:mm"))
         );
         WebElement place = supply(PLACE_ID);
         place.sendKeys("Sydney".repeat(20)); // too long
@@ -201,8 +205,10 @@ public class WichtelnUiIntegrationTest {
         assertThat(descriptionError.isDisplayed()).isTrue();
         WebElement monetaryAmountNumberError = supply(MONETARYAMOUNT_NUMBER_ERROR_ID);
         assertThat(monetaryAmountNumberError.isDisplayed()).isTrue();
-        WebElement localDateTimeError = supply(LOCALDATETIME_ERROR_ID);
-        assertThat(localDateTimeError.isDisplayed()).isTrue();
+        WebElement localDateError = supply(LOCALDATE_ERROR_ID);
+        assertThat(localDateError.isDisplayed()).isTrue();
+        WebElement localTimeError = supply(LOCALTIME_ERROR_ID);
+        assertThat(localTimeError.isDisplayed()).isTrue();
         WebElement placeError = supply(PLACE_ERROR_ID);
         assertThat(placeError.isDisplayed()).isTrue();
         WebElement hostNameError = supply(HOST_NAME_ERROR_ID);

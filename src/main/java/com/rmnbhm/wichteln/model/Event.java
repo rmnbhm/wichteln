@@ -8,7 +8,9 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,10 +40,17 @@ public class Event {
     @Valid
     private MonetaryAmount monetaryAmount;
 
+    // Keep date and time apart since we replaced `input[@type='datetime-local']` with two separate `inputs` for reasons
+    // of browser compatibility and ease of use.
     @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    @FutureOrPresent
-    private LocalDateTime localDateTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate localDate;
+
+    // Keep date and time apart since we replaced `input[@type='datetime-local']` with two separate `inputs` for reasons
+    // of browser compatibility and ease of use.
+    @NotNull
+    @DateTimeFormat(pattern = "HH:mm")
+    private LocalTime localTime;
 
     @NotBlank
     @Size(max = 100)
@@ -95,12 +104,20 @@ public class Event {
         this.monetaryAmount = monetaryAmount;
     }
 
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
+    public LocalDate getLocalDate() {
+        return localDate;
     }
 
-    public void setLocalDateTime(LocalDateTime localDateTime) {
-        this.localDateTime = localDateTime;
+    public void setLocalDate(LocalDate localDate) {
+        this.localDate = localDate;
+    }
+
+    public LocalTime getLocalTime() {
+        return localTime;
+    }
+
+    public void setLocalTime(LocalTime localTime) {
+        this.localTime = localTime;
     }
 
     public String getPlace() {
@@ -127,13 +144,24 @@ public class Event {
         this.participants = participants;
     }
 
+    // Needed to delegate validation for event's "when" (its local date at its local time) to the javax validator
+    // Non-nullability of the date resp. time components is validated separately through field annotations.
+    @FutureOrPresent
+    public LocalDateTime getLocalDateTime() {
+        return LocalDateTime.of(
+                localDate != null ? localDate : LocalDate.now(),
+                localTime != null ? localTime : LocalTime.now()
+        );
+    }
+
     public String toString() {
         return String.format(
-                "Event(title=%s, description=%s, monetaryAmount=%s, localDateTime=%s, place=%s, host=%s, participants=%s)",
+                "Event(title=%s, description=%s, monetaryAmount=%s, localDate=%s, localTime=%s, place=%s, host=%s, participants=%s)",
                 this.getTitle(),
                 this.getDescription(),
                 this.getMonetaryAmount(),
-                this.getLocalDateTime(),
+                this.getLocalDate(),
+                this.getLocalTime(),
                 this.getPlace(),
                 this.getHost(),
                 this.getParticipants()
