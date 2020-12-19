@@ -28,8 +28,14 @@ public class ParticipantsMatcher {
         } while (areNotMatchedCorrectly(participants, copy));
 
         return IntStream.range(0, participants.size())
-                .mapToObj(i ->
-                        new ParticipantsMatch(new Donor(participants.get(i)), new Recipient(copy.get(i)))
+                .mapToObj(i -> {
+                    ParticipantsMatch participantsMatch = new ParticipantsMatch(
+                            new Donor(participants.get(i)),
+                            new Recipient(copy.get(i))
+                    );
+                    LOGGER.debug("Created match {}", participantsMatch);
+                    return participantsMatch;
+                        }
                 ).collect(Collectors.toList());
     }
 
