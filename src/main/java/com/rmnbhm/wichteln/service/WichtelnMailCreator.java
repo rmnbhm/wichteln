@@ -5,7 +5,6 @@ import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Donor;
 import com.rmnbhm.wichteln.model.ParticipantsMatch.Recipient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -19,10 +18,10 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class WichtelnMailCreator {
 
-    public static final String MAIL_TXT = "mail.txt";
-    @Autowired
+    private static final String MAIL_TXT = "mail.txt";
+    private static final String FROM_ADDRESS = "wichteln@romanboehm.com";
+
     private final TemplateEngine templateEngine;
-    @Autowired
     private final JavaMailSender mailSender;
 
     public WichtelnMailCreator(TemplateEngine templateEngine, JavaMailSender mailSender) {
@@ -40,17 +39,16 @@ public class WichtelnMailCreator {
     }
 
     private MimeMessage createMimeMessage(Event event, Donor donor, Recipient recipient) throws MessagingException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper message = new MimeMessageHelper(mimeMessage, StandardCharsets.UTF_8.toString());
+        message.setSubject(String.format("You have been invited to wichtel at %s", event.getTitle()));
+        message.setFrom(FROM_ADDRESS);
+        message.setTo(donor.getEmail());
+
         Context ctx = new Context();
         ctx.setVariable("event", event);
         ctx.setVariable("donor", donor.getName());
         ctx.setVariable("recipient", recipient.getName());
-
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper message = new MimeMessageHelper(mimeMessage, StandardCharsets.UTF_8.toString());
-        message.setSubject(String.format("You have been invited to wichtel at %s", event.getTitle()));
-        message.setFrom("wichteln@romanboehm.com");
-        message.setTo(donor.getEmail());
-
         String textContent = templateEngine.process(MAIL_TXT, ctx);
         message.setText(textContent);
 
