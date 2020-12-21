@@ -43,8 +43,7 @@ public class WichtelnController {
             LOGGER.debug(
                     "Failed to create {} because {}",
                     event,
-                    bindingResult.getAllErrors()
-                            .stream()
+                    bindingResult.getAllErrors().stream()
                             .map(ObjectError::toString)
                             .collect(Collectors.joining(", "))
             );
