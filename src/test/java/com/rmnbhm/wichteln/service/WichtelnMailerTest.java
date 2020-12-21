@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.argThat;
         "spring.mail.password=testpassword",
         "spring.mail.protocol=smtp"
 })
-public class WichteLnMailerTest {
+public class WichtelnMailerTest {
 
     @Autowired
     private WichtelnMailer mailSender;
@@ -51,7 +51,7 @@ public class WichteLnMailerTest {
         ParticipantsMatch malcolmGiftsToPhil = new ParticipantsMatch(
                 new ParticipantsMatch.Donor(malcolmYoung), new ParticipantsMatch.Recipient(philRudd)
         );
-        ParticipantsMatch PhilGiftsToAngus = new ParticipantsMatch(
+        ParticipantsMatch philGiftsToAngus = new ParticipantsMatch(
                 new ParticipantsMatch.Donor(philRudd), new ParticipantsMatch.Recipient(angusYoung)
         );
         CountDownLatch latch = new CountDownLatch(1);
@@ -81,7 +81,7 @@ public class WichteLnMailerTest {
 
         assertThat(mailSender.send(event, angusGiftsToMalcolm)).extracting(SendResult::isSuccess).isEqualTo(true);
         assertThat(mailSender.send(event, malcolmGiftsToPhil)).extracting(SendResult::isSuccess).isEqualTo(false);
-        assertThat(mailSender.send(event, PhilGiftsToAngus)).extracting(SendResult::isSuccess).isEqualTo(true);
+        assertThat(mailSender.send(event, philGiftsToAngus)).extracting(SendResult::isSuccess).isEqualTo(true);
     }
 
 }
