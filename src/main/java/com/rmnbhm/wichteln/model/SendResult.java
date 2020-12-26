@@ -1,19 +1,38 @@
 package com.rmnbhm.wichteln.model;
 
 public class SendResult {
-    private final ParticipantsMatch match;
+    private final String name;
+    private final String email;
     private final boolean isSuccess;
 
-    public SendResult(ParticipantsMatch match, boolean isSuccess) {
-        this.match = match;
-        this.isSuccess = isSuccess;
+    public static SendResult success(String name, String email) {
+        return new SendResult(name, email, true);
     }
 
-    public ParticipantsMatch getMatch() {
-        return match;
+    public static SendResult failure(String name, String email) {
+        return new SendResult(name, email, false);
+    }
+
+    private SendResult(String name, String email, boolean isSuccess) {
+        this.name = name;
+        this.email = email;
+        this.isSuccess = isSuccess;
     }
 
     public boolean isSuccess() {
         return isSuccess;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("SendResult(name='%s', email='%s', isSuccess=%s)", name, email, isSuccess);
     }
 }

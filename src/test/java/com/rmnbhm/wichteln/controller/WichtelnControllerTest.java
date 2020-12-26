@@ -5,7 +5,8 @@ import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.rmnbhm.wichteln.TestData;
-import com.rmnbhm.wichteln.service.WichtelnMailCreator;
+import com.rmnbhm.wichteln.TestUtils;
+import com.rmnbhm.wichteln.model.Event;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,18 +17,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
-import org.springframework.mail.MailException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.mail.Address;
-import javax.mail.internet.MimeMessage;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -48,9 +48,6 @@ public class WichtelnControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @SpyBean
-    private WichtelnMailCreator wichtelnMailCreator;
 
     @SpyBean
     private JavaMailSender mailSender;
@@ -85,7 +82,7 @@ public class WichtelnControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().string(Matchers.stringContainsInOrder(
                         "Hey <span>Angus Young</span>,",
-                        "You have been invited to wichtel at <span>AC/DC Secret Santa</span> (<a href=\"https://wichteln.rmnbhm.com/about\">https://wichteln.rmnbhm.com/about</a>)!<br/>",
+                        "You have been invited to wichtel at <span>&#39;AC/DC Secret Santa&#39;</span> (<a href=\"https://wichteln.rmnbhm.com/about\">https://wichteln.rmnbhm.com/about</a>)!<br/>",
                         "You're therefore asked to give a gift to <span>Phil Rudd</span>. The gift's monetary value should not exceed <span>AUD 78.50</span>.<br/>",
                         "The event will take place at <span>Sydney Harbor</span> on <span>2666-06-07</span> at <span>06:06</span> local time.",
                         "Here's what the event's host says about it:",
@@ -99,14 +96,15 @@ public class WichtelnControllerTest {
         )
                 .andExpect(status().is3xxRedirection());
 
-        assertThat(greenMail.waitForIncomingEmail(1500, 3)).isTrue();
+        assertThat(greenMail.waitForIncomingEmail(1500, 4)).isTrue();
         assertThat(greenMail.getReceivedMessages())
                 .extracting(mimeMessage -> mimeMessage.getAllRecipients()[0])
                 .extracting(Address::toString)
                 .containsExactlyInAnyOrder(
                         "angusyoung@acdc.net",
                         "malcolmyoung@acdc.net",
-                        "philrudd@acdc.net"
+                        "philrudd@acdc.net",
+                        "georgeyoung@acdc.net"
                 );
     }
 
@@ -138,13 +136,16 @@ public class WichtelnControllerTest {
                 )
         );
 
-        assertThat(greenMail.waitForIncomingEmail(1500, 3)).isFalse();
+        assertThat(greenMail.waitForIncomingEmail(1500, 4)).isFalse();
     }
 
     @Test
-    public void shouldShowErrorPageWhenMailCannotBeSent() throws Exception {
-        Mockito.doThrow(new MailException("error") {
-        }).when(mailSender).send(any(MimeMessage.class));
+    public void shouldShowErrorPageWhenHostMailCannotBeSent() throws Exception {
+        Event event = TestData.event().asObject();
+
+        Mockito
+                .doThrow(new MailSendException("error"))
+                .when(mailSender).send(argThat(TestUtils.isSentTo(event.getHost().getEmail())));
 
         mockMvc.perform(post("/wichteln/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -153,6 +154,6 @@ public class WichtelnControllerTest {
                 .andExpect(status().is5xxServerError())
                 .andExpect(view().name("error"));
 
-        assertThat(greenMail.waitForIncomingEmail(1500, 3)).isFalse();
+        assertThat(greenMail.waitForIncomingEmail(1500, 4)).isFalse();
     }
 }

@@ -1,5 +1,6 @@
 package com.rmnbhm.wichteln.service;
 
+import com.rmnbhm.wichteln.exception.WichtelnMailTransmissionException;
 import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
 import com.rmnbhm.wichteln.model.SendResult;
@@ -7,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.mail.internet.MimeMessage;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -16,25 +17,26 @@ import java.util.concurrent.TimeoutException;
 public class WichtelnMailer {
     private static final Logger LOGGER = LoggerFactory.getLogger(WichtelnMailer.class);
 
-    private final WichtelnMailCreator mailCreator;
-    private final WichtelnMailDispatcher mailDispatcher;
+    private final AsyncHostMailer hostMailer;
+    private final AsyncParticipantsMailer participantsMailer;
 
-    public WichtelnMailer(WichtelnMailCreator mailCreator, WichtelnMailDispatcher mailDispatcher) {
-        this.mailCreator = mailCreator;
-        this.mailDispatcher = mailDispatcher;
+    public WichtelnMailer(AsyncHostMailer hostMailer, AsyncParticipantsMailer participantsMailer) {
+        this.hostMailer = hostMailer;
+        this.participantsMailer = participantsMailer;
     }
 
-    public SendResult send(Event event, ParticipantsMatch match) {
-        MimeMessage mail = mailCreator.createMessage(event, match);
-        LOGGER.debug("Created mail for {} matching {}", event, match);
-        boolean isSuccess = false;
+    public void send(Event event, List<ParticipantsMatch> matches) {
         try {
-            mailDispatcher.send(mail).get(4, TimeUnit.SECONDS);
-            LOGGER.debug("Sent mail for {} matching {}", event, match);
-            isSuccess = true;
-        } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            LOGGER.debug("Failed to sent mail for {} matching {}", event, match, e);
+            SendResult sendHostResult = participantsMailer.send(event, matches)
+                    .thenCompose(sendResults -> hostMailer.send(event, sendResults))
+                    .get(30, TimeUnit.SECONDS);
+            if (!(sendHostResult.isSuccess())) {
+                LOGGER.error("Error while sending out mail for {} to {}", event, event.getHost());
+                throw new WichtelnMailTransmissionException();
+            }
+            LOGGER.info("Sent mail to host and matches about {}", event);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+           LOGGER.error("Error while sending out mail for {}", event, e);
         }
-        return new SendResult(match, isSuccess);
     }
 }

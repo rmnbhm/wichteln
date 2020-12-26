@@ -3,8 +3,6 @@ package com.rmnbhm.wichteln.service;
 import com.rmnbhm.wichteln.TestData;
 import com.rmnbhm.wichteln.model.Event;
 import com.rmnbhm.wichteln.model.ParticipantsMatch;
-import com.rmnbhm.wichteln.model.ParticipantsMatch.Donor;
-import com.rmnbhm.wichteln.model.ParticipantsMatch.Recipient;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -26,19 +24,20 @@ import static org.assertj.core.api.Assertions.assertThat;
         "spring.mail.password=testpassword",
         "spring.mail.protocol=smtp",
 })
-public class WichtelnMailCreatorTest {
+public class MatchMailCreatorTest {
 
     @Autowired
-    private WichtelnMailCreator wichtelnMailCreator;
+    private MatchMailCreator matchMailCreator;
 
     @Test
     public void shouldHandleToAndFromCorrectly() throws MessagingException {
         Event event = TestData.event().asObject();
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
-                new Donor(event.getParticipants().get(0)), new Recipient(event.getParticipants().get(1))
+                new ParticipantsMatch.Donor(event.getParticipants().get(0)),
+                new ParticipantsMatch.Recipient(event.getParticipants().get(1))
         );
 
-        MimeMessage mail = wichtelnMailCreator.createMessage(event, angusGiftsToMalcolm);
+        MimeMessage mail = matchMailCreator.createMatchMessage(event, angusGiftsToMalcolm);
 
         assertThat(mail).isNotNull();
         assertThat(mail.getRecipients(Message.RecipientType.TO))
@@ -50,16 +49,17 @@ public class WichtelnMailCreatorTest {
     public void shouldHandleEventDataCorrectly() throws IOException, MessagingException {
         Event event = TestData.event().asObject();
         ParticipantsMatch angusGiftsToMalcolm = new ParticipantsMatch(
-                new Donor(event.getParticipants().get(0)), new Recipient(event.getParticipants().get(1))
+                new ParticipantsMatch.Donor(event.getParticipants().get(0)),
+                new ParticipantsMatch.Recipient(event.getParticipants().get(1))
         );
 
-        MimeMessage mail = wichtelnMailCreator.createMessage(event, angusGiftsToMalcolm);
+        MimeMessage mail = matchMailCreator.createMatchMessage(event, angusGiftsToMalcolm);
 
         assertThat(mail).isNotNull();
-        assertThat(mail.getSubject()).isEqualTo("You have been invited to wichtel at AC/DC Secret Santa");
+        assertThat(mail.getSubject()).isEqualTo("You have been invited to wichtel at 'AC/DC Secret Santa'");
         MatcherAssert.assertThat(mail.getContent().toString(), Matchers.stringContainsInOrder(
                 "Hey Angus Young,",
-                "You have been invited to wichtel at AC/DC Secret Santa (https://wichteln.rmnbhm.com/about)!",
+                "You have been invited to wichtel at 'AC/DC Secret Santa' (https://wichteln.rmnbhm.com/about)!",
                 "You're therefore asked to give a gift to Malcolm Young. The gift's monetary value should not exceed AUD 78.50.",
                 "The event will take place at Sydney Harbor on 2666-06-07 at 06:06 local time.",
                 "Here's what the event's host says about it:",

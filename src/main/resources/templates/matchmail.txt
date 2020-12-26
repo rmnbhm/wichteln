@@ -1,6 +1,6 @@
 Hey [( ${donor} )],
 
-You have been invited to wichtel at [( ${event.title} )] (https://wichteln.rmnbhm.com/about)!
+You have been invited to wichtel at '[( ${event.title} )]' (https://wichteln.rmnbhm.com/about)!
 You're therefore asked to give a gift to [( ${recipient} )]. The gift's monetary value should not exceed [( ${T(org.javamoney.moneta.Money).of(event.monetaryAmount.number, event.monetaryAmount.currency)} )].
 The event will take place at [( ${event.place} )] on [( ${#temporals.format(event.localDate, 'yyyy-MM-dd')} )] at [( ${#temporals.format(event.localTime, 'HH:mm')} )] local time.
 

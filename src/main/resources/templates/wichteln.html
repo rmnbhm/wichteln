@@ -42,7 +42,7 @@
             </button>
             <p>This is what your email will look like:</p>
             <blockquote style="background: #eee;border-radius: 5px; padding: 15px;">
-                    <div th:replace="fragments/mail :: mail(donor='Angus Young', recipient='Phil Rudd', event=${event})"></div>
+                    <div th:replace="fragments/matchmail :: match-mail(donor='Angus Young', recipient='Phil Rudd', event=${event})"></div>
             </blockquote>
         </div>
     </form>

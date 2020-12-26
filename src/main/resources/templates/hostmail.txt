@@ -1,0 +1,15 @@
+Hey [( ${event.host.name} )],
+
+We sent out the following invitations for '[( ${event.title} )]':
+[# th:each="result : ${results}"]
+    [# th:if="${result.isSuccess}"]
+    - [( ${result.name} )], [( ${result.email} )]
+    [/]
+[/]
+The following participants could not be reached via their email:
+[# th:each="result : ${results}"]
+    [# th:unless="${result.isSuccess}"]
+    - [( ${result.name} )], [( ${result.email} )]
+    [/]
+[/]
+This mail was generated using https://wichteln.rmnbhm.com

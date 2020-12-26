@@ -11,6 +11,8 @@ import java.util.Set;
 @Configuration
 public class MailConfig {
 
+    public static final String FROM_ADDRESS = "wichteln@romanboehm.com";
+
     @Bean
     public ClassLoaderTemplateResolver textTemplateResolver() {
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
