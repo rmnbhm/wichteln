@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.romanboehm</groupId>
 	<artifactId>wichteln</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>wichteln</name>
 	<description>Secret Santa demo</description>
 
