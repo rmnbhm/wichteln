@@ -35,6 +35,8 @@ public class AsyncHostMailer {
                 (__, throwable) -> {
                     String name = event.getHost().getName();
                     String email = event.getHost().getEmail();
+                    // N.B.: This does not mean the mail has bounced.
+                    // This is a case we could only check by retrieving a bounce notification.
                     return throwable == null ? SendResult.success(name, email) : SendResult.failure(name, email);
                 }
         );

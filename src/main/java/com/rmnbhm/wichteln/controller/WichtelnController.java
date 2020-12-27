@@ -59,7 +59,7 @@ public class WichtelnController {
             wichtelnService.save(event);
             LOGGER.info("Saved {}", event);
         }
-        return new ModelAndView(new RedirectView("wichteln"));
+        return new ModelAndView("redirect:/wichteln");
     }
 
     @PostMapping("/add")

@@ -63,7 +63,7 @@ public class HostMailCreatorTest {
                 "We sent out the following invitations for 'AC/DC Secret Santa':",
                 "- Malcolm Young, malcolmyoung@acdc.net",
                 "- Phil Rudd, philrudd@acdc.net",
-                "The following participants could not be reached via their email:",
+                "The following participants could not be reached:",
                 "- Angus Young, angusyoung@acdc.net"
         ));
     }

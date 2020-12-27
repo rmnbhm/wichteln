@@ -15,6 +15,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.rmnbhm.wichteln.config.MailConfig.FROM_ADDRESS;
 
@@ -43,7 +45,10 @@ public class HostMailCreator {
 
             Context ctx = new Context();
             ctx.setVariable("event", event);
-            ctx.setVariable("results", results);
+            Map<Boolean, List<SendResult>> resultsBySuccess = results.stream()
+                    .collect(Collectors.partitioningBy(SendResult::isSuccess));
+            ctx.setVariable("successfulResults", resultsBySuccess.get(true));
+            ctx.setVariable("failedResults", resultsBySuccess.get(false));
             String textContent = templateEngine.process("hostmail.txt", ctx);
             message.setText(textContent);
 

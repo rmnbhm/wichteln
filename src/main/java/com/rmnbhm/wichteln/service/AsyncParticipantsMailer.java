@@ -34,6 +34,8 @@ public class AsyncParticipantsMailer {
                     (__, throwable) -> {
                         String name = match.getDonor().getName();
                         String email = match.getDonor().getEmail();
+                        // N.B.: This does not mean the mail has bounced.
+                        // This is a case we could only check by retrieving a bounce notification.
                         return throwable == null ? SendResult.success(name, email) : SendResult.failure(name, email);
                     }
             );
