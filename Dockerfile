@@ -8,8 +8,9 @@ COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
 
-# Skip long running UI tests
-RUN ./mvnw verify '-Dtest=!com.rmnbhm.wichteln.ui.**'
+# Skip tests
+RUN ./mvnw package -DskipTests
+
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 FROM adoptopenjdk/openjdk11:alpine
