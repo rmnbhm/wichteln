@@ -4,8 +4,8 @@ services:
     container_name: wichteln-mailserver
     image: greenmail/standalone:1.6.0
     ports:
-    - "3025:3025"
-    - "3143:3143"
+      - "3025:3025"
+      - "3143:3143"
   wichteln-app:
     container_name: wichteln-app
     build: .
@@ -17,6 +17,6 @@ services:
       SPRING_MAIL_USERNAME: testuser
       SPRING_MAIL_PASSWORD: test_password
       SPRING_MAIL_PROTOCOL: smtp
-      LOGGING_LEVEL_COM_RMNBHM_WICHTELN: DEBUG
+      LOGGING_LEVEL_COM_ROMANBOEHM_WICHTELN: DEBUG
     depends_on:
       - wichteln-mailserver
