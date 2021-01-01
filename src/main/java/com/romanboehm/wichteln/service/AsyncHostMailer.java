@@ -37,7 +37,13 @@ public class AsyncHostMailer {
                     String email = event.getHost().getEmail();
                     // N.B.: This does not mean the mail has bounced.
                     // This is a case we could only check by retrieving a bounce notification.
-                    return throwable == null ? SendResult.success(name, email) : SendResult.failure(name, email);
+                    if (throwable != null) {
+                        LOGGER.error(
+                                "Encountered exception while trying to send mail to {}", event.getHost(), throwable
+                        );
+                        return SendResult.failure(name, email);
+                    }
+                    return SendResult.success(name, email);
                 }
         );
     }

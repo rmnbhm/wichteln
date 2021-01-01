@@ -1,8 +1,7 @@
 package com.romanboehm.wichteln.service;
 
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
-import com.icegreen.greenmail.store.FolderException;
-import com.icegreen.greenmail.util.GreenMail;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.romanboehm.wichteln.TestData;
 import com.romanboehm.wichteln.TestUtils;
@@ -10,9 +9,8 @@ import com.romanboehm.wichteln.model.Event;
 import com.romanboehm.wichteln.model.Participant;
 import com.romanboehm.wichteln.model.ParticipantsMatch;
 import com.romanboehm.wichteln.model.SendResult;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +25,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 
-@SpringBootTest(properties = {
-        "spring.mail.host=localhost",
-        "spring.mail.port=3025",
-        "spring.mail.username=testuser",
-        "spring.mail.password=testpassword",
-        "spring.mail.protocol=smtp"
-})
+@SpringBootTest
 public class WichtelnMailerTest {
 
-    private static GreenMail greenMail;
+    @RegisterExtension
+    static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP_IMAP)
+            .withConfiguration(GreenMailConfiguration.aConfig().withDisabledAuthentication());
 
     @Autowired
     private WichtelnMailer wichtelnMailer;
@@ -46,24 +40,6 @@ public class WichtelnMailerTest {
 
     @SpyBean
     private AsyncHostMailer hostMailer;
-
-    @BeforeAll
-    public static void setupGreenmail() {
-        greenMail = new GreenMail(ServerSetupTest.ALL);
-        greenMail.withConfiguration(
-                GreenMailConfiguration
-                        .aConfig()
-                        .withDisabledAuthentication()
-        );
-        greenMail.start();
-    }
-
-    @AfterEach
-    public void cleanup() throws FolderException {
-        if (greenMail != null) {
-            greenMail.purgeEmailFromAllMailboxes();
-        }
-    }
 
     @SuppressWarnings("unchecked")
     @Test

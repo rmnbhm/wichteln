@@ -16,13 +16,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(properties = {
-        "spring.mail.host=localhost",
-        "spring.mail.port=3025",
-        "spring.mail.username=testuser",
-        "spring.mail.password=testpassword",
-        "spring.mail.protocol=smtp"
-})
+@SpringBootTest
 @AutoConfigureMockMvc
 public class ErrorAdviceTest {
 

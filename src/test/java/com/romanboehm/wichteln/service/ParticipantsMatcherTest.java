@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ParticipantsMatcherTest {
+public class ParticipantsMatcherTest {
 
     @Test
     public void shouldShuffle() {

@@ -25,17 +25,8 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
-@ExtendWith({ScreenshotOnFailureExtension.class})
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {
-                "spring.mail.host=localhost",
-                "spring.mail.port=3025",
-                "spring.mail.username=testuser",
-                "spring.mail.password=testpassword",
-                "spring.mail.protocol=smtp"
-        }
-)
+@ExtendWith(ScreenshotOnFailureExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class WichtelnUiIntegrationTest {
 
     private final static String HOST_IP_ADDRESS = SystemUtils.IS_OS_LINUX ? "172.17.0.1" : "host.docker.internal";

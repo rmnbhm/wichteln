@@ -1,16 +1,14 @@
 package com.romanboehm.wichteln.controller;
 
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
-import com.icegreen.greenmail.store.FolderException;
-import com.icegreen.greenmail.util.GreenMail;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.romanboehm.wichteln.TestData;
 import com.romanboehm.wichteln.TestUtils;
 import com.romanboehm.wichteln.model.Event;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -30,45 +28,21 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(properties = {
-        "spring.mail.host=localhost",
-        "spring.mail.port=3025",
-        "spring.mail.username=testuser",
-        "spring.mail.password=testpassword",
-        "spring.mail.protocol=smtp"
-})
+@SpringBootTest
 @AutoConfigureMockMvc
 public class WichtelnControllerTest {
 
-    private static GreenMail greenMail;
+    @RegisterExtension
+    static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP_IMAP)
+            .withConfiguration(GreenMailConfiguration.aConfig().withDisabledAuthentication());
 
     @Autowired
     private MockMvc mockMvc;
 
     @SpyBean
     private JavaMailSender mailSender;
-
-    @BeforeAll
-    public static void setupGreenmail() {
-        greenMail = new GreenMail(ServerSetupTest.ALL);
-        greenMail.withConfiguration(
-                GreenMailConfiguration
-                        .aConfig()
-                        .withDisabledAuthentication()
-        );
-        greenMail.start();
-    }
-
-    @AfterEach
-    public void cleanup() throws FolderException {
-        if (greenMail != null) {
-            greenMail.purgeEmailFromAllMailboxes();
-        }
-    }
 
     @Test
     public void shouldDoGetFormPreviewMailSendMailFlow() throws Exception {

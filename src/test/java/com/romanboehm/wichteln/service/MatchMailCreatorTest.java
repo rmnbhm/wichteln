@@ -17,13 +17,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(properties = {
-        "spring.mail.host=localhost",
-        "spring.mail.port=3025",
-        "spring.mail.username=testuser",
-        "spring.mail.password=testpassword",
-        "spring.mail.protocol=smtp",
-})
+@SpringBootTest
 public class MatchMailCreatorTest {
 
     @Autowired

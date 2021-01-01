@@ -19,13 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(properties = {
-        "spring.mail.host=localhost",
-        "spring.mail.port=3025",
-        "spring.mail.username=testuser",
-        "spring.mail.password=testpassword",
-        "spring.mail.protocol=smtp",
-})
+@SpringBootTest
 public class HostMailCreatorTest {
 
     @Autowired
@@ -33,7 +27,6 @@ public class HostMailCreatorTest {
 
     @Test
     public void shouldHandleToAndFromCorrectly() throws MessagingException {
-
         MimeMessage mail = hostMailCreator.createHostMessage(TestData.event().asObject(), Collections.emptyList());
 
         assertThat(mail).isNotNull();
