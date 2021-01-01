@@ -13,5 +13,6 @@ Navigate to https://wichteln.romanboehm.com (N.B.: Initial load might take a whi
 Make sure you have `docker` and `docker-compose` installed. Then
 1) Clone this repo
 2) Change to the repository's root directory
-3) Run `docker-compose -f docker-compose-local.yml up`
-4) Navigate to http://localhost:8080
+3) Run `./mvnw spring-boot:build-image`   
+4) Run `docker-compose -f docker-compose-local.yml up`
+5) Navigate to http://localhost:8080
