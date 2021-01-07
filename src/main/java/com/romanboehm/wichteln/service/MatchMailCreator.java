@@ -3,6 +3,8 @@ package com.romanboehm.wichteln.service;
 import com.romanboehm.wichteln.exception.WichtelnMailCreationException;
 import com.romanboehm.wichteln.model.Event;
 import com.romanboehm.wichteln.model.ParticipantsMatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,8 @@ import static com.romanboehm.wichteln.config.MailConfig.FROM_ADDRESS;
 
 @Component
 public class MatchMailCreator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MatchMailCreator.class);
 
     private final TemplateEngine templateEngine;
     private final JavaMailSender mailSender;
@@ -42,6 +46,7 @@ public class MatchMailCreator {
             String textContent = templateEngine.process("matchmail.txt", ctx);
             message.setText(textContent);
 
+            LOGGER.debug("Created mail for {} matching {}", event, match);
             return mimeMessage;
         } catch (MessagingException e) {
             // Re-throw as custom `RuntimeException` to be handled by upstream by `ErrorController`
