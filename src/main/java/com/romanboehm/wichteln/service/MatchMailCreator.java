@@ -15,8 +15,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 
-import static com.romanboehm.wichteln.config.MailConfig.FROM_ADDRESS;
-
 @Component
 public class MatchMailCreator {
 
@@ -36,7 +34,7 @@ public class MatchMailCreator {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, StandardCharsets.UTF_8.toString());
             message.setSubject(String.format("You have been invited to wichtel at '%s'", event.getTitle()));
-            message.setFrom(FROM_ADDRESS);
+            message.setFrom("wichteln@romanboehm.com");
             message.setTo(donor.getEmail());
 
             Context ctx = new Context();

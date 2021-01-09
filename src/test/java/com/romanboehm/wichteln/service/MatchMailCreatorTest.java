@@ -3,6 +3,7 @@ package com.romanboehm.wichteln.service;
 import com.romanboehm.wichteln.TestData;
 import com.romanboehm.wichteln.model.Event;
 import com.romanboehm.wichteln.model.ParticipantsMatch;
+import org.assertj.core.api.Assertions;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,6 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class MatchMailCreatorTest {
@@ -33,8 +32,8 @@ public class MatchMailCreatorTest {
 
         MimeMessage mail = matchMailCreator.createMatchMessage(event, angusGiftsToMalcolm);
 
-        assertThat(mail).isNotNull();
-        assertThat(mail.getRecipients(Message.RecipientType.TO))
+        Assertions.assertThat(mail).isNotNull();
+        Assertions.assertThat(mail.getRecipients(Message.RecipientType.TO))
                 .extracting(Address::toString)
                 .containsExactly("angusyoung@acdc.net");
     }
@@ -49,8 +48,8 @@ public class MatchMailCreatorTest {
 
         MimeMessage mail = matchMailCreator.createMatchMessage(event, angusGiftsToMalcolm);
 
-        assertThat(mail).isNotNull();
-        assertThat(mail.getSubject()).isEqualTo("You have been invited to wichtel at 'AC/DC Secret Santa'");
+        Assertions.assertThat(mail).isNotNull();
+        Assertions.assertThat(mail.getSubject()).isEqualTo("You have been invited to wichtel at 'AC/DC Secret Santa'");
         MatcherAssert.assertThat(mail.getContent().toString(), Matchers.stringContainsInOrder(
                 "Hey Angus Young,",
                 "You have been invited to wichtel at 'AC/DC Secret Santa' (https://wichteln.romanboehm.com/about)!",

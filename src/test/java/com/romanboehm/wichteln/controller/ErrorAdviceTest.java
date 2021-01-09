@@ -1,7 +1,9 @@
 package com.romanboehm.wichteln.controller;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,12 +11,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -38,11 +36,11 @@ public class ErrorAdviceTest {
     // check.
     @ValueSource(classes = { RuntimeException.class, Exception.class, Throwable.class })
     public <T extends Throwable> void shouldHandleAllThrowables(Class<T> throwableClass) throws Throwable {
-        doThrow(throwableClass).when(throwingController).get();
+        Mockito.doThrow(throwableClass).when(throwingController).get();
 
         mockMvc.perform(MockMvcRequestBuilders.get("/throw"))
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().string(containsString("Whoops")));
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString("Whoops")));
     }
 
 }

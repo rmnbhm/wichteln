@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.romanboehm.wichteln.config.MailConfig.FROM_ADDRESS;
-
 @Component
 public class HostMailCreator {
 
@@ -40,7 +38,7 @@ public class HostMailCreator {
             message.setSubject(String.format(
                     "The invitations for your Wichteln event '%s' have been sent", event.getTitle()
             ));
-            message.setFrom(FROM_ADDRESS);
+            message.setFrom("wichteln@romanboehm.com");
             message.setTo(event.getHost().getEmail());
 
             Context ctx = new Context();
