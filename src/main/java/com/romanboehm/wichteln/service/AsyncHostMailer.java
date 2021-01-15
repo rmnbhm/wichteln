@@ -1,15 +1,16 @@
 package com.romanboehm.wichteln.service;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import javax.mail.internet.MimeMessage;
+
 import com.romanboehm.wichteln.model.Event;
 import com.romanboehm.wichteln.model.SendResult;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import javax.mail.internet.MimeMessage;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 @Component
 public class AsyncHostMailer {
